@@ -6,6 +6,7 @@
   --color-primary: #223023;
   --color-secondary: #fbf7f6;
   --color-accent: #bb8b4c;
+  --ease-out-ui: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 :root[data-theme="dark"] {
@@ -44,4 +45,210 @@ body {
 
 :root[data-theme="dark"] .theme-toggle__moon {
   display: block;
+}
+
+.book-rail {
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.book-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.book-object {
+  position: relative;
+  isolation: isolate;
+  aspect-ratio: 2 / 3;
+}
+
+/* soft contact shadow under the book */
+.book-object::before {
+  position: absolute;
+  z-index: -1;
+  inset: 8% 2% -4% 2%;
+  border-radius: 6px;
+  background: rgb(14 18 15 / 38%);
+  content: "";
+  filter: blur(12px);
+  opacity: 0.75;
+  transition:
+    opacity 260ms ease,
+    transform 260ms var(--ease-out-ui);
+}
+
+/* thin sliver of pages along the fore-edge */
+.book-page-block {
+  position: absolute;
+  z-index: 0;
+  top: 1.2%;
+  right: -0.9%;
+  bottom: 1.2%;
+  width: 2.2%;
+  border-radius: 0 2px 2px 0;
+  background: linear-gradient(90deg, #cdc3ae 0%, #efe9db 55%, #bfb49d 100%);
+  transition: transform 260ms var(--ease-out-ui);
+}
+
+/* stack of pages peeking out under the bottom edge of the cover */
+.book-foot-block {
+  position: absolute;
+  z-index: 0;
+  right: -0.9%;
+  bottom: -3.2%;
+  left: 1.4%;
+  height: 5%;
+  border-radius: 0 0 4px 4px;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgb(122 106 78 / 16%) 0 1px,
+      transparent 1px 2.5px
+    ),
+    linear-gradient(
+      90deg,
+      #b9ad95 0%,
+      #ded5c2 12%,
+      #f3eede 46%,
+      #e4dbc8 78%,
+      #c2b69d 100%
+    );
+  box-shadow: 0 1px 2px rgb(14 20 15 / 24%);
+  transition: transform 260ms var(--ease-out-ui);
+}
+
+/* soft shade where the cover meets the pages, kills the seam */
+.book-foot-block::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 34%;
+  background: linear-gradient(180deg, rgb(52 42 27 / 40%), transparent);
+  content: "";
+}
+
+.book-cover-face {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 2px 3px 3px 2px;
+  background: rgb(34 48 35 / 8%);
+  box-shadow:
+    0 1px 2px rgb(12 16 13 / 26%),
+    0 6px 14px rgb(14 20 15 / 22%);
+  transition:
+    transform 260ms var(--ease-out-ui),
+    box-shadow 260ms ease;
+}
+
+/* spine shading + fore-edge highlight, both inside the cover */
+.book-cover-face::before,
+.book-cover-face::after {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  bottom: 0;
+  pointer-events: none;
+  content: "";
+}
+
+.book-cover-face::before {
+  left: 0;
+  width: 7%;
+  background: linear-gradient(
+    90deg,
+    rgb(0 0 0 / 30%) 0%,
+    rgb(0 0 0 / 10%) 45%,
+    rgb(255 255 255 / 7%) 72%,
+    transparent 100%
+  );
+}
+
+.book-cover-face::after {
+  right: 0;
+  width: 2px;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 14%));
+}
+
+:root[data-theme="dark"] .book-object::before {
+  background: rgb(0 0 0 / 62%);
+  opacity: 0.85;
+}
+
+:root[data-theme="dark"] .book-foot-block,
+:root[data-theme="dark"] .book-page-block {
+  filter: brightness(0.86) saturate(0.95);
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-line,
+.hero-search {
+  animation: hero-rise 700ms var(--ease-out-ui) both;
+}
+
+.hero-line--second {
+  animation-delay: 80ms;
+}
+
+.hero-search {
+  animation-delay: 240ms;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hero-backdrop {
+    transform: scale(1.02);
+    transition: transform 900ms var(--ease-out-ui);
+  }
+
+  .group:hover .book-object::before {
+    opacity: 0.9;
+    transform: translateY(6px) scale(1.02);
+  }
+
+  .group:hover .book-page-block,
+  .group:hover .book-foot-block,
+  .group:hover .book-cover-face {
+    transform: translateY(-6px);
+  }
+
+  .group:hover .book-cover-face {
+    box-shadow:
+      0 2px 3px rgb(12 16 13 / 26%),
+      0 14px 26px rgb(14 20 15 / 28%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-line,
+  .hero-search {
+    animation: none;
+  }
+
+  .hero-backdrop {
+    transform: none;
+    transition: none;
+  }
+
+  .book-object::before,
+  .book-page-block,
+  .book-foot-block,
+  .book-cover-face {
+    transition: none;
+  }
+
+  * {
+    scroll-behavior: auto !important;
+  }
 }
