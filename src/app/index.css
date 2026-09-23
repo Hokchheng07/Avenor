@@ -182,10 +182,10 @@ body {
   filter: brightness(0.86) saturate(0.95);
 }
 
-@keyframes hero-rise {
+@keyframes hero-copy-rise {
   from {
     opacity: 0;
-    transform: translateY(24px);
+    transform: translateY(18px);
   }
   to {
     opacity: 1;
@@ -193,23 +193,208 @@ body {
   }
 }
 
-.hero-line,
-.hero-search {
-  animation: hero-rise 700ms var(--ease-out-ui) both;
+.hero-copy {
+  animation: hero-copy-rise 700ms var(--ease-out-ui) both;
 }
 
-.hero-line--second {
+.hero-covers {
+  perspective: 1200px;
+}
+
+.hero-book-shell {
+  position: absolute;
+  bottom: -4.75rem;
+  left: 50%;
+  z-index: 10;
+  width: 9.25rem;
+  aspect-ratio: 2 / 3;
+}
+
+.hero-book-shell--far-left,
+.hero-book-shell--far-right {
+  display: none;
+}
+
+.hero-book-shell--left {
+  transform: translateX(-132%) rotate(-2.5deg);
+}
+
+.hero-book-shell--center {
+  z-index: 30;
+  bottom: -2.75rem;
+  width: 10.75rem;
+  transform: translateX(-50%);
+}
+
+.hero-book-shell--right {
+  z-index: 20;
+  transform: translateX(32%) rotate(2.5deg);
+}
+
+.hero-book {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  animation: hero-cover-reveal 600ms var(--ease-out-ui) forwards;
+  transition: transform 220ms var(--ease-out-ui);
+}
+
+.hero-cover-copy {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 11% 10% 9% 12%;
+  color: #fffaf0;
+  text-shadow: 0 1px 12px rgb(0 0 0 / 72%);
+  pointer-events: none;
+}
+
+.hero-cover-copy::before,
+.hero-cover-copy::after {
+  position: absolute;
+  z-index: -1;
+  right: 0;
+  left: 0;
+  height: 34%;
+  content: "";
+  pointer-events: none;
+}
+
+.hero-cover-copy::before {
+  top: 0;
+  background: linear-gradient(180deg, rgb(7 12 10 / 70%), transparent);
+}
+
+.hero-cover-copy::after {
+  bottom: 0;
+  background: linear-gradient(0deg, rgb(7 12 10 / 72%), transparent);
+}
+
+.hero-cover-title {
+  max-width: 10ch;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(0.72rem, 1.45vw, 1.4rem);
+  line-height: 0.98;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.hero-cover-author {
+  font-size: clamp(0.38rem, 0.58vw, 0.64rem);
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.hero-book-shell--far-left .hero-book {
+  animation-delay: 180ms;
+}
+
+.hero-book-shell--left .hero-book {
   animation-delay: 80ms;
 }
 
-.hero-search {
-  animation-delay: 240ms;
+.hero-book-shell--center .hero-book {
+  animation-delay: 0ms;
+}
+
+.hero-book-shell--right .hero-book {
+  animation-delay: 110ms;
+}
+
+.hero-book-shell--far-right .hero-book {
+  animation-delay: 220ms;
+}
+
+@keyframes hero-cover-reveal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (min-width: 640px) {
+  .hero-book-shell {
+    bottom: -5.75rem;
+    width: 12.75rem;
+  }
+
+  .hero-book-shell--far-left,
+  .hero-book-shell--far-right {
+    display: block;
+    z-index: 5;
+    bottom: -7rem;
+    width: 10.75rem;
+  }
+
+  .hero-book-shell--far-left {
+    transform: translateX(-220%) rotate(-4deg);
+  }
+
+  .hero-book-shell--left {
+    transform: translateX(-134%) rotate(-2deg);
+  }
+
+  .hero-book-shell--center {
+    bottom: -3.75rem;
+    width: 14.25rem;
+  }
+
+  .hero-book-shell--right {
+    transform: translateX(34%) rotate(2deg);
+  }
+
+  .hero-book-shell--far-right {
+    transform: translateX(120%) rotate(4deg);
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-book-shell {
+    bottom: -7rem;
+    width: 15rem;
+  }
+
+  .hero-book-shell--far-left,
+  .hero-book-shell--far-right {
+    bottom: -8.5rem;
+    width: 13rem;
+  }
+
+  .hero-book-shell--far-left {
+    transform: translateX(-226%) rotate(-4deg);
+  }
+
+  .hero-book-shell--left {
+    transform: translateX(-137%) rotate(-2deg);
+  }
+
+  .hero-book-shell--center {
+    bottom: -4rem;
+    width: 17rem;
+  }
+
+  .hero-book-shell--right {
+    transform: translateX(37%) rotate(2deg);
+  }
+
+  .hero-book-shell--far-right {
+    transform: translateX(126%) rotate(4deg);
+  }
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .hero-backdrop {
-    transform: scale(1.02);
-    transition: transform 900ms var(--ease-out-ui);
+  .hero-book:hover {
+    transform: translateY(-0.5rem);
   }
 
   .group:hover .book-object::before {
@@ -231,13 +416,13 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-line,
-  .hero-search {
+  .hero-copy,
+  .hero-book {
     animation: none;
+    opacity: 1;
   }
 
-  .hero-backdrop {
-    transform: none;
+  .hero-book {
     transition: none;
   }
 

@@ -154,4 +154,10 @@ export function coverUrl(value: string | number, size: CoverSize = "M", key: Cov
   return `${env.openLibraryCoversUrl}/b/${key}/${value}-${size}.jpg`;
 }
 
+/** Author portrait URL from an author OLID, returning 404 when no photo exists. */
+export function authorPhotoUrl(authorOlid: string, size: CoverSize = "M") {
+  const olid = authorOlid.replace("/authors/", "");
+  return `${env.openLibraryCoversUrl}/a/olid/${olid}-${size}.jpg?default=false`;
+}
+
 export { OpenLibraryError };
