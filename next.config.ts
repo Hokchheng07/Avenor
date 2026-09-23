@@ -16,6 +16,18 @@ const nextConfig: NextConfig = {
         hostname: "covers.openlibrary.org",
         pathname: "/a/**",
       },
+      {
+        protocol: "https",
+        hostname: "ia80*.us.archive.org",
+      },
+      {
+        protocol: "https",
+        hostname: "ia90*.us.archive.org",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
     ],
   },
 };
