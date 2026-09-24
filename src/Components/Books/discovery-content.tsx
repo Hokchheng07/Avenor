@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback } from "react";
 import { BookItem, GenreItem, SearchMode } from "@/lib/types";
-import { BookHeroCarousel } from "./book-hero-carousel";
+import { RecommendedShelf } from "./recommended-shelf";
 import { BookCard } from "./book-card";
 import { GenreGrid } from "./genre-grid";
 import { GenreDataTable } from "./genre-data-table";
@@ -228,9 +228,9 @@ export function DiscoveryContent({
         </section>
       ) : null}
 
-      {/* 3. Hero Showcase (Mockup 1: "Keep the story going..") */}
+      {/* 3. Recommended Shelf Showcase */}
       <section className="mb-16">
-        <BookHeroCarousel
+        <RecommendedShelf
           books={initialTrending}
           onSelectBook={setSelectedBook}
         />
@@ -245,23 +245,16 @@ export function DiscoveryContent({
               <span>Reader Favorites</span>
             </div>
             <h2 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-primary">
-              Popular &amp; Trending Books
+              Popular & Trending Books
             </h2>
             <p className="mt-1 text-xs sm:text-sm text-primary/60">
               Books with the highest reader counts and ratings on Open Library.
             </p>
           </div>
 
-          <button
-            onClick={() => handleSearch("Fantasy", "subject")}
-            className="hidden sm:inline-flex items-center gap-1 text-xs font-semibold text-accent hover:underline"
-          >
-            <span>View full rankings</span>
-            <span>→</span>
-          </button>
         </div>
 
-        <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5">
+        <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
           {initialTrending.map((book) => (
             <BookCard key={book.id} book={book} onSelect={setSelectedBook} />
           ))}

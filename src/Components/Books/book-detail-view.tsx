@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { BookItem, WorkDetailData } from "@/lib/types";
@@ -24,6 +24,50 @@ export function BookDetailView({
   isModal = false,
 }: BookDetailViewProps) {
   const [isSaved, setIsSaved] = useState(false);
+
+  useEffect(() => {
+    const bookId = book.id || book.key;
+    if (!bookId) return;
+
+    try {
+      const saved = localStorage.getItem(`avenor_saved_${bookId}`);
+      setIsSaved(saved === "true");
+    } catch {
+      setIsSaved(false);
+    }
+
+    const handleSync = (e: CustomEvent<{ bookId: string; isSaved: boolean }>) => {
+      if (e.detail?.bookId === bookId) {
+        setIsSaved(e.detail.isSaved);
+      }
+    };
+
+    window.addEventListener("avenor:book-saved-changed" as unknown as keyof WindowEventMap, handleSync as EventListener);
+    return () => {
+      window.removeEventListener("avenor:book-saved-changed" as unknown as keyof WindowEventMap, handleSync as EventListener);
+    };
+  }, [book.id, book.key]);
+
+  const handleToggleSave = () => {
+    const bookId = book.id || book.key;
+    const nextSaved = !isSaved;
+    setIsSaved(nextSaved);
+
+    try {
+      if (nextSaved) {
+        localStorage.setItem(`avenor_saved_${bookId}`, "true");
+      } else {
+        localStorage.removeItem(`avenor_saved_${bookId}`);
+      }
+      window.dispatchEvent(
+        new CustomEvent("avenor:book-saved-changed", {
+          detail: { bookId, isSaved: nextSaved },
+        })
+      );
+    } catch {
+      // ignore
+    }
+  };
 
   const primaryGenre = book.subjects?.[0] || "Fiction";
   const publishYear = book.publishYear || "2018";
@@ -209,7 +253,7 @@ export function BookDetailView({
           </a>
 
           <button
-            onClick={() => setIsSaved(!isSaved)}
+            onClick={handleToggleSave}
             className={`inline-flex h-12 items-center justify-center gap-2 rounded-xl border px-4 text-sm font-semibold transition-all active:scale-95 ${
               isSaved
                 ? "border-accent bg-accent/15 text-accent"
