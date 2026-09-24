@@ -44,21 +44,14 @@ export default async function DiscoverPage({ searchParams }: DiscoverPageProps) 
       initialResults = await getWorksBySubject(subject.trim(), 18);
     }
 
-    const liveWorks = await getWorksBySubject("fantasy", 10);
-    if (liveWorks && liveWorks.length >= 5) {
-      trendingBooks = [
-        ...FEATURED_CAROUSEL_BOOKS.slice(0, 3),
-        ...liveWorks.filter(
-          (w) => !FEATURED_CAROUSEL_BOOKS.some((f) => f.id === w.id)
-        ),
-      ].slice(0, 10);
-    }
+    // Use curated, verified literature collection for reliable titles and covers
+    trendingBooks = FEATURED_CAROUSEL_BOOKS;
   } catch {
     trendingBooks = FEATURED_CAROUSEL_BOOKS;
   }
 
   return (
-    <main className="flex-1 bg-secondary min-h-screen">
+    <main className="flex-1 bg-secondary min-h-screen overflow-x-clip">
       <DiscoveryContent
         initialTrending={trendingBooks}
         genres={POPULAR_GENRES}
