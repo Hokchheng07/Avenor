@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Footer } from "@/Components/Shared/footer";
+import { Footer } from "@/components/Shared/footer";
 
 const subjects = [
   { name: "Fiction", count: "12.4k", index: "01" },

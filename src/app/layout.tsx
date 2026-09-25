@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
-import { Google_Sans, Freehand, Lora } from "next/font/google";
-import { Navbar } from "@/Components/Shared/navbar";
+import { Google_Sans, Freehand, Lora, Geist } from "next/font/google";
+import { Navbar } from "@/components/Shared/navbar";
 import "./index.css";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const googleSans = Google_Sans({
   variable: "--font-google-sans",
@@ -33,7 +36,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       data-theme="light"
       suppressHydrationWarning
-      className={`${googleSans.variable} ${freehand.variable} ${lora.variable} h-full antialiased`}
+      className={cn("h-full", "antialiased", googleSans.variable, freehand.variable, lora.variable, "font-sans", geist.variable)}
     >
       <body className="min-h-full flex flex-col">
         <Navbar />
