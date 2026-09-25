@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useCallback } from "react";
+import useSWR from "swr";
 import { BookItem, GenreItem, SearchMode } from "@/lib/types";
 import { BookHeroCarousel } from "./book-hero-carousel";
 import { BookCard } from "./book-card";
@@ -31,77 +32,78 @@ export function DiscoveryContent({
   const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [searchMode, setSearchMode] = useState<SearchMode>(initialMode);
   const [selectedGenre, setSelectedGenre] = useState<string>(initialSubject);
-  const [searchResults, setSearchResults] =
-    useState<BookItem[]>(initialResults);
-  const [genreBooks, setGenreBooks] = useState<BookItem[]>(
-    initialSubject ? initialResults : [],
-  );
   const [hasSearched, setHasSearched] = useState(
     Boolean(initialQuery && initialResults.length > 0),
   );
-  const [isLoading, setIsLoading] = useState(false);
-  const [isGenreLoading, setIsGenreLoading] = useState(false);
   const [selectedBook, setSelectedBook] = useState<BookItem | null>(null);
   const [sortBy, setSortBy] = useState<"relevance" | "rating" | "readers">(
     "relevance",
   );
   const [genreViewMode, setGenreViewMode] = useState<"table" | "grid">("table");
 
-  const handleSearch = useCallback(async (query: string, mode: SearchMode) => {
+  // Fetch genre books using SWR with automatic caching and deduplication
+  const { data: fetchedGenreBooks, isLoading: isGenreLoading } = useSWR<
+    BookItem[]
+  >(
+    selectedGenre ? ["genre", selectedGenre] : null,
+    ([, slug]) => getWorksBySubject(slug as string, 24),
+    {
+      revalidateOnFocus: false,
+      dedupingInterval: 60000,
+    },
+  );
+
+  const genreBooks =
+    fetchedGenreBooks ||
+    (selectedGenre === initialSubject ? initialResults : []);
+
+  // Fetch search results using SWR with caching
+  const { data: searchData, isLoading } = useSWR<{
+    books: BookItem[];
+    total: number;
+  }>(
+    hasSearched && searchQuery.trim()
+      ? ["search", searchQuery.trim(), searchMode]
+      : null,
+    ([, query, mode]) =>
+      searchOpenLibrary({
+        query: query as string,
+        mode: mode as SearchMode,
+        limit: 24,
+      }),
+    {
+      fallbackData:
+        initialQuery && initialResults.length > 0
+          ? { books: initialResults, total: initialResults.length }
+          : undefined,
+      revalidateOnFocus: false,
+      dedupingInterval: 60000,
+    },
+  );
+
+  const searchResults =
+    searchData?.books || (hasSearched ? [] : initialResults);
+
+  const handleSearch = useCallback((query: string, mode: SearchMode) => {
     setSearchQuery(query);
     setSearchMode(mode);
 
     if (!query.trim()) {
       setHasSearched(false);
-      setSearchResults([]);
       return;
     }
 
-    setIsLoading(true);
     setHasSearched(true);
-
-    try {
-      const res = await searchOpenLibrary({
-        query: query.trim(),
-        mode,
-        limit: 24,
-      });
-      setSearchResults(res.books);
-    } catch (err) {
-      console.error("Search failed:", err);
-    } finally {
-      setIsLoading(false);
-    }
   }, []);
 
-  const handleSelectGenre = useCallback(
-    async (genreSlug: string) => {
-      if (selectedGenre === genreSlug) {
-        setSelectedGenre("");
-        setGenreBooks([]);
-        return;
-      }
-
-      setSelectedGenre(genreSlug);
-      setIsGenreLoading(true);
-
-      try {
-        const books = await getWorksBySubject(genreSlug, 24);
-        setGenreBooks(books);
-      } catch (err) {
-        console.error("Failed to load subject works:", err);
-      } finally {
-        setIsGenreLoading(false);
-      }
-    },
-    [selectedGenre],
-  );
+  const handleSelectGenre = useCallback((genreSlug: string) => {
+    setSelectedGenre((prev) => (prev === genreSlug ? "" : genreSlug));
+  }, []);
 
   const clearFilters = () => {
     setSearchQuery("");
     setSelectedGenre("");
     setHasSearched(false);
-    setSearchResults([]);
   };
 
   // Sort displayed results
