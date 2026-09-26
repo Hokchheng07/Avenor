@@ -6,7 +6,7 @@ const navigation = [
   { label: "Home", href: "/" },
   { label: "Discover", href: "/#discover" },
   { label: "Categories", href: "/#categories" },
-  { label: "About", href: "/#about" },
+  { label: "About", href: "/about" },
 ] as const;
 
 function SearchIcon() {

@@ -1,15 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Footer } from "@/Components/Shared/footer";
-
-const subjects = [
-  { name: "Fiction", count: "12.4k", index: "01" },
-  { name: "History", count: "8.9k", index: "02" },
-  { name: "Science", count: "6.2k", index: "03" },
-  { name: "Poetry", count: "3.1k", index: "04" },
-  { name: "Biography", count: "4.8k", index: "05" },
-  { name: "Children’s", count: "5.0k", index: "06" },
-] as const;
+import { subjects, subjectSlug } from "@/data/subjects";
 
 const shelves = [
   { title: "Short, strange, unforgettable", description: "Novels under 200 pages", palette: ["#274333", "#b58247", "#6f4538"] },
@@ -147,7 +139,7 @@ export default function Home() {
             {subjects.map((subject, index) => (
               <Link
                 key={subject.name}
-                href={`/subjects/${subject.name.toLowerCase().replace("’", "").replace(" ", "-")}`}
+                href={`/subjects/${subjectSlug(subject.name)}`}
                 className="group flex min-h-34 flex-col justify-between rounded-[1.25rem_0.45rem_1.25rem_0.45rem] border border-primary/15 bg-white p-4 outline-none transition-all hover:-translate-y-1 hover:border-accent/60 hover:shadow-[0_15px_35px_rgba(34,48,35,0.08)] focus-visible:ring-2 focus-visible:ring-accent dark:bg-white/[0.035]"
               >
                 <span className="text-xs text-primary/35">{subject.index}</span>
