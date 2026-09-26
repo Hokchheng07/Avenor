@@ -14,9 +14,9 @@ const footerGroups = [
   {
     title: "Avenor",
     links: [
-      { label: "About us", href: "/#about" },
-      { label: "How it works", href: "/#about" },
-      { label: "Our purpose", href: "/#about" },
+      { label: "About us", href: "/about" },
+      { label: "How it works", href: "/about#how-it-works" },
+      { label: "Our purpose", href: "/about#purpose" },
       { label: "GitHub", href: "https://github.com/Hokchheng07/Avenor" },
     ],
   },
@@ -76,10 +76,7 @@ function GitHubIcon() {
 
 export function Footer() {
   return (
-    <footer
-      id="about"
-      className="relative overflow-hidden border-t border-primary/10 bg-white text-primary dark:bg-secondary"
-    >
+    <footer className="relative overflow-hidden border-t border-primary/10 bg-white text-primary dark:bg-secondary">
       <div
         aria-hidden="true"
         className="absolute inset-0 opacity-45 [background-image:radial-gradient(circle,rgba(187,139,76,.35)_1px,transparent_1.2px)] [background-size:27px_27px] dark:opacity-15"
@@ -189,7 +186,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-16 flex flex-col gap-5 border-t border-dashed border-accent/45 pt-7 text-xs text-primary/50 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-12 flex flex-col gap-5 border-t border-dashed border-accent/45 pt-7 text-xs text-primary/50 sm:flex-row sm:items-center sm:justify-between">
           <p>© 2026 Avenor. All rights reserved.</p>
           <nav aria-label="Legal" className="flex flex-wrap gap-x-6 gap-y-2">
             <Link href="/privacy" className="hover:text-primary">
