@@ -47,6 +47,7 @@ body {
   display: block;
 }
 
+<<<<<<< HEAD
 .book-rail {
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
@@ -435,5 +436,51 @@ body {
 
   * {
     scroll-behavior: auto !important;
+=======
+@keyframes worm-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes worm-wave {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-24px);
+  }
+}
+
+.worm-track {
+  animation: worm-scroll 0.6s linear infinite;
+  will-change: transform;
+}
+
+.worm-item {
+  animation: worm-wave 0.4s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * -0.05s);
+  will-change: transform;
+}
+
+.worm-viewport:hover .worm-track,
+.worm-viewport:hover .worm-item,
+.worm-viewport:focus-within .worm-track,
+.worm-viewport:focus-within .worm-item {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .worm-track {
+    animation-duration: 40s;
+  }
+
+  .worm-item {
+    animation: none;
+>>>>>>> main
   }
 }
