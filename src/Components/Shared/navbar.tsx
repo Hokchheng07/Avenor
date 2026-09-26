@@ -6,7 +6,7 @@ const navigation = [
   { label: "Home", href: "/" },
   { label: "Discover", href: "/discover" },
   { label: "Categories", href: "/#categories" },
-  { label: "About", href: "/#about" },
+  { label: "About", href: "/about" },
 ] as const;
 
 function SearchIcon() {
@@ -94,6 +94,12 @@ export function Navbar() {
             <HeartIcon />
             Saved
           </Link>
+          <Link
+            href="/login"
+            className="inline-flex h-10 items-center rounded-full bg-primary px-4 text-sm font-semibold text-white outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-accent dark:text-secondary"
+          >
+            Log in
+          </Link>
         </div>
 
         <details className="group relative ml-auto md:hidden">
@@ -134,6 +140,12 @@ export function Navbar() {
                 <HeartIcon /> Saved
               </Link>
             </div>
+            <Link
+              href="/login"
+              className="mt-2 block rounded-xl border border-primary/15 px-4 py-3 text-center text-sm font-semibold text-primary transition-colors hover:bg-primary/6"
+            >
+              Log in
+            </Link>
           </div>
         </details>
       </nav>

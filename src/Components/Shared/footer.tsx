@@ -15,8 +15,7 @@ const footerGroups = [
     title: "Avenor",
     links: [
       { label: "About us", href: "/about" },
-      { label: "How it works", href: "/about#how-it-works" },
-      { label: "Our purpose", href: "/about#purpose" },
+      { label: "Our team", href: "/about#team" },
       { label: "GitHub", href: "https://github.com/Hokchheng07/Avenor" },
     ],
   },
