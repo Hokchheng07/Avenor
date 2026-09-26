@@ -415,7 +415,30 @@ body {
   }
 }
 
+.genre-panel {
+  transition:
+    opacity 220ms ease,
+    transform 220ms var(--ease-out-ui);
+}
+
+@starting-style {
+  .genre-panel {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .genre-panel {
+    transition: opacity 220ms ease;
+  }
+
+  @starting-style {
+    .genre-panel {
+      transform: none;
+    }
+  }
+
   .hero-copy,
   .hero-book {
     animation: none;

@@ -11,10 +11,10 @@ interface SearchBarFilterProps {
   isLoading?: boolean;
 }
 const MODES: { label: string; value: SearchMode; placeholder: string }[] = [
-  { label: "All Catalog", value: "all", placeholder: "Search title, author, subject, or keyword..." },
-  { label: "Title", value: "title", placeholder: "Enter book title (e.g., The Hobbit, Dune)..." },
-  { label: "Author", value: "author", placeholder: "Enter author name (e.g., Tolkien, Leigh Bardugo)..." },
-  { label: "Subject", value: "subject", placeholder: "Enter subject or genre (e.g., Fantasy, History)..." },
+  { label: "All", value: "all", placeholder: "Title, author, or subject" },
+  { label: "Title", value: "title", placeholder: "The Hobbit" },
+  { label: "Author", value: "author", placeholder: "Ursula K. Le Guin" },
+  { label: "Subject", value: "subject", placeholder: "Science fiction" },
 ];
 
 const SUGGESTIONS = [
@@ -63,11 +63,7 @@ export function SearchBarFilter({
 
   return (
     <div className="w-full">
-      {/* Search Mode Tabs */}
       <div className="flex flex-wrap items-center gap-2 mb-3">
-        <span className="text-xs font-semibold uppercase tracking-wider text-primary/45 mr-1">
-          Search by:
-        </span>
         {MODES.map((m) => {
           const isActive = localMode === m.value;
           return (
@@ -75,9 +71,10 @@ export function SearchBarFilter({
               key={m.value}
               type="button"
               onClick={() => handleModeChange(m.value)}
-              className={`rounded-full px-3.5 py-1 text-xs font-semibold transition-all ${
+              aria-pressed={isActive}
+              className={`rounded-full px-3.5 py-1 text-xs font-semibold transition-colors ${
                 isActive
-                  ? "bg-primary text-secondary shadow-sm dark:bg-accent dark:text-primary"
+                  ? "bg-primary text-secondary dark:bg-accent dark:text-primary"
                   : "bg-white/80 text-primary/70 border border-primary/10 hover:border-primary/25 hover:text-primary dark:bg-white/[0.04]"
               }`}
             >
@@ -87,9 +84,8 @@ export function SearchBarFilter({
         })}
       </div>
 
-      {/* Main Search Input Form */}
       <form onSubmit={handleSubmit} className="relative flex items-center">
-        <div className="relative flex flex-1 items-center rounded-2xl border border-primary/15 bg-white shadow-xl shadow-primary/5 transition-all focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/20 dark:bg-secondary/90">
+        <div className="relative flex flex-1 items-center rounded-2xl border border-primary/15 bg-white transition-colors focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/20 dark:bg-secondary/90">
           <div className="pointer-events-none pl-5 pr-3 text-primary/45">
             <SearchIcon className="size-5" />
           </div>
@@ -99,7 +95,8 @@ export function SearchBarFilter({
             value={localQuery}
             onChange={(e) => setLocalQuery(e.target.value)}
             placeholder={currentModeInfo.placeholder}
-            className="h-14 w-full bg-transparent text-sm sm:text-base text-primary placeholder:text-primary/40 focus:outline-none pr-10"
+            aria-label="Search books"
+            className="h-14 w-full bg-transparent [&::-webkit-search-cancel-button]:appearance-none text-sm sm:text-base text-primary placeholder:text-primary/40 focus:outline-none pr-10"
           />
 
           {localQuery && (
@@ -117,7 +114,7 @@ export function SearchBarFilter({
             <button
               type="submit"
               disabled={isLoading}
-              className="inline-flex h-11 items-center justify-center rounded-xl bg-accent px-6 text-sm font-bold text-white shadow-md transition-all hover:bg-accent/90 active:scale-95 disabled:opacity-50"
+              className="inline-flex h-11 items-center justify-center rounded-xl bg-accent px-6 text-sm font-bold text-white transition-colors hover:bg-accent/90 active:scale-95 disabled:opacity-50"
             >
               {isLoading ? (
                 <div className="size-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
@@ -129,9 +126,8 @@ export function SearchBarFilter({
         </div>
       </form>
 
-      {/* Popular suggestions */}
       <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
-        <span className="text-primary/45 font-medium">Quick suggestions:</span>
+        <span className="text-primary/45">Try</span>
         {SUGGESTIONS.map((item) => (
           <button
             key={item.label}

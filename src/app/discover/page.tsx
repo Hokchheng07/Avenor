@@ -10,9 +10,9 @@ import {
 import { BookItem, SearchMode } from "@/lib/types";
 
 export const metadata: Metadata = {
-  title: "Discover Books · Avenor",
+  title: "Discover",
   description:
-    "Explore popular books, search the Open Library catalog, and browse literature by genre with realistic 3D book previews.",
+    "Search the Open Library catalog and browse books by genre.",
 };
 
 interface DiscoverPageProps {
@@ -29,7 +29,6 @@ export default async function DiscoverPage({ searchParams }: DiscoverPageProps) 
   const mode = resolvedParams.mode || "all";
   const subject = resolvedParams.subject || "";
 
-  let trendingBooks = FEATURED_CAROUSEL_BOOKS;
   let initialResults: BookItem[] = [];
 
   try {
@@ -43,17 +42,14 @@ export default async function DiscoverPage({ searchParams }: DiscoverPageProps) 
     } else if (subject.trim()) {
       initialResults = await getWorksBySubject(subject.trim(), 18);
     }
-
-    // Use curated, verified literature collection for reliable titles and covers
-    trendingBooks = FEATURED_CAROUSEL_BOOKS;
   } catch {
-    trendingBooks = FEATURED_CAROUSEL_BOOKS;
+    initialResults = [];
   }
 
   return (
     <main className="flex-1 bg-secondary min-h-screen overflow-x-clip">
       <DiscoveryContent
-        initialTrending={trendingBooks}
+        initialTrending={FEATURED_CAROUSEL_BOOKS}
         genres={POPULAR_GENRES}
         initialQuery={query}
         initialMode={mode}

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { motion, useReducedMotion } from "framer-motion";
 import { BookItem, WorkDetailData } from "@/lib/types";
 import {
   StarIcon,
@@ -24,6 +25,7 @@ export function BookDetailView({
   isModal = false,
 }: BookDetailViewProps) {
   const [isSaved, setIsSaved] = useState(false);
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
     const bookId = book.id || book.key;
@@ -270,12 +272,30 @@ export function BookDetailView({
 
   if (isModal) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm animate-fade-in">
+      <motion.div
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1, transition: { duration: 0.2, ease: "easeOut" } }}
+        exit={{ opacity: 0, transition: { duration: 0.15, ease: "easeIn" } }}
+      >
         <div className="fixed inset-0" onClick={onClose} aria-hidden="true" />
-        <div className="relative z-10 w-full max-w-5xl my-auto animate-scale-up">
+        <motion.div
+          className="relative z-10 w-full max-w-5xl my-auto"
+          initial={{ opacity: 0, scale: reduceMotion ? 1 : 0.96 }}
+          animate={{
+            opacity: 1,
+            scale: 1,
+            transition: { duration: 0.25, ease: [0.23, 1, 0.32, 1] },
+          }}
+          exit={{
+            opacity: 0,
+            scale: reduceMotion ? 1 : 0.98,
+            transition: { duration: 0.15, ease: "easeIn" },
+          }}
+        >
           {content}
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     );
   }
 
