@@ -2,15 +2,16 @@
 
 import React, { useState, useCallback } from "react";
 import useSWR from "swr";
+import { AnimatePresence } from "framer-motion";
 import { BookItem, GenreItem, SearchMode } from "@/lib/types";
-import { BookHeroCarousel } from "./book-hero-carousel";
+import { RecommendedShelf } from "./recommended-shelf";
 import { BookCard } from "./book-card";
 import { GenreGrid } from "./genre-grid";
 import { GenreDataTable } from "./genre-data-table";
 import { SearchBarFilter } from "./search-bar-filter";
 import { BookDetailView } from "./book-detail-view";
 import { searchOpenLibrary, getWorksBySubject } from "@/lib/openlibrary";
-import { SparklesIcon, CloseIcon } from "@/Components/Shared/icons";
+import { CloseIcon } from "@/Components/Shared/icons";
 
 interface DiscoveryContentProps {
   initialTrending: BookItem[];
@@ -119,22 +120,14 @@ export function DiscoveryContent({
 
   return (
     <div className="mx-auto w-full max-w-7xl px-5 py-8 sm:px-8 sm:py-12 lg:px-10">
-      {/* 1. Header & Prominent Search Input (Mockup 1 search bar) */}
-      <div className="mb-10 text-center sm:text-left">
-        <div className="flex flex-col gap-2">
-          <p className="text-xs font-bold uppercase tracking-[0.25em] text-accent">
-            Open Library Discovery
-          </p>
-          <h1 className="font-serif text-3xl font-bold tracking-tight text-primary sm:text-5xl">
-            Explore Literature
-          </h1>
-          <p className="max-w-2xl text-sm sm:text-base text-primary/60">
-            Search millions of works, explore genres with preview covers, and
-            delve into trending stories.
-          </p>
-        </div>
+      <div className="mb-12">
+        <h1 className="font-serif text-4xl leading-tight tracking-[-0.025em] text-primary sm:text-5xl">
+          Find your next book
+        </h1>
+        <p className="mt-3 max-w-xl text-sm leading-6 text-primary/55 sm:text-base">
+          Search the Open Library catalog by title, author, or subject.
+        </p>
 
-        {/* Search Bar with Mode Toggles */}
         <div className="mt-8 max-w-3xl">
           <SearchBarFilter
             query={searchQuery}
@@ -145,25 +138,21 @@ export function DiscoveryContent({
         </div>
       </div>
 
-      {/* 2. Search Results Section (conditionally shown when searching or genre filtered) */}
       {hasSearched ? (
         <section className="mb-16">
           <div className="mb-6 flex flex-wrap items-center justify-between gap-4 border-b border-primary/10 pb-4">
-            <div className="flex items-center gap-3">
-              <h2 className="font-serif text-2xl font-bold text-primary">
-                {selectedGenre
-                  ? `Genre: ${selectedGenre.replace("_", " ").toUpperCase()}`
-                  : `Results for "${searchQuery}"`}
+            <div className="flex items-baseline gap-3">
+              <h2 className="font-serif text-2xl text-primary">
+                Results for &ldquo;{searchQuery}&rdquo;
               </h2>
-              <span className="rounded-full bg-primary/10 px-3 py-0.5 text-xs font-semibold text-primary">
-                {displayedResults.length} books found
+              <span className="text-sm text-primary/50">
+                {displayedResults.length}
               </span>
             </div>
 
             <div className="flex items-center gap-3">
-              {/* Sort selector */}
-              <div className="flex items-center gap-2 text-xs">
-                <span className="text-primary/50 font-medium">Sort by:</span>
+              <label className="flex items-center gap-2 text-xs">
+                <span className="text-primary/50">Sort</span>
                 <select
                   value={sortBy}
                   onChange={(e) =>
@@ -175,9 +164,9 @@ export function DiscoveryContent({
                 >
                   <option value="relevance">Relevance</option>
                   <option value="rating">Highest Rated</option>
-                  <option value="readers">Most Readers</option>
+                  <option value="readers">Most readers</option>
                 </select>
-              </div>
+              </label>
 
               <button
                 onClick={clearFilters}
@@ -189,7 +178,6 @@ export function DiscoveryContent({
             </div>
           </div>
 
-          {/* Loading Skeletons */}
           {isLoading ? (
             <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
               {[...Array(6)].map((_, i) => (
@@ -212,77 +200,45 @@ export function DiscoveryContent({
             </div>
           ) : (
             <div className="rounded-2xl border border-dashed border-primary/20 p-12 text-center">
-              <p className="font-serif text-lg font-bold text-primary">
-                No matching books found
-              </p>
-              <p className="mt-1 text-xs text-primary/60">
-                Try searching with a broader title, author name, or click on a
-                genre below.
+              <p className="font-serif text-lg text-primary">No books found</p>
+              <p className="mt-1 text-sm text-primary/55">
+                Try a shorter title, an author&rsquo;s last name, or a genre
+                below.
               </p>
               <button
                 onClick={clearFilters}
-                className="mt-4 rounded-full bg-accent px-5 py-2 text-xs font-bold text-white shadow-md hover:bg-accent/90"
+                className="mt-4 rounded-full bg-accent px-5 py-2 text-xs font-bold text-white hover:bg-accent/90"
               >
-                View all recommendations
+                Clear search
               </button>
             </div>
           )}
         </section>
       ) : null}
 
-      {/* 3. Hero Showcase (Mockup 1: "Keep the story going..") */}
       <section className="mb-16">
-        <BookHeroCarousel
+        <RecommendedShelf
           books={initialTrending}
           onSelectBook={setSelectedBook}
         />
       </section>
 
-      {/* 4. Popular & Trending Books (Ratings & Readers) */}
       <section className="mb-16">
-        <div className="mb-6 flex items-end justify-between">
-          <div>
-            <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-accent">
-              <SparklesIcon className="size-3.5" />
-              <span>Reader Favorites</span>
-            </div>
-            <h2 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-primary">
-              Popular &amp; Trending Books
-            </h2>
-            <p className="mt-1 text-xs sm:text-sm text-primary/60">
-              Books with the highest reader counts and ratings on Open Library.
-            </p>
-          </div>
+        <h2 className="mb-6 font-serif text-2xl tracking-tight text-primary sm:text-3xl">
+          Popular &amp; Trending Books
+        </h2>
 
-          <button
-            onClick={() => handleSearch("Fantasy", "subject")}
-            className="hidden sm:inline-flex items-center gap-1 text-xs font-semibold text-accent hover:underline"
-          >
-            <span>View full rankings</span>
-            <span>→</span>
-          </button>
-        </div>
-
-        <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5">
+        <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
           {initialTrending.map((book) => (
             <BookCard key={book.id} book={book} onSelect={setSelectedBook} />
           ))}
         </div>
       </section>
 
-      {/* 5. Browse by Genre/Subject (Mockup & Prompt requirement) */}
       <section className="mb-16">
-        <div className="mb-6">
-          <p className="text-xs font-bold uppercase tracking-wider text-accent">
-            Curated Categories
-          </p>
-          <h2 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-primary">
-            Browse by Genre
-          </h2>
-          <p className="mt-1 text-xs sm:text-sm text-primary/60">
-            Tap into a genre to reveal works with instant preview covers.
-          </p>
-        </div>
+        <h2 className="mb-6 font-serif text-2xl tracking-tight text-primary sm:text-3xl">
+          Browse by genre
+        </h2>
 
         <GenreGrid
           genres={genres}
@@ -290,46 +246,40 @@ export function DiscoveryContent({
           onSelectGenre={handleSelectGenre}
         />
 
-        {/* Selected Genre Data Table Section */}
         {selectedGenre && (
           <div
-            className="mt-8 space-y-4 animate-fade-in"
+            className="genre-panel mt-8 space-y-4"
             id="genre-data-section"
           >
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-primary/10 pb-3">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold text-primary/50 uppercase tracking-wider">
-                  View Style:
-                </span>
-                <div className="inline-flex rounded-lg border border-primary/15 bg-white p-0.5 dark:bg-secondary">
-                  <button
-                    onClick={() => setGenreViewMode("table")}
-                    className={`rounded-md px-3 py-1 text-xs font-semibold transition-all ${
-                      genreViewMode === "table"
-                        ? "bg-primary text-secondary dark:bg-accent dark:text-primary"
-                        : "text-primary/70 hover:text-primary"
-                    }`}
-                  >
-                    ☰ Data Table
-                  </button>
-                  <button
-                    onClick={() => setGenreViewMode("grid")}
-                    className={`rounded-md px-3 py-1 text-xs font-semibold transition-all ${
-                      genreViewMode === "grid"
-                        ? "bg-primary text-secondary dark:bg-accent dark:text-primary"
-                        : "text-primary/70 hover:text-primary"
-                    }`}
-                  >
-                    ⊞ 3D Cards
-                  </button>
-                </div>
+              <div className="inline-flex rounded-lg border border-primary/15 bg-white p-0.5 dark:bg-secondary">
+                <button
+                  onClick={() => setGenreViewMode("table")}
+                  className={`rounded-md px-3 py-1 text-xs font-semibold transition-all ${
+                    genreViewMode === "table"
+                      ? "bg-primary text-secondary dark:bg-accent dark:text-primary"
+                      : "text-primary/70 hover:text-primary"
+                  }`}
+                >
+                  Table
+                </button>
+                <button
+                  onClick={() => setGenreViewMode("grid")}
+                  className={`rounded-md px-3 py-1 text-xs font-semibold transition-all ${
+                    genreViewMode === "grid"
+                      ? "bg-primary text-secondary dark:bg-accent dark:text-primary"
+                      : "text-primary/70 hover:text-primary"
+                  }`}
+                >
+                  Covers
+                </button>
               </div>
 
               <button
                 onClick={() => setSelectedGenre("")}
                 className="text-xs font-semibold text-accent hover:underline"
               >
-                Close genre catalog ×
+                Close
               </button>
             </div>
 
@@ -337,13 +287,12 @@ export function DiscoveryContent({
               <GenreDataTable
                 genreName={
                   genres.find((g) => g.slug === selectedGenre)?.name ||
-                  selectedGenre.replace("_", " ").toUpperCase()
+                  selectedGenre.replaceAll("_", " ")
                 }
                 genreSlug={selectedGenre}
                 books={genreBooks}
                 isLoading={isGenreLoading}
                 onSelectBook={setSelectedBook}
-                onCloseTable={() => setSelectedGenre("")}
               />
             ) : (
               <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
@@ -360,14 +309,16 @@ export function DiscoveryContent({
         )}
       </section>
 
-      {/* Detail Modal (Mockup 2 split design) */}
-      {selectedBook && (
-        <BookDetailView
-          book={selectedBook}
-          onClose={() => setSelectedBook(null)}
-          isModal={true}
-        />
-      )}
+      <AnimatePresence>
+        {selectedBook && (
+          <BookDetailView
+            key={selectedBook.id || selectedBook.key}
+            book={selectedBook}
+            onClose={() => setSelectedBook(null)}
+            isModal={true}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

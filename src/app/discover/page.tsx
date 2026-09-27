@@ -10,9 +10,17 @@ import {
 import { BookItem, SearchMode } from "@/lib/types";
 
 export const metadata: Metadata = {
-  title: "Discover Books · Avenor",
+  title: "Discover",
   description:
-    "Explore popular books, search the Open Library catalog, and browse literature by genre with realistic 3D book previews.",
+    "Search the Open Library catalog and browse books by genre.",
+  alternates: {
+    canonical: "/discover",
+  },
+  openGraph: {
+    title: "Discover · Avenor",
+    description: "Search the Open Library catalog and browse books by genre.",
+    url: "/discover",
+  },
 };
 
 interface DiscoverPageProps {
@@ -29,7 +37,6 @@ export default async function DiscoverPage({ searchParams }: DiscoverPageProps) 
   const mode = resolvedParams.mode || "all";
   const subject = resolvedParams.subject || "";
 
-  let trendingBooks = FEATURED_CAROUSEL_BOOKS;
   let initialResults: BookItem[] = [];
 
   try {
@@ -43,24 +50,14 @@ export default async function DiscoverPage({ searchParams }: DiscoverPageProps) 
     } else if (subject.trim()) {
       initialResults = await getWorksBySubject(subject.trim(), 18);
     }
-
-    const liveWorks = await getWorksBySubject("fantasy", 10);
-    if (liveWorks && liveWorks.length >= 5) {
-      trendingBooks = [
-        ...FEATURED_CAROUSEL_BOOKS.slice(0, 3),
-        ...liveWorks.filter(
-          (w) => !FEATURED_CAROUSEL_BOOKS.some((f) => f.id === w.id)
-        ),
-      ].slice(0, 10);
-    }
   } catch {
-    trendingBooks = FEATURED_CAROUSEL_BOOKS;
+    initialResults = [];
   }
 
   return (
-    <main className="flex-1 bg-secondary min-h-screen">
+    <main className="flex-1 bg-secondary min-h-screen overflow-x-clip">
       <DiscoveryContent
-        initialTrending={trendingBooks}
+        initialTrending={FEATURED_CAROUSEL_BOOKS}
         genres={POPULAR_GENRES}
         initialQuery={query}
         initialMode={mode}

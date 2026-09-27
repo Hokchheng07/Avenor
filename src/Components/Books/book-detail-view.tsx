@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useCallback, useSyncExternalStore } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { motion, useReducedMotion } from "framer-motion";
 import { BookItem, WorkDetailData } from "@/lib/types";
 import {
   StarIcon,
@@ -18,12 +19,70 @@ interface BookDetailViewProps {
   isModal?: boolean;
 }
 
+const SAVED_BOOK_EVENT = "avenor:book-saved-changed";
+
+function readSavedBook(bookId: string) {
+  if (typeof window === "undefined") return false;
+
+  try {
+    return localStorage.getItem(`avenor_saved_${bookId}`) === "true";
+  } catch {
+    return false;
+  }
+}
+
+function subscribeToSavedBook(bookId: string, onStoreChange: () => void) {
+  function handleSavedBookChange(event: Event) {
+    const detail = (event as CustomEvent<{ bookId?: string }>).detail;
+    if (detail?.bookId === bookId) onStoreChange();
+  }
+
+  function handleStorage(event: StorageEvent) {
+    if (event.key === `avenor_saved_${bookId}`) onStoreChange();
+  }
+
+  window.addEventListener(SAVED_BOOK_EVENT, handleSavedBookChange);
+  window.addEventListener("storage", handleStorage);
+
+  return () => {
+    window.removeEventListener(SAVED_BOOK_EVENT, handleSavedBookChange);
+    window.removeEventListener("storage", handleStorage);
+  };
+}
+
 export function BookDetailView({
   book,
   onClose,
   isModal = false,
 }: BookDetailViewProps) {
-  const [isSaved, setIsSaved] = useState(false);
+  const bookId = book.id || book.key;
+  const subscribe = useCallback(
+    (onStoreChange: () => void) =>
+      subscribeToSavedBook(bookId, onStoreChange),
+    [bookId]
+  );
+  const getSnapshot = useCallback(() => readSavedBook(bookId), [bookId]);
+  const isSaved = useSyncExternalStore(subscribe, getSnapshot, () => false);
+  const reduceMotion = useReducedMotion();
+
+  const handleToggleSave = () => {
+    const nextSaved = !isSaved;
+
+    try {
+      if (nextSaved) {
+        localStorage.setItem(`avenor_saved_${bookId}`, "true");
+      } else {
+        localStorage.removeItem(`avenor_saved_${bookId}`);
+      }
+      window.dispatchEvent(
+        new CustomEvent(SAVED_BOOK_EVENT, {
+          detail: { bookId, isSaved: nextSaved },
+        })
+      );
+    } catch {
+      // ignore
+    }
+  };
 
   const primaryGenre = book.subjects?.[0] || "Fiction";
   const publishYear = book.publishYear || "2018";
@@ -209,7 +268,7 @@ export function BookDetailView({
           </a>
 
           <button
-            onClick={() => setIsSaved(!isSaved)}
+            onClick={handleToggleSave}
             className={`inline-flex h-12 items-center justify-center gap-2 rounded-xl border px-4 text-sm font-semibold transition-all active:scale-95 ${
               isSaved
                 ? "border-accent bg-accent/15 text-accent"
@@ -226,12 +285,30 @@ export function BookDetailView({
 
   if (isModal) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm animate-fade-in">
+      <motion.div
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1, transition: { duration: 0.2, ease: "easeOut" } }}
+        exit={{ opacity: 0, transition: { duration: 0.15, ease: "easeIn" } }}
+      >
         <div className="fixed inset-0" onClick={onClose} aria-hidden="true" />
-        <div className="relative z-10 w-full max-w-5xl my-auto animate-scale-up">
+        <motion.div
+          className="relative z-10 w-full max-w-5xl my-auto"
+          initial={{ opacity: 0, scale: reduceMotion ? 1 : 0.96 }}
+          animate={{
+            opacity: 1,
+            scale: 1,
+            transition: { duration: 0.25, ease: [0.23, 1, 0.32, 1] },
+          }}
+          exit={{
+            opacity: 0,
+            scale: reduceMotion ? 1 : 0.98,
+            transition: { duration: 0.15, ease: "easeIn" },
+          }}
+        >
           {content}
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     );
   }
 
