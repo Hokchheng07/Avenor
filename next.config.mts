@@ -1,5 +1,5 @@
 import type { NextConfig } from "next";
-import { publicEnv } from "./src/lib/public-env";
+import { publicEnv } from "./src/lib/public-env.ts";
 
 const coversUrl = new URL(publicEnv.openLibraryCoversUrl);
 const coversPath = coversUrl.pathname.replace(/\/+$/, "");
