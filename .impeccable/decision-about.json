@@ -1,0 +1,48 @@
+{
+  "title": "Choose the new Avenor About page",
+  "question": "Which composition best explains what Avenor is, why it exists, and who is behind it?",
+  "options": [
+    {
+      "id": "letter",
+      "label": "A Letter from Avenor",
+      "kicker": "THE ROLL",
+      "lineage": "editorial founder's letter and literary colophon",
+      "thesis": "Avenor introduces itself through one confident editorial statement, then lets its mission and people sign the story.",
+      "palette": ["#223023", "#FBF7F6", "#BB8B4C", "#D7E0D3"],
+      "materials": ["warm book paper", "fine editorial rules", "real portrait photography"],
+      "viewport": "An oversized statement occupies the left of the first viewport while the mentor portrait and a compact mission note anchor the right.",
+      "risk": "It becomes too literary if the team and contact path are not unmistakably practical.",
+      "comp": ".impeccable/mocks/decision/about-letter.png"
+    },
+    {
+      "id": "constellation",
+      "label": "Connected by Books",
+      "lineage": "annotated relationship map and cultural atlas",
+      "thesis": "Avenor is explained as a visible network connecting readers, books, mission, and the people who maintain it.",
+      "palette": ["#223023", "#FBF7F6", "#BB8B4C", "#8FA28E"],
+      "materials": ["inked connection lines", "catalogue labels", "portrait medallions"],
+      "viewport": "The first viewport is a composed relationship map with Avenor at its center and mission, vision, discovery, and team branching outward.",
+      "risk": "The diagram can feel technical unless the human portraits remain emotionally dominant.",
+      "comp": ".impeccable/mocks/decision/about-constellation.png"
+    },
+    {
+      "id": "journal",
+      "label": "The Studio Journal",
+      "lineage": "independent literary journal and documentary contact sheet",
+      "thesis": "Avenor reads like a living issue assembled by its team: purpose first, then the people, process, and invitation to participate.",
+      "palette": ["#172019", "#F4EEDF", "#D3A663", "#FFFFFF"],
+      "materials": ["editorial folios", "contact-sheet photography", "captioned field notes"],
+      "viewport": "A magazine-like opening spread pairs a sharp Avenor manifesto with a staggered contact sheet of the mentor and members.",
+      "risk": "Dense editorial pacing must be carefully simplified on mobile.",
+      "comp": ".impeccable/mocks/decision/about-journal.png"
+    }
+  ],
+  "reroll": {
+    "registers": ["safer", "bolder"]
+  },
+  "buildPath": {
+    "value": "comp",
+    "toggle": true
+  },
+  "steer": true
+}

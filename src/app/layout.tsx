@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Google_Sans, Freehand, Lora } from "next/font/google";
 import { Navbar } from "@/Components/Shared/navbar";
+import { NavbarGate } from "@/Components/Shared/navbar-gate";
 import "./index.css";
 
 const googleSans = Google_Sans({
@@ -36,7 +37,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${googleSans.variable} ${freehand.variable} ${lora.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col overflow-x-clip">
-        <Navbar />
+        <NavbarGate>
+          <Navbar />
+        </NavbarGate>
         {children}
       </body>
     </html>

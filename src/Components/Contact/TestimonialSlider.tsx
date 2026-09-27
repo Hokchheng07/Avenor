@@ -84,10 +84,10 @@ export function TestimonialSlider() {
       className="outline-none"
     >
       <div className="text-center mb-10">
-        <h2 className="text-2xl sm:text-3xl font-extrabold text-[#4A6B53] uppercase tracking-wider">
+        <h2 className="text-2xl sm:text-3xl font-extrabold text-[#4A6B53] dark:text-[#a9c6a6] uppercase tracking-wider">
           From Our Readers
         </h2>
-        <div className="w-12 h-1 bg-[#4A6B53] mx-auto mt-2 rounded-full" />
+        <div className="w-12 h-1 bg-[#4A6B53] dark:bg-[#a9c6a6] mx-auto mt-2 rounded-full" />
       </div>
 
       <div className="relative max-w-3xl mx-auto">
@@ -104,14 +104,14 @@ export function TestimonialSlider() {
                 aria-hidden={i !== index}
                 className="w-full shrink-0"
               >
-                <figure className="bg-white rounded-3xl border border-[#4A6B53]/20 shadow-sm p-8 sm:p-10 flex flex-col items-center text-center">
+                <figure className="bg-white dark:bg-[#1e241f] rounded-3xl border border-[#4A6B53]/20 dark:border-white/10 shadow-sm p-8 sm:p-10 flex flex-col items-center text-center">
                   <Stars rating={t.rating} />
-                  <blockquote className="mt-5 text-base sm:text-lg text-gray-700 leading-relaxed">
+                  <blockquote className="mt-5 text-base sm:text-lg text-gray-700 dark:text-[#cfc9bc] leading-relaxed">
                     “{t.quote}”
                   </blockquote>
                   <figcaption className="mt-6">
-                    <p className="font-bold text-gray-900">{t.name}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">{t.role}</p>
+                    <p className="font-bold text-gray-900 dark:text-[#ece6da]">{t.name}</p>
+                    <p className="text-xs text-gray-500 dark:text-[#9c978b] mt-0.5">{t.role}</p>
                   </figcaption>
                 </figure>
               </li>
@@ -123,7 +123,7 @@ export function TestimonialSlider() {
           type="button"
           onClick={prev}
           aria-label="Previous testimonial"
-          className="absolute top-1/2 -translate-y-1/2 -left-3 sm:-left-5 w-10 h-10 rounded-full bg-white border border-[#4A6B53]/30 text-[#4A6B53] shadow-sm hover:bg-[#4A6B53]/10 transition-colors flex items-center justify-center"
+          className="absolute top-1/2 -translate-y-1/2 -left-3 sm:-left-5 w-10 h-10 rounded-full bg-white dark:bg-[#1e241f] border border-[#4A6B53]/30 dark:border-white/15 text-[#4A6B53] dark:text-[#a9c6a6] shadow-sm hover:bg-[#4A6B53]/10 transition-colors flex items-center justify-center"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
@@ -134,7 +134,7 @@ export function TestimonialSlider() {
           type="button"
           onClick={next}
           aria-label="Next testimonial"
-          className="absolute top-1/2 -translate-y-1/2 -right-3 sm:-right-5 w-10 h-10 rounded-full bg-white border border-[#4A6B53]/30 text-[#4A6B53] shadow-sm hover:bg-[#4A6B53]/10 transition-colors flex items-center justify-center"
+          className="absolute top-1/2 -translate-y-1/2 -right-3 sm:-right-5 w-10 h-10 rounded-full bg-white dark:bg-[#1e241f] border border-[#4A6B53]/30 dark:border-white/15 text-[#4A6B53] dark:text-[#a9c6a6] shadow-sm hover:bg-[#4A6B53]/10 transition-colors flex items-center justify-center"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
@@ -152,8 +152,8 @@ export function TestimonialSlider() {
             aria-current={i === index}
             className={`h-2 rounded-full transition-all ${
               i === index
-                ? "w-7 bg-[#4A6B53]"
-                : "w-2 bg-[#4A6B53]/30 hover:bg-[#4A6B53]/50"
+                ? "w-7 bg-[#4A6B53] dark:bg-[#a9c6a6]"
+                : "w-2 bg-[#4A6B53]/30 hover:bg-[#4A6B53]/50 dark:bg-white/20"
             }`}
           />
         ))}

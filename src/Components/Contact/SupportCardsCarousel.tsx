@@ -37,8 +37,8 @@ function Card({
   icon: string;
 }) {
   return (
-    <div className="bg-white p-5 rounded-2xl border border-[#4A6B53]/20 shadow-xs h-full flex flex-col items-center text-center">
-      <div className="w-10 h-10 rounded-xl bg-[#4A6B53]/10 text-[#4A6B53] flex items-center justify-center mb-3 shrink-0">
+    <div className="bg-white dark:bg-[#1e241f] p-5 rounded-2xl border border-[#4A6B53]/20 dark:border-white/10 shadow-xs h-full flex flex-col items-center text-center">
+      <div className="w-10 h-10 rounded-xl bg-[#4A6B53]/10 text-[#4A6B53] dark:text-[#a9c6a6] flex items-center justify-center mb-3 shrink-0">
         <svg
           className="w-5 h-5"
           fill="none"
@@ -54,17 +54,18 @@ function Card({
           />
         </svg>
       </div>
-      <h4 className="font-bold text-gray-900 text-sm mb-1">{title}</h4>
-      <p className="text-xs text-gray-500">{description}</p>
+      <h4 className="font-bold text-gray-900 dark:text-[#ece6da] text-sm mb-1">{title}</h4>
+      <p className="text-xs text-gray-500 dark:text-[#9c978b]">{description}</p>
     </div>
   );
 }
 
 export function SupportCardsCarousel() {
-  const set = (isClone: boolean) => (
+  const set = (copy: number) => (
     <ul
+      key={copy}
       className="flex shrink-0 gap-4 pr-4"
-      aria-hidden={isClone ? true : undefined}
+      aria-hidden={copy > 0 ? true : undefined}
     >
       {supportCards.map((card, i) => (
         <li
@@ -81,8 +82,9 @@ export function SupportCardsCarousel() {
   return (
     <div className="worm-viewport overflow-hidden py-4">
       <div className="worm-track flex w-max">
-        {set(false)}
-        {set(true)}
+        {/* Four copies so the loop never runs short on wide screens;
+            the track shifts by half, so both halves must match. */}
+        {[0, 1, 2, 3].map(set)}
       </div>
     </div>
   );

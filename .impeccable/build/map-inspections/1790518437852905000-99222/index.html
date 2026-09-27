@@ -1,0 +1,2096 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Region map · Impeccable</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f6f7f5;
+      --panel: #fff;
+      --ink: #202623;
+      --muted: #5b655f;
+      --line: #d2d9d4;
+      --accent: #00685f;
+      --danger: #a6361d;
+      --warning: #7a4d09;
+      font: 14px/1.45 'Avenir Next', system-ui, sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+    }
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    body { margin: 0; }
+    button, select, a { font: inherit; }
+    button, select {
+      color: inherit;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 7px 11px;
+      cursor: pointer;
+    }
+    button:hover { background: #eaf1ed; }
+    button[aria-pressed=true] { background: var(--accent); border-color: var(--accent); color: white; }
+    button:disabled { opacity: .45; cursor: default; }
+    a { color: var(--accent); text-underline-offset: 3px; }
+    :is(button, select, a, summary):focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    ::selection { background: #c3e3d9; }
+    header {
+      height: 68px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 12px 24px;
+      background: var(--panel);
+      box-shadow: 0 2px 8px #17261b12;
+      position: relative;
+      z-index: 2;
+    }
+    h1 { font-size: 20px; line-height: 1.3; margin: 0; }
+    header p { margin: 0; color: var(--muted); font-size: 13px; }
+    header a { margin-left: auto; font-size: 12px; }
+    #sheets { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; font-size: 12px; }
+    #sheets:empty { display: none; }
+    .layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); height: calc(100dvh - 68px); }
+    nav { background: var(--panel); border-right: 1px solid var(--line); overflow: auto; padding: 14px 12px; }
+    .filters { display: flex; gap: 4px; margin-bottom: 14px; }
+    .filters button { flex: 1; font-size: 12px; padding: 7px 3px; }
+    .region {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      text-align: left;
+      width: 100%;
+      margin-bottom: 4px;
+      border-color: transparent;
+      background: none;
+      padding: 10px 8px;
+      overflow-wrap: anywhere;
+    }
+    .region[aria-current=true] { background: #e4eeea; border-color: #8dbbb0; }
+    .region .dot { flex: 0 0 7px; height: 7px; background: var(--line); border-radius: 50%; }
+    .region.error .dot { background: var(--danger); }
+    .region.masked .dot { background: var(--warning); }
+    .region .name { flex: 1; }
+    .region .status { font-size: 11px; white-space: nowrap; color: var(--warning); font-variant-numeric: tabular-nums; }
+    .region.error .status { color: var(--danger); }
+    #related { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px; font-size: 12px; color: var(--muted); }
+    #related:empty { display: none; }
+    #related button { padding: 4px 8px; font-size: 12px; }
+    main { min-width: 0; overflow: auto; padding: 24px; }
+    .heading { display: flex; justify-content: space-between; align-items: start; gap: 20px; margin-bottom: 20px; }
+    h2 { font-size: 24px; line-height: 1.2; margin: 0 0 8px; font-weight: 600; }
+    #explanation { margin: 0; max-width: 65ch; }
+    #explanation.error { color: var(--danger); }
+    #next { white-space: nowrap; }
+    .inspection { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+    .section-title { display: flex; align-items: center; justify-content: space-between; min-height: 36px; gap: 12px; margin-bottom: 12px; }
+    h3 { font-size: 14px; margin: 0; font-weight: 600; }
+    .section-title button, .section-title select { font-size: 12px; padding: 5px 8px; }
+    .context {
+      height: clamp(280px, 48vh, 580px);
+      background: #e9ede8;
+      box-shadow: 0 4px 14px #17261b12;
+    }
+    .context svg { display: block; width: 100%; height: 100%; }
+    .pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+    figure { margin: 0; min-width: 0; }
+    figcaption { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+    .crop {
+      height: clamp(220px, 35vh, 440px);
+      background: #e9ede8;
+      display: grid;
+      place-items: center;
+      overflow: auto;
+    }
+    .crop svg { display: block; width: 100%; height: 100%; }
+    .crop.zoom { display: block; }
+    .crop.zoom svg { max-width: none; max-height: none; margin: auto; }
+    .legend { display: flex; flex-wrap: wrap; gap: 14px; margin: 12px 0; color: var(--muted); font-size: 12px; }
+    .key { display: inline-flex; align-items: center; gap: 6px; }
+    .swatch { width: 12px; height: 12px; border: 2px solid var(--accent); }
+    .swatch.covering { border-color: var(--danger); }
+    #impact { font-size: 13px; margin: 14px 0; max-width: 55ch; }
+    .details { margin-top: 28px; border-top: 1px solid var(--line); padding-top: 16px; }
+    details { margin: 0 0 16px; }
+    summary { cursor: pointer; font-size: 13px; color: var(--muted); }
+    details p { font-size: 12px; margin: 8px 0; overflow-wrap: anywhere; }
+    .issue { padding: 9px 0; font-size: 12px; border-bottom: 1px solid var(--line); }
+    .issue b { display: block; font-weight: 600; }
+    .issue.error b { color: var(--danger); }
+    .empty { color: var(--muted); font-size: 13px; }
+    @media(max-width: 1000px) {
+      .layout { grid-template-columns: 190px minmax(0, 1fr); }
+      .inspection { grid-template-columns: 1fr; }
+      .context { height: 360px; }
+      .crop { height: 280px; }
+    }
+    @media(max-width: 600px) {
+      header { height: auto; padding: 14px; flex-wrap: wrap; gap: 6px 16px; }
+      h1 { font-size: 18px; }
+      header p { font-size: 12px; }
+      .layout { display: block; height: auto; }
+      nav { height: 190px; border-bottom: 1px solid var(--line); }
+      main { padding: 18px; }
+      .heading { flex-wrap: wrap; }
+      .context { height: 300px; }
+      .crop { height: 220px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Region map</h1>
+    <p id="summary"></p>
+    <a href="report.json" target="_blank" rel="noopener">Technical report</a>
+  </header>
+  <div class="layout">
+    <nav aria-label="Regions">
+      <div class="filters">
+        <button id="problems" aria-pressed="true">Inspect</button>
+        <button id="all" aria-pressed="false">All regions</button>
+      </div>
+      <div id="list"></div>
+    </nav>
+    <main>
+      <div class="heading">
+        <div><h2 id="title">Check the region map</h2><p id="explanation"></p><div id="related"></div></div>
+        <button id="next">Next check →</button>
+      </div>
+      <div id="sheets" aria-label="Comparison sheets"></div>
+      <div id="inspection" class="inspection">
+        <section>
+          <div class="section-title"><h3>In the comp</h3><button id="context-toggle" aria-pressed="false">Show whole comp</button></div>
+          <div class="context"><svg id="context" role="img" aria-label="Selected asset and overlapping boxes in the original comp"></svg></div>
+          <div class="legend">
+            <span class="key"><span class="swatch"></span><span id="asset-key">This asset</span></span>
+            <span class="key" id="covering-key"><span class="swatch covering"></span>Box covering it</span>
+          </div>
+        </section>
+        <section>
+          <div class="section-title"><h3>What gets compared</h3><label>Zoom <select id="zoom"><option value="fit">Fit</option><option value="1">100%</option><option value="2">200%</option><option value="4">400%</option></select></label></div>
+          <div class="pair">
+            <figure><figcaption>Original crop</figcaption><div class="crop" id="original"></div></figure>
+            <figure><figcaption id="ignored-label">Pixels ignored by the checker</figcaption><div class="crop" id="ignored"></div></figure>
+          </div>
+          <p id="impact"></p>
+        </section>
+      </div>
+      <div class="details">
+        <details><summary>Region details</summary><div id="details"></div></details>
+        <details id="diagnostics"><summary id="diagnostics-label">Other map findings</summary><div id="issues"></div></details>
+      </div>
+    </main>
+  </div>
+  <script type="application/json" id="data">{
+  "tool": "comp-spec inspect-map",
+  "version": 1,
+  "referenceOnly": true,
+  "stateChanged": false,
+  "comp": ".impeccable/mocks/decision/about-constellation.png",
+  "compSize": {
+    "width": 1487,
+    "height": 1058
+  },
+  "inputRegionCount": 29,
+  "regions": [
+    {
+      "id": "navbar",
+      "kind": "chrome",
+      "note": "Existing Avenor global navigation and account controls; retain rather than rebuild locally.",
+      "grid": null,
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 0.0794
+      },
+      "px": {
+        "x": 0,
+        "y": 0,
+        "w": 1487,
+        "h": 84
+      },
+      "aspect": 17.7024,
+      "palette": [
+        {
+          "hex": "#f8f8f8",
+          "coverage": 0.953
+        },
+        {
+          "hex": "#273727",
+          "coverage": 0.0226
+        },
+        {
+          "hex": "#797b75",
+          "coverage": 0.0133
+        },
+        {
+          "hex": "#bcbab7",
+          "coverage": 0.0064
+        },
+        {
+          "hex": "#262626",
+          "coverage": 0.0047
+        }
+      ],
+      "detail": {
+        "energy": 15.2099
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 1,
+      "cropPath": "region-1.png"
+    },
+    {
+      "id": "hero-title",
+      "kind": "text",
+      "note": "Large left-aligned editorial serif statement, three lines, near-black forest ink.",
+      "grid": null,
+      "box": {
+        "x": 0.0363,
+        "y": 0.2042,
+        "w": 0.3161,
+        "h": 0.2013
+      },
+      "px": {
+        "x": 54,
+        "y": 216,
+        "w": 470,
+        "h": 213
+      },
+      "aspect": 2.2066,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.8174
+        },
+        {
+          "hex": "#101111",
+          "coverage": 0.1278
+        },
+        {
+          "hex": "#b2b2b2",
+          "coverage": 0.0235
+        },
+        {
+          "hex": "#494949",
+          "coverage": 0.017
+        },
+        {
+          "hex": "#797979",
+          "coverage": 0.0143
+        }
+      ],
+      "detail": {
+        "energy": 66.4898
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 2,
+      "cropPath": "region-2.png"
+    },
+    {
+      "id": "hero-intro",
+      "kind": "text",
+      "note": "Muted sans-serif introduction with relaxed two-line measure.",
+      "grid": null,
+      "box": {
+        "x": 0.037,
+        "y": 0.449,
+        "w": 0.2912,
+        "h": 0.0577
+      },
+      "px": {
+        "x": 55,
+        "y": 475,
+        "w": 433,
+        "h": 61
+      },
+      "aspect": 7.0984,
+      "palette": [
+        {
+          "hex": "#f7f6f6",
+          "coverage": 0.8808
+        },
+        {
+          "hex": "#8e8d8f",
+          "coverage": 0.0846
+        },
+        {
+          "hex": "#c6c1c3",
+          "coverage": 0.0326
+        },
+        {
+          "hex": "#68686d",
+          "coverage": 0.002
+        }
+      ],
+      "detail": {
+        "energy": 36.8317
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 3,
+      "cropPath": "region-3.png"
+    },
+    {
+      "id": "discovery-icon",
+      "kind": "chrome",
+      "note": "Circular gold-outline book icon.",
+      "grid": null,
+      "box": {
+        "x": 0.3786,
+        "y": 0.1474,
+        "w": 0.0403,
+        "h": 0.0577
+      },
+      "px": {
+        "x": 563,
+        "y": 156,
+        "w": 60,
+        "h": 61
+      },
+      "aspect": 0.9836,
+      "palette": [
+        {
+          "hex": "#f7f7f5",
+          "coverage": 0.8612
+        },
+        {
+          "hex": "#dcc5a8",
+          "coverage": 0.0598
+        },
+        {
+          "hex": "#334330",
+          "coverage": 0.0287
+        },
+        {
+          "hex": "#c9a475",
+          "coverage": 0.0263
+        },
+        {
+          "hex": "#929e90",
+          "coverage": 0.0239
+        }
+      ],
+      "detail": {
+        "energy": 10.623
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 4,
+      "cropPath": "region-4.png"
+    },
+    {
+      "id": "discovery-copy",
+      "kind": "text",
+      "note": "Discovery branch heading and two-line description.",
+      "grid": null,
+      "box": {
+        "x": 0.4284,
+        "y": 0.1578,
+        "w": 0.1836,
+        "h": 0.069
+      },
+      "px": {
+        "x": 637,
+        "y": 167,
+        "w": 273,
+        "h": 73
+      },
+      "aspect": 3.7397,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.8881
+        },
+        {
+          "hex": "#9f9f9e",
+          "coverage": 0.0737
+        },
+        {
+          "hex": "#c6cbc4",
+          "coverage": 0.0186
+        },
+        {
+          "hex": "#747a73",
+          "coverage": 0.0138
+        },
+        {
+          "hex": "#324232",
+          "coverage": 0.0058
+        }
+      ],
+      "detail": {
+        "energy": 35.1147
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 5,
+      "cropPath": "region-5.png"
+    },
+    {
+      "id": "discovery-book-1",
+      "kind": "image",
+      "note": "First real book cover from Avenor assets.",
+      "grid": null,
+      "bleed": true,
+      "box": {
+        "x": 0.3786,
+        "y": 0.2476,
+        "w": 0.0477,
+        "h": 0.1078
+      },
+      "px": {
+        "x": 563,
+        "y": 262,
+        "w": 71,
+        "h": 114
+      },
+      "aspect": 0.6228,
+      "palette": [
+        {
+          "hex": "#c8cdce",
+          "coverage": 0.602
+        },
+        {
+          "hex": "#353632",
+          "coverage": 0.1497
+        },
+        {
+          "hex": "#6d7b7c",
+          "coverage": 0.1109
+        },
+        {
+          "hex": "#535346",
+          "coverage": 0.0998
+        },
+        {
+          "hex": "#9ca4aa",
+          "coverage": 0.0377
+        }
+      ],
+      "detail": {
+        "energy": 10.7923
+      },
+      "medium": "raster",
+      "plate": "assets/plates/discovery-book-1.png",
+      "text": null,
+      "number": 6,
+      "reference": {
+        "policy": "plate-reference-v2",
+        "excludedPixels": 0,
+        "totalPixels": 8094,
+        "remainingPixels": 8094,
+        "excludedFraction": 0.0,
+        "fullyExcluded": false,
+        "regions": [],
+        "ignoredContainers": []
+      },
+      "cropPath": "region-6.png",
+      "referencePath": "reference-6.png"
+    },
+    {
+      "id": "discovery-book-2",
+      "kind": "image",
+      "note": "Second real book cover from Avenor assets.",
+      "grid": null,
+      "bleed": true,
+      "box": {
+        "x": 0.4324,
+        "y": 0.2476,
+        "w": 0.0484,
+        "h": 0.1078
+      },
+      "px": {
+        "x": 643,
+        "y": 262,
+        "w": 72,
+        "h": 114
+      },
+      "aspect": 0.6316,
+      "palette": [
+        {
+          "hex": "#f5daac",
+          "coverage": 0.6595
+        },
+        {
+          "hex": "#58481e",
+          "coverage": 0.1686
+        },
+        {
+          "hex": "#b8924b",
+          "coverage": 0.0626
+        },
+        {
+          "hex": "#8e6e2e",
+          "coverage": 0.0592
+        },
+        {
+          "hex": "#d7b473",
+          "coverage": 0.0501
+        }
+      ],
+      "detail": {
+        "energy": 9.0369
+      },
+      "medium": "raster",
+      "plate": "assets/plates/discovery-book-2.png",
+      "text": null,
+      "number": 7,
+      "reference": {
+        "policy": "plate-reference-v2",
+        "excludedPixels": 0,
+        "totalPixels": 8208,
+        "remainingPixels": 8208,
+        "excludedFraction": 0.0,
+        "fullyExcluded": false,
+        "regions": [],
+        "ignoredContainers": []
+      },
+      "cropPath": "region-7.png",
+      "referencePath": "reference-7.png"
+    },
+    {
+      "id": "discovery-book-3",
+      "kind": "image",
+      "note": "Third real book cover from Avenor assets.",
+      "grid": null,
+      "bleed": true,
+      "box": {
+        "x": 0.4862,
+        "y": 0.2476,
+        "w": 0.0477,
+        "h": 0.1078
+      },
+      "px": {
+        "x": 723,
+        "y": 262,
+        "w": 71,
+        "h": 114
+      },
+      "aspect": 0.6228,
+      "palette": [
+        {
+          "hex": "#232a1e",
+          "coverage": 0.7996
+        },
+        {
+          "hex": "#71756f",
+          "coverage": 0.0864
+        },
+        {
+          "hex": "#454d3a",
+          "coverage": 0.0819
+        },
+        {
+          "hex": "#c5c6c1",
+          "coverage": 0.0199
+        },
+        {
+          "hex": "#9fa199",
+          "coverage": 0.0122
+        }
+      ],
+      "detail": {
+        "energy": 13.1655
+      },
+      "medium": "raster",
+      "plate": "assets/plates/discovery-book-3.png",
+      "text": null,
+      "number": 8,
+      "reference": {
+        "policy": "plate-reference-v2",
+        "excludedPixels": 5244,
+        "totalPixels": 8094,
+        "remainingPixels": 2850,
+        "excludedFraction": 0.647887323943662,
+        "fullyExcluded": false,
+        "regions": [
+          {
+            "id": "connection-lines",
+            "kind": "chrome",
+            "cropPx": {
+              "x": 25,
+              "y": 0,
+              "w": 46,
+              "h": 114
+            },
+            "pixels": 5244
+          }
+        ],
+        "ignoredContainers": []
+      },
+      "cropPath": "region-8.png",
+      "referencePath": "reference-8.png"
+    },
+    {
+      "id": "discovery-book-4",
+      "kind": "image",
+      "note": "Fourth real book cover from Avenor assets.",
+      "grid": null,
+      "bleed": true,
+      "box": {
+        "x": 0.54,
+        "y": 0.2476,
+        "w": 0.0484,
+        "h": 0.1078
+      },
+      "px": {
+        "x": 803,
+        "y": 262,
+        "w": 72,
+        "h": 114
+      },
+      "aspect": 0.6316,
+      "palette": [
+        {
+          "hex": "#c9c4b7",
+          "coverage": 0.7381
+        },
+        {
+          "hex": "#6a573f",
+          "coverage": 0.1487
+        },
+        {
+          "hex": "#888c82",
+          "coverage": 0.0777
+        },
+        {
+          "hex": "#423c2a",
+          "coverage": 0.0244
+        },
+        {
+          "hex": "#726b6b",
+          "coverage": 0.0111
+        }
+      ],
+      "detail": {
+        "energy": 7.0149
+      },
+      "medium": "raster",
+      "plate": "assets/plates/discovery-book-4.png",
+      "text": null,
+      "number": 9,
+      "reference": {
+        "policy": "plate-reference-v2",
+        "excludedPixels": 8208,
+        "totalPixels": 8208,
+        "remainingPixels": 0,
+        "excludedFraction": 1.0,
+        "fullyExcluded": true,
+        "regions": [
+          {
+            "id": "connection-lines",
+            "kind": "chrome",
+            "cropPx": {
+              "x": 0,
+              "y": 0,
+              "w": 72,
+              "h": 114
+            },
+            "pixels": 8208
+          }
+        ],
+        "ignoredContainers": []
+      },
+      "cropPath": "region-9.png",
+      "referencePath": "reference-9.png"
+    },
+    {
+      "id": "mission-icon",
+      "kind": "chrome",
+      "note": "Circular gold-outline compass icon.",
+      "grid": null,
+      "box": {
+        "x": 0.7512,
+        "y": 0.1474,
+        "w": 0.0403,
+        "h": 0.0577
+      },
+      "px": {
+        "x": 1117,
+        "y": 156,
+        "w": 60,
+        "h": 61
+      },
+      "aspect": 0.9836,
+      "palette": [
+        {
+          "hex": "#f8f7f7",
+          "coverage": 0.8814
+        },
+        {
+          "hex": "#d1ae8b",
+          "coverage": 0.0436
+        },
+        {
+          "hex": "#ebdac7",
+          "coverage": 0.0412
+        },
+        {
+          "hex": "#384638",
+          "coverage": 0.0194
+        },
+        {
+          "hex": "#b5bbbb",
+          "coverage": 0.0145
+        }
+      ],
+      "detail": {
+        "energy": 10.0423
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 10,
+      "cropPath": "region-10.png"
+    },
+    {
+      "id": "mission-copy",
+      "kind": "text",
+      "note": "Mission branch heading and supporting paragraph.",
+      "grid": null,
+      "box": {
+        "x": 0.8009,
+        "y": 0.1616,
+        "w": 0.1641,
+        "h": 0.1418
+      },
+      "px": {
+        "x": 1191,
+        "y": 171,
+        "w": 244,
+        "h": 150
+      },
+      "aspect": 1.6267,
+      "palette": [
+        {
+          "hex": "#f7f6f6",
+          "coverage": 0.9062
+        },
+        {
+          "hex": "#bbb9ba",
+          "coverage": 0.0534
+        },
+        {
+          "hex": "#8e8d8e",
+          "coverage": 0.035
+        },
+        {
+          "hex": "#526252",
+          "coverage": 0.0027
+        },
+        {
+          "hex": "#1c311c",
+          "coverage": 0.0027
+        }
+      ],
+      "detail": {
+        "energy": 23.4743
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 11,
+      "cropPath": "region-11.png"
+    },
+    {
+      "id": "connection-lines",
+      "kind": "chrome",
+      "note": "Responsive semantic connector routes linking four branches to Avenor.",
+      "grid": null,
+      "codeDrawn": true,
+      "box": {
+        "x": 0.503,
+        "y": 0.2117,
+        "w": 0.269,
+        "h": 0.3819
+      },
+      "px": {
+        "x": 748,
+        "y": 224,
+        "w": 400,
+        "h": 404
+      },
+      "aspect": 0.9901,
+      "palette": [
+        {
+          "hex": "#f8f8f8",
+          "coverage": 0.9101
+        },
+        {
+          "hex": "#cac4b7",
+          "coverage": 0.0451
+        },
+        {
+          "hex": "#22291d",
+          "coverage": 0.0322
+        },
+        {
+          "hex": "#848a81",
+          "coverage": 0.0067
+        },
+        {
+          "hex": "#67573c",
+          "coverage": 0.0059
+        }
+      ],
+      "detail": {
+        "energy": 12.0499
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 12,
+      "cropPath": "region-12.png"
+    },
+    {
+      "id": "avenor-medallion",
+      "kind": "chrome",
+      "note": "Central ivory circular medallion with fine gold rim.",
+      "grid": null,
+      "container": true,
+      "box": {
+        "x": 0.5797,
+        "y": 0.3781,
+        "w": 0.1453,
+        "h": 0.2042
+      },
+      "px": {
+        "x": 862,
+        "y": 400,
+        "w": 216,
+        "h": 216
+      },
+      "aspect": 1,
+      "palette": [
+        {
+          "hex": "#f8f8f7",
+          "coverage": 0.9478
+        },
+        {
+          "hex": "#c8a278",
+          "coverage": 0.0214
+        },
+        {
+          "hex": "#e0d5c4",
+          "coverage": 0.0149
+        },
+        {
+          "hex": "#384536",
+          "coverage": 0.01
+        },
+        {
+          "hex": "#757c73",
+          "coverage": 0.0059
+        }
+      ],
+      "detail": {
+        "energy": 12.9822
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 13,
+      "cropPath": "region-13.png"
+    },
+    {
+      "id": "avenor-mark",
+      "kind": "image",
+      "note": "Existing Avenor brand mark asset, centered in medallion.",
+      "grid": null,
+      "parentId": "avenor-medallion",
+      "box": {
+        "x": 0.6321,
+        "y": 0.4357,
+        "w": 0.0417,
+        "h": 0.051
+      },
+      "px": {
+        "x": 940,
+        "y": 461,
+        "w": 62,
+        "h": 54
+      },
+      "aspect": 1.1481,
+      "palette": [
+        {
+          "hex": "#f7f6f5",
+          "coverage": 0.7989
+        },
+        {
+          "hex": "#b7b8b1",
+          "coverage": 0.0642
+        },
+        {
+          "hex": "#1b2717",
+          "coverage": 0.0642
+        },
+        {
+          "hex": "#40453c",
+          "coverage": 0.0475
+        },
+        {
+          "hex": "#83847f",
+          "coverage": 0.0251
+        }
+      ],
+      "detail": {
+        "energy": 17.1002
+      },
+      "medium": "raster",
+      "plate": "assets/plates/avenor-mark.png",
+      "text": null,
+      "number": 14,
+      "reference": {
+        "policy": "plate-reference-v2",
+        "excludedPixels": 3348,
+        "totalPixels": 3348,
+        "remainingPixels": 0,
+        "excludedFraction": 1.0,
+        "fullyExcluded": true,
+        "regions": [
+          {
+            "id": "connection-lines",
+            "kind": "chrome",
+            "cropPx": {
+              "x": 0,
+              "y": 0,
+              "w": 62,
+              "h": 54
+            },
+            "pixels": 3348
+          }
+        ],
+        "ignoredContainers": [
+          "avenor-medallion"
+        ]
+      },
+      "cropPath": "region-14.png",
+      "referencePath": "reference-14.png"
+    },
+    {
+      "id": "avenor-wordmark",
+      "kind": "text",
+      "note": "Spaced serif AVENOR wordmark under the brand mark.",
+      "grid": null,
+      "parentId": "avenor-medallion",
+      "box": {
+        "x": 0.6046,
+        "y": 0.4924,
+        "w": 0.0968,
+        "h": 0.0293
+      },
+      "px": {
+        "x": 899,
+        "y": 521,
+        "w": 144,
+        "h": 31
+      },
+      "aspect": 4.6452,
+      "palette": [
+        {
+          "hex": "#f7f6f4",
+          "coverage": 0.8421
+        },
+        {
+          "hex": "#596557",
+          "coverage": 0.0429
+        },
+        {
+          "hex": "#0f180f",
+          "coverage": 0.0429
+        },
+        {
+          "hex": "#898f89",
+          "coverage": 0.0429
+        },
+        {
+          "hex": "#353d2d",
+          "coverage": 0.0292
+        }
+      ],
+      "detail": {
+        "energy": 35.4141
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 15,
+      "cropPath": "region-15.png"
+    },
+    {
+      "id": "vision-icon",
+      "kind": "chrome",
+      "note": "Circular gold-outline eye icon.",
+      "grid": null,
+      "box": {
+        "x": 0.3786,
+        "y": 0.5633,
+        "w": 0.0403,
+        "h": 0.0577
+      },
+      "px": {
+        "x": 563,
+        "y": 596,
+        "w": 60,
+        "h": 61
+      },
+      "aspect": 0.9836,
+      "palette": [
+        {
+          "hex": "#f8f7f6",
+          "coverage": 0.8793
+        },
+        {
+          "hex": "#c9a780",
+          "coverage": 0.0468
+        },
+        {
+          "hex": "#e5ceb8",
+          "coverage": 0.0271
+        },
+        {
+          "hex": "#ced7c9",
+          "coverage": 0.0271
+        },
+        {
+          "hex": "#2c3a2e",
+          "coverage": 0.0197
+        }
+      ],
+      "detail": {
+        "energy": 10.9308
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 16,
+      "cropPath": "region-16.png"
+    },
+    {
+      "id": "vision-copy",
+      "kind": "text",
+      "note": "Vision branch heading and supporting paragraph.",
+      "grid": null,
+      "box": {
+        "x": 0.4284,
+        "y": 0.5766,
+        "w": 0.1748,
+        "h": 0.1342
+      },
+      "px": {
+        "x": 637,
+        "y": 610,
+        "w": 260,
+        "h": 142
+      },
+      "aspect": 1.831,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.9009
+        },
+        {
+          "hex": "#9f9d9f",
+          "coverage": 0.0736
+        },
+        {
+          "hex": "#ccc6c9",
+          "coverage": 0.0141
+        },
+        {
+          "hex": "#7d7a81",
+          "coverage": 0.0085
+        },
+        {
+          "hex": "#213121",
+          "coverage": 0.0029
+        }
+      ],
+      "detail": {
+        "energy": 24.6607
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 17,
+      "cropPath": "region-17.png"
+    },
+    {
+      "id": "botanical-sprig",
+      "kind": "plate",
+      "note": "Delicate botanical bookplate illustration on warm paper.",
+      "grid": null,
+      "box": {
+        "x": 0.0417,
+        "y": 0.6172,
+        "w": 0.0551,
+        "h": 0.104
+      },
+      "px": {
+        "x": 62,
+        "y": 653,
+        "w": 82,
+        "h": 110
+      },
+      "aspect": 0.7455,
+      "palette": [
+        {
+          "hex": "#f8f8f7",
+          "coverage": 0.7946
+        },
+        {
+          "hex": "#98998b",
+          "coverage": 0.0969
+        },
+        {
+          "hex": "#626555",
+          "coverage": 0.0552
+        },
+        {
+          "hex": "#c3c4b5",
+          "coverage": 0.0494
+        },
+        {
+          "hex": "#849474",
+          "coverage": 0.0039
+        }
+      ],
+      "detail": {
+        "energy": 9.4872
+      },
+      "medium": "raster",
+      "plate": "assets/plates/botanical-sprig.png",
+      "text": null,
+      "number": 18,
+      "reference": {
+        "policy": "plate-reference-v2",
+        "excludedPixels": 0,
+        "totalPixels": 9020,
+        "remainingPixels": 9020,
+        "excludedFraction": 0.0,
+        "fullyExcluded": false,
+        "regions": [],
+        "ignoredContainers": []
+      },
+      "cropPath": "region-18.png",
+      "referencePath": "reference-18.png"
+    },
+    {
+      "id": "pull-quote",
+      "kind": "text",
+      "note": "Short italic editorial quote beside a hairline gold rule.",
+      "grid": null,
+      "box": {
+        "x": 0.1103,
+        "y": 0.5898,
+        "w": 0.1601,
+        "h": 0.1285
+      },
+      "px": {
+        "x": 164,
+        "y": 624,
+        "w": 238,
+        "h": 136
+      },
+      "aspect": 1.75,
+      "palette": [
+        {
+          "hex": "#f8f7f7",
+          "coverage": 0.9291
+        },
+        {
+          "hex": "#b9b9b6",
+          "coverage": 0.0273
+        },
+        {
+          "hex": "#7f807c",
+          "coverage": 0.0213
+        },
+        {
+          "hex": "#4b4e4a",
+          "coverage": 0.0117
+        },
+        {
+          "hex": "#c8a88b",
+          "coverage": 0.0106
+        }
+      ],
+      "detail": {
+        "energy": 15.6948
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 19,
+      "cropPath": "region-19.png"
+    },
+    {
+      "id": "people-icon",
+      "kind": "chrome",
+      "note": "Circular gold-outline people icon.",
+      "grid": null,
+      "box": {
+        "x": 0.7512,
+        "y": 0.5473,
+        "w": 0.0403,
+        "h": 0.0577
+      },
+      "px": {
+        "x": 1117,
+        "y": 579,
+        "w": 60,
+        "h": 61
+      },
+      "aspect": 0.9836,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.8403
+        },
+        {
+          "hex": "#c69f74",
+          "coverage": 0.0639
+        },
+        {
+          "hex": "#ead9c5",
+          "coverage": 0.059
+        },
+        {
+          "hex": "#868884",
+          "coverage": 0.0197
+        },
+        {
+          "hex": "#2d2f28",
+          "coverage": 0.0172
+        }
+      ],
+      "detail": {
+        "energy": 11.9167
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 20,
+      "cropPath": "region-20.png"
+    },
+    {
+      "id": "people-copy",
+      "kind": "text",
+      "note": "People branch heading and short description.",
+      "grid": null,
+      "box": {
+        "x": 0.8009,
+        "y": 0.5605,
+        "w": 0.1621,
+        "h": 0.1078
+      },
+      "px": {
+        "x": 1191,
+        "y": 593,
+        "w": 241,
+        "h": 114
+      },
+      "aspect": 2.114,
+      "palette": [
+        {
+          "hex": "#f8f7f7",
+          "coverage": 0.8566
+        },
+        {
+          "hex": "#9f9f9f",
+          "coverage": 0.0962
+        },
+        {
+          "hex": "#d2ced0",
+          "coverage": 0.0255
+        },
+        {
+          "hex": "#807b82",
+          "coverage": 0.0164
+        },
+        {
+          "hex": "#1b311f",
+          "coverage": 0.0052
+        }
+      ],
+      "detail": {
+        "energy": 22.1294
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 21,
+      "cropPath": "region-21.png"
+    },
+    {
+      "id": "person-1",
+      "kind": "image",
+      "note": "Real Avenor mentor/member portrait, cropped consistently.",
+      "grid": null,
+      "bleed": true,
+      "box": {
+        "x": 0.7424,
+        "y": 0.6834,
+        "w": 0.0531,
+        "h": 0.0766
+      },
+      "px": {
+        "x": 1104,
+        "y": 723,
+        "w": 79,
+        "h": 81
+      },
+      "aspect": 0.9753,
+      "palette": [
+        {
+          "hex": "#d6cbc8",
+          "coverage": 0.6829
+        },
+        {
+          "hex": "#1c1a15",
+          "coverage": 0.1529
+        },
+        {
+          "hex": "#807d6e",
+          "coverage": 0.0686
+        },
+        {
+          "hex": "#474539",
+          "coverage": 0.0614
+        },
+        {
+          "hex": "#6b5c5b",
+          "coverage": 0.0343
+        }
+      ],
+      "detail": {
+        "energy": 7.3696
+      },
+      "medium": "raster",
+      "plate": "assets/plates/person-1.png",
+      "text": null,
+      "number": 22,
+      "reference": {
+        "policy": "plate-reference-v2",
+        "excludedPixels": 0,
+        "totalPixels": 6399,
+        "remainingPixels": 6399,
+        "excludedFraction": 0.0,
+        "fullyExcluded": false,
+        "regions": [],
+        "ignoredContainers": []
+      },
+      "cropPath": "region-22.png",
+      "referencePath": "reference-22.png"
+    },
+    {
+      "id": "person-2",
+      "kind": "image",
+      "note": "Real Avenor mentor/member portrait, cropped consistently.",
+      "grid": null,
+      "bleed": true,
+      "box": {
+        "x": 0.8003,
+        "y": 0.6834,
+        "w": 0.0531,
+        "h": 0.0766
+      },
+      "px": {
+        "x": 1190,
+        "y": 723,
+        "w": 79,
+        "h": 81
+      },
+      "aspect": 0.9753,
+      "palette": [
+        {
+          "hex": "#d8d1c9",
+          "coverage": 0.51
+        },
+        {
+          "hex": "#514c42",
+          "coverage": 0.298
+        },
+        {
+          "hex": "#27231e",
+          "coverage": 0.1003
+        },
+        {
+          "hex": "#f8f7f6",
+          "coverage": 0.0473
+        },
+        {
+          "hex": "#7f766d",
+          "coverage": 0.0444
+        }
+      ],
+      "detail": {
+        "energy": 10.2688
+      },
+      "medium": "raster",
+      "plate": "assets/plates/person-2.png",
+      "text": null,
+      "number": 23,
+      "reference": {
+        "policy": "plate-reference-v2",
+        "excludedPixels": 0,
+        "totalPixels": 6399,
+        "remainingPixels": 6399,
+        "excludedFraction": 0.0,
+        "fullyExcluded": false,
+        "regions": [],
+        "ignoredContainers": []
+      },
+      "cropPath": "region-23.png",
+      "referencePath": "reference-23.png"
+    },
+    {
+      "id": "person-3",
+      "kind": "image",
+      "note": "Real Avenor mentor/member portrait, cropped consistently.",
+      "grid": null,
+      "bleed": true,
+      "box": {
+        "x": 0.8581,
+        "y": 0.6834,
+        "w": 0.0531,
+        "h": 0.0766
+      },
+      "px": {
+        "x": 1276,
+        "y": 723,
+        "w": 79,
+        "h": 81
+      },
+      "aspect": 0.9753,
+      "palette": [
+        {
+          "hex": "#cbc4b9",
+          "coverage": 0.5933
+        },
+        {
+          "hex": "#1b1913",
+          "coverage": 0.1529
+        },
+        {
+          "hex": "#a1958c",
+          "coverage": 0.1332
+        },
+        {
+          "hex": "#696355",
+          "coverage": 0.0771
+        },
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.0435
+        }
+      ],
+      "detail": {
+        "energy": 8.9835
+      },
+      "medium": "raster",
+      "plate": "assets/plates/person-3.png",
+      "text": null,
+      "number": 24,
+      "reference": {
+        "policy": "plate-reference-v2",
+        "excludedPixels": 0,
+        "totalPixels": 6399,
+        "remainingPixels": 6399,
+        "excludedFraction": 0.0,
+        "fullyExcluded": false,
+        "regions": [],
+        "ignoredContainers": []
+      },
+      "cropPath": "region-24.png",
+      "referencePath": "reference-24.png"
+    },
+    {
+      "id": "person-4",
+      "kind": "image",
+      "note": "Real Avenor mentor/member portrait, cropped consistently.",
+      "grid": null,
+      "bleed": true,
+      "box": {
+        "x": 0.9159,
+        "y": 0.6834,
+        "w": 0.0531,
+        "h": 0.0766
+      },
+      "px": {
+        "x": 1362,
+        "y": 723,
+        "w": 79,
+        "h": 81
+      },
+      "aspect": 0.9753,
+      "palette": [
+        {
+          "hex": "#e3dace",
+          "coverage": 0.6339
+        },
+        {
+          "hex": "#978d81",
+          "coverage": 0.1879
+        },
+        {
+          "hex": "#13100c",
+          "coverage": 0.0996
+        },
+        {
+          "hex": "#343024",
+          "coverage": 0.0435
+        },
+        {
+          "hex": "#6c5e53",
+          "coverage": 0.0351
+        }
+      ],
+      "detail": {
+        "energy": 7.1236
+      },
+      "medium": "raster",
+      "plate": "assets/plates/person-4.png",
+      "text": null,
+      "number": 25,
+      "reference": {
+        "policy": "plate-reference-v2",
+        "excludedPixels": 0,
+        "totalPixels": 6399,
+        "remainingPixels": 6399,
+        "excludedFraction": 0.0,
+        "fullyExcluded": false,
+        "regions": [],
+        "ignoredContainers": []
+      },
+      "cropPath": "region-25.png",
+      "referencePath": "reference-25.png"
+    },
+    {
+      "id": "team-link",
+      "kind": "control",
+      "note": "Warm-gold Meet the team anchor with right arrow and focus/hover state.",
+      "grid": null,
+      "box": {
+        "x": 0.8756,
+        "y": 0.7807,
+        "w": 0.0928,
+        "h": 0.0217
+      },
+      "px": {
+        "x": 1302,
+        "y": 826,
+        "w": 138,
+        "h": 23
+      },
+      "aspect": 6,
+      "palette": [
+        {
+          "hex": "#f8f7f7",
+          "coverage": 0.8207
+        },
+        {
+          "hex": "#e8d9c7",
+          "coverage": 0.0951
+        },
+        {
+          "hex": "#b08352",
+          "coverage": 0.0462
+        },
+        {
+          "hex": "#cba885",
+          "coverage": 0.038
+        }
+      ],
+      "detail": {
+        "energy": 20.9019
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 26,
+      "cropPath": "region-26.png"
+    },
+    {
+      "id": "team-divider",
+      "kind": "chrome",
+      "note": "Long fine warm-gray section divider.",
+      "grid": null,
+      "box": {
+        "x": 0.037,
+        "y": 0.8459,
+        "w": 0.9274,
+        "h": 0.0038
+      },
+      "px": {
+        "x": 55,
+        "y": 895,
+        "w": 1379,
+        "h": 4
+      },
+      "aspect": 344.75,
+      "palette": [
+        {
+          "hex": "#f8f0f0",
+          "coverage": 1
+        }
+      ],
+      "detail": {
+        "energy": 8.2317
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 27,
+      "cropPath": "region-27.png"
+    },
+    {
+      "id": "team-heading",
+      "kind": "text",
+      "note": "Editorial serif heading introducing the full team section.",
+      "grid": null,
+      "box": {
+        "x": 0.037,
+        "y": 0.9083,
+        "w": 0.3631,
+        "h": 0.069
+      },
+      "px": {
+        "x": 55,
+        "y": 961,
+        "w": 540,
+        "h": 73
+      },
+      "aspect": 7.3973,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.887
+        },
+        {
+          "hex": "#0f1010",
+          "coverage": 0.0747
+        },
+        {
+          "hex": "#9e9e9e",
+          "coverage": 0.0153
+        },
+        {
+          "hex": "#7b7b7b",
+          "coverage": 0.0126
+        },
+        {
+          "hex": "#474747",
+          "coverage": 0.0105
+        }
+      ],
+      "detail": {
+        "energy": 58.5408
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 28,
+      "cropPath": "region-28.png"
+    },
+    {
+      "id": "team-intro",
+      "kind": "text",
+      "note": "Right-aligned supporting team introduction.",
+      "grid": null,
+      "box": {
+        "x": 0.6799,
+        "y": 0.9187,
+        "w": 0.2851,
+        "h": 0.0671
+      },
+      "px": {
+        "x": 1011,
+        "y": 972,
+        "w": 424,
+        "h": 71
+      },
+      "aspect": 5.9718,
+      "palette": [
+        {
+          "hex": "#f7f6f6",
+          "coverage": 0.8614
+        },
+        {
+          "hex": "#b1afb0",
+          "coverage": 0.1087
+        },
+        {
+          "hex": "#888588",
+          "coverage": 0.0288
+        },
+        {
+          "hex": "#d8c8d8",
+          "coverage": 0.0012
+        }
+      ],
+      "detail": {
+        "energy": 32.0581
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 29,
+      "cropPath": "region-29.png"
+    }
+  ],
+  "issues": [
+    {
+      "severity": "warning",
+      "code": "foreground-mask",
+      "regionId": "discovery-book-3",
+      "message": "connection-lines exclude 64.8% of this reference. Check that the excluded pixels contain foreground, not artwork between separate text elements. Split overly broad foreground bounds; review grouping must not change geometry."
+    },
+    {
+      "severity": "error",
+      "code": "fully-masked",
+      "regionId": "discovery-book-4",
+      "message": "reference for discovery-book-4 has no visible pixels after excluding connection-lines; correct the overlapping region geometry or container roles in the comp spec before evaluating this asset"
+    },
+    {
+      "severity": "error",
+      "code": "fully-masked",
+      "regionId": "avenor-mark",
+      "message": "reference for avenor-mark has no visible pixels after excluding connection-lines; correct the overlapping region geometry or container roles in the comp spec before evaluating this asset"
+    },
+    {
+      "severity": "warning",
+      "code": "measurement-warning",
+      "regionId": null,
+      "message": "region discovery-book-1: \"bleed\": true set in the regions file (the clipped-artwork refusal is overridden: the page crops it there)"
+    },
+    {
+      "severity": "warning",
+      "code": "measurement-warning",
+      "regionId": null,
+      "message": "region discovery-book-2: \"bleed\": true set in the regions file (the clipped-artwork refusal is overridden: the page crops it there)"
+    },
+    {
+      "severity": "warning",
+      "code": "measurement-warning",
+      "regionId": null,
+      "message": "region discovery-book-3: \"bleed\": true set in the regions file (the clipped-artwork refusal is overridden: the page crops it there)"
+    },
+    {
+      "severity": "warning",
+      "code": "measurement-warning",
+      "regionId": null,
+      "message": "region discovery-book-4: \"bleed\": true set in the regions file (the clipped-artwork refusal is overridden: the page crops it there)"
+    },
+    {
+      "severity": "warning",
+      "code": "measurement-warning",
+      "regionId": null,
+      "message": "region connection-lines: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)"
+    },
+    {
+      "severity": "warning",
+      "code": "measurement-warning",
+      "regionId": null,
+      "message": "region avenor-medallion: \"container\": true set in the regions file (the region-size refusal is overridden: one undivided element)"
+    },
+    {
+      "severity": "warning",
+      "code": "measurement-warning",
+      "regionId": null,
+      "message": "region person-1: \"bleed\": true set in the regions file (the clipped-artwork refusal is overridden: the page crops it there)"
+    },
+    {
+      "severity": "warning",
+      "code": "measurement-warning",
+      "regionId": null,
+      "message": "region person-2: \"bleed\": true set in the regions file (the clipped-artwork refusal is overridden: the page crops it there)"
+    },
+    {
+      "severity": "warning",
+      "code": "measurement-warning",
+      "regionId": null,
+      "message": "region person-3: \"bleed\": true set in the regions file (the clipped-artwork refusal is overridden: the page crops it there)"
+    },
+    {
+      "severity": "warning",
+      "code": "measurement-warning",
+      "regionId": null,
+      "message": "region person-4: \"bleed\": true set in the regions file (the clipped-artwork refusal is overridden: the page crops it there)"
+    },
+    {
+      "severity": "warning",
+      "code": "uncovered-ink",
+      "regionId": null,
+      "message": "3 grid cells have detail outside named regions. This is a coverage heuristic, not proof of missing components."
+    }
+  ],
+  "overlaps": [
+    {
+      "a": "discovery-copy",
+      "b": "connection-lines",
+      "pixels": 2592.0,
+      "relationship": "overlapping elements"
+    },
+    {
+      "a": "discovery-book-3",
+      "b": "connection-lines",
+      "pixels": 5244.0,
+      "relationship": "overlapping elements"
+    },
+    {
+      "a": "discovery-book-4",
+      "b": "connection-lines",
+      "pixels": 8208.0,
+      "relationship": "overlapping elements"
+    },
+    {
+      "a": "connection-lines",
+      "b": "avenor-medallion",
+      "pixels": 46656.0,
+      "relationship": "container extent"
+    },
+    {
+      "a": "connection-lines",
+      "b": "avenor-mark",
+      "pixels": 3348.0,
+      "relationship": "overlapping elements"
+    },
+    {
+      "a": "connection-lines",
+      "b": "avenor-wordmark",
+      "pixels": 4464.0,
+      "relationship": "overlapping elements"
+    },
+    {
+      "a": "connection-lines",
+      "b": "vision-copy",
+      "pixels": 2682.0,
+      "relationship": "overlapping elements"
+    },
+    {
+      "a": "connection-lines",
+      "b": "people-icon",
+      "pixels": 1519.0,
+      "relationship": "overlapping elements"
+    },
+    {
+      "a": "avenor-medallion",
+      "b": "avenor-mark",
+      "pixels": 3348.0,
+      "relationship": "container extent"
+    },
+    {
+      "a": "avenor-medallion",
+      "b": "avenor-wordmark",
+      "pixels": 4464.0,
+      "relationship": "container extent"
+    },
+    {
+      "a": "avenor-medallion",
+      "b": "vision-copy",
+      "pixels": 210.0,
+      "relationship": "container extent"
+    }
+  ],
+  "reviewGroups": {},
+  "uncoveredInkCells": [
+    "E1",
+    "I1",
+    "E5"
+  ],
+  "comparisonSheets": [
+    {
+      "path": "comparison-1.png",
+      "regionIds": [
+        "discovery-book-4",
+        "avenor-mark",
+        "discovery-book-3"
+      ]
+    }
+  ]
+}</script>
+  <script>
+    const data = JSON.parse(document.getElementById('data').textContent);
+    const $ = id => document.getElementById(id);
+    const ns = 'http://www.w3.org/2000/svg';
+    const errors = id => data.issues.filter(i => i.regionId === id && i.severity === 'error');
+    // A partial exclusion needs visual inspection even when all boxes are valid.
+    // Do not claim it is a failed asset or let zero hard errors hide it.
+    const partialMasks = data.regions.filter(r => r.reference?.excludedPixels > 0 && !r.reference.fullyExcluded);
+    const problemRegions = data.regions.filter(r => errors(r.id).length || r.reference?.excludedPixels > 0)
+      .sort((a, b) => Number(!!errors(b.id).length) - Number(!!errors(a.id).length)
+        || (b.reference?.excludedFraction || 0) - (a.reference?.excludedFraction || 0));
+    const affectedBy = id => data.regions.filter(r => r.reference?.regions.some(m => m.id === id));
+    const percent = ref => (100 * ref.excludedFraction).toFixed(1).replace(/\.0$/, '');
+    let selected = null;
+    let filter = problemRegions.length ? 'problems' : 'all';
+    let wholeComp = false;
+
+    function name(region) {
+      return region.id.replace(/-plate$/, /photo/i.test(region.note || '') ? ' photo' : ' artwork').replace(/-/g, ' ').replace(/^./, c => c.toUpperCase());
+    }
+    function element(tag, text, className) {
+      const el = document.createElement(tag);
+      el.textContent = text;
+      if (className) el.className = className;
+      return el;
+    }
+    function svgElement(tag, attrs) {
+      const el = document.createElementNS(ns, tag);
+      for (const [key, value] of Object.entries(attrs)) el.setAttribute(key, value);
+      return el;
+    }
+    function renderList() {
+      $('list').replaceChildren();
+      $('problems').textContent = `Inspect (${problemRegions.length})`;
+      $('all').textContent = `All (${data.regions.length})`;
+      for (const key of ['problems', 'all']) $(key).setAttribute('aria-pressed', String(filter === key));
+      for (const r of filter === 'problems' ? problemRegions : data.regions) {
+        const button = element('button', '', `region ${errors(r.id).length ? 'error' : r.reference?.excludedPixels ? 'masked' : ''}`);
+        button.setAttribute('aria-label', name(r));
+        button.setAttribute('aria-current', String(selected?.id === r.id));
+        button.append(element('span', '', 'dot'), element('span', name(r), 'name'));
+        if (errors(r.id).length || r.reference?.excludedPixels) {
+          const label = errors(r.id).length ? 'Error' : `${percent(r.reference)}%`;
+          const badge = element('span', label, 'status');
+          badge.title = errors(r.id).length ? 'Map error' : `${label} excluded — inspect foreground bounds`;
+          button.setAttribute('aria-description', badge.title);
+          button.append(badge);
+        }
+        button.onclick = () => select(r);
+        $('list').append(button);
+      }
+      if (!$('list').children.length) $('list').append(element('p', 'No drawable regions have errors or masked pixels. Crop accuracy still needs visual inspection; rejected entries are in Other map findings.', 'empty'));
+    }
+    function renderContext() {
+      if (!selected) return;
+      const svg = $('context');
+      svg.replaceChildren();
+      const covering = selected.reference ? selected.reference.regions.map(m => data.regions.find(r => r.id === m.id)).filter(Boolean) : affectedBy(selected.id);
+      const boxes = [selected, ...covering];
+      const left = Math.min(...boxes.map(r => r.px.x));
+      const top = Math.min(...boxes.map(r => r.px.y));
+      const right = Math.max(...boxes.map(r => r.px.x + r.px.w));
+      const bottom = Math.max(...boxes.map(r => r.px.y + r.px.h));
+      const padding = Math.max(25, (right - left) * .18);
+      const x = Math.max(0, left - padding), y = Math.max(0, top - padding);
+      const w = Math.min(data.compSize.width, right + padding) - x;
+      const h = Math.min(data.compSize.height, bottom + padding) - y;
+      svg.setAttribute('viewBox', wholeComp ? `0 0 ${data.compSize.width} ${data.compSize.height}` : `${x} ${y} ${w} ${h}`);
+      svg.append(svgElement('image', { href: 'comp.png', width: data.compSize.width, height: data.compSize.height }));
+      for (const r of covering) {
+        svg.append(svgElement('rect', { x: r.px.x, y: r.px.y, width: r.px.w, height: r.px.h, fill: '#a6361d12', stroke: '#a6361d', 'stroke-width': 2, 'stroke-dasharray': '6 3', 'vector-effect': 'non-scaling-stroke' }));
+      }
+      svg.append(svgElement('rect', { x: selected.px.x, y: selected.px.y, width: selected.px.w, height: selected.px.h, fill: 'none', stroke: '#00685f', 'stroke-width': 3, 'vector-effect': 'non-scaling-stroke' }));
+      $('covering-key').hidden = covering.length === 0;
+      $('covering-key').lastChild.textContent = selected.reference ? ' Overlapping foreground' : ' Affected artwork';
+      $('context-toggle').textContent = wholeComp ? 'Show nearby context' : 'Show whole comp';
+      $('context-toggle').setAttribute('aria-pressed', String(wholeComp));
+    }
+    function renderCrop(target, ignored) {
+      target.replaceChildren();
+      const svg = svgElement('svg', { viewBox: `0 0 ${selected.px.w} ${selected.px.h}`, role: 'img', 'aria-label': `${ignored ? 'Ignored pixels on' : 'Original crop of'} ${name(selected)}` });
+      svg.append(svgElement('image', { href: selected.cropPath, width: selected.px.w, height: selected.px.h }));
+      if (ignored && selected.reference) {
+        const defs = svgElement('defs', {});
+        const pattern = svgElement('pattern', { id: 'excluded', width: 8, height: 8, patternUnits: 'userSpaceOnUse' });
+        pattern.append(svgElement('rect', { width: 8, height: 8, fill: '#a6361d20' }));
+        pattern.append(svgElement('path', { d: 'M-2 2L2-2M0 8L8 0M6 10L10 6', stroke: '#a6361d', 'stroke-width': 1.2 }));
+        defs.append(pattern); svg.append(defs);
+        for (const mask of selected.reference.regions) {
+          const p = mask.cropPx;
+          svg.append(svgElement('rect', { x: p.x, y: p.y, width: p.w, height: p.h, fill: 'url(#excluded)' }));
+        }
+      }
+      const zoom = $('zoom').value;
+      target.className = `crop ${zoom === 'fit' ? '' : 'zoom'}`;
+      if (zoom !== 'fit') {
+        svg.style.width = `${selected.px.w * Number(zoom)}px`;
+        svg.style.height = `${selected.px.h * Number(zoom)}px`;
+      }
+      target.append(svg);
+    }
+    function select(r) {
+      selected = r;
+      $('title').textContent = name(r);
+      const ref = r.reference;
+      const percentage = ref ? percent(ref) : '0';
+      const sources = (ref?.regions || []).map(m => data.regions.find(r => r.id === m.id)).filter(Boolean);
+      const affected = affectedBy(r.id);
+      const covering = sources.map(name).join(', ');
+      $('explanation').className = errors(r.id).length ? 'error' : '';
+      if (ref?.fullyExcluded) {
+        $('explanation').textContent = `The “${covering}” box hides this entire asset from the checker.`;
+        $('impact').textContent = 'Every hatched pixel is ignored. Nothing remains to compare, even if the generated asset is perfect. The covering box needs correcting.';
+      } else if (ref?.excludedPixels) {
+        $('explanation').textContent = `${percentage}% excluded — check the foreground bounds.`;
+        $('impact').textContent = 'Hatching should cover foreground text or controls only. If it covers artwork in the gaps, split the foreground into tighter boxes. Keep every text element.';
+      } else if (affected.length) {
+        $('explanation').textContent = `This box excludes pixels from ${affected.length} ${affected.length === 1 ? 'asset' : 'assets'}.`;
+        $('impact').textContent = 'The entire overlap is masked, including empty space. Bound separate text elements separately; use a container only to describe their layout, retaining every child.';
+      } else {
+        $('explanation').textContent = ref ? 'No overlapping text or controls hide this asset from the checker.' : 'This region is built in code. Check that its box names one element.';
+        $('impact').textContent = ref ? 'All pixels in this crop remain available for comparison. Still check that the crop contains the right artwork.' : 'Code regions that overlap artwork can exclude those pixels from asset comparison. Containers are treated separately.';
+      }
+      $('related').replaceChildren();
+      const related = ref ? sources : affected;
+      if (related.length) {
+        $('related').append(element('span', ref ? 'Excluding boxes:' : 'Inspect affected assets:'));
+        for (const other of related) {
+          const button = element('button', name(other));
+          button.onclick = () => select(other);
+          $('related').append(button);
+        }
+      }
+      $('ignored-label').textContent = ref ? `Ignored pixels · ${percentage}%` : 'Same region';
+      $('asset-key').textContent = ref ? 'Asset boundary' : 'Region boundary';
+      $('details').replaceChildren();
+      for (const text of [r.id, r.note, `${r.kind} · ${r.px.w} × ${r.px.h} original pixels · x ${r.px.x}, y ${r.px.y}`, r.parentId && `Parent: ${r.parentId}`, r.reviewGroup && `Review group: ${r.reviewGroup} (every member retained)`].filter(Boolean)) $('details').append(element('p', text));
+      if (r.referencePath) {
+        const p = element('p', '');
+        const link = element('a', 'Open the actual checker reference');
+        link.href = r.referencePath; link.target = '_blank'; link.rel = 'noopener';
+        p.append(link); $('details').append(p);
+      }
+      $('details').append(element('p', 'Reference only. These images cannot ship as page assets. Inspection does not change build state or approvals.'));
+      $('next').hidden = problemRegions.length < 2;
+      const queueIndex = problemRegions.findIndex(p => p.id === r.id);
+      $('next').textContent = queueIndex >= 0 ? `Next check (${queueIndex + 1}/${problemRegions.length}) →` : 'Next check →';
+      history.replaceState(null, '', `#region=${encodeURIComponent(r.id)}`);
+      renderList(); renderContext(); renderCrop($('original'), false); renderCrop($('ignored'), true);
+    }
+    for (const key of ['all', 'problems']) $(key).onclick = () => { filter = key; renderList(); };
+    $('next').onclick = () => select(problemRegions[(problemRegions.findIndex(r => r.id === selected.id) + 1) % problemRegions.length]);
+    $('context-toggle').onclick = () => { wholeComp = !wholeComp; renderContext(); };
+    $('zoom').onchange = () => { if (selected) { renderCrop($('original'), false); renderCrop($('ignored'), true); } };
+    $('summary').textContent = `${data.inputRegionCount} regions · ${data.issues.filter(i => i.severity === 'error').length} errors · ${partialMasks.length} partial masks to inspect`;
+    for (const [index, sheet] of (data.comparisonSheets || []).entries()) {
+      const link = element('a', `Comparison sheet ${index + 1}`);
+      link.href = sheet.path; link.target = '_blank'; link.rel = 'noopener';
+      $('sheets').append(link);
+    }
+    const otherIssues = data.issues.filter(i => i.code !== 'fully-masked' && i.code !== 'foreground-mask');
+    $('diagnostics-label').textContent = `Other map findings (${otherIssues.length})`;
+    for (const i of otherIssues) {
+      const item = element('div', '', `issue ${i.severity}`);
+      item.append(element('b', i.regionId || i.code.replaceAll('-', ' ')), element('span', i.message));
+      $('issues').append(item);
+    }
+    const requestedRegion = new URLSearchParams(location.hash.slice(1)).get('region');
+    if (data.regions.length) select(data.regions.find(r => r.id === requestedRegion) || problemRegions[0] || data.regions[0]);
+    else { $('inspection').hidden = true; $('next').hidden = true; $('diagnostics').open = true; renderList(); }
+  </script>
+</body>
+</html>

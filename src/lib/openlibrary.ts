@@ -355,6 +355,16 @@ interface OpenLibraryBookshelvesResponse {
   };
 }
 
+interface OpenLibraryTrendingWork {
+  key: string;
+  title: string;
+  author_name?: string[];
+  author_key?: string[];
+  cover_i?: number;
+  first_publish_year?: number;
+  subject?: string[];
+}
+
 /**
  * Search books via Open Library Search API
  */
@@ -542,26 +552,28 @@ export async function getTrendingBooks(limit: number = 15): Promise<BookItem[]> 
       throw new Error(`Trending request failed: ${res.status}`);
     }
 
-    const data = await res.json();
+    const data: { works?: OpenLibraryTrendingWork[] } = await res.json();
     const works = data.works || [];
 
     const validBooks: BookItem[] = works
-      .filter((w: any) => Boolean(w.cover_i && w.cover_i > 0 && w.title))
-      .map((w: any) => ({
-        id: cleanOlid(w.key),
-        key: w.key,
-        title: w.title,
-        author: w.author_name?.[0] || "Unknown Author",
-        authorKey: w.author_key?.[0],
-        coverUrl: `${COVERS_BASE}/b/id/${w.cover_i}-L.jpg`,
-        coverId: w.cover_i,
+      .filter((work) => Boolean(work.cover_i && work.cover_i > 0 && work.title))
+      .map((work) => ({
+        id: cleanOlid(work.key),
+        key: work.key,
+        title: work.title,
+        author: work.author_name?.[0] || "Unknown Author",
+        authorKey: work.author_key?.[0],
+        coverUrl: `${COVERS_BASE}/b/id/${work.cover_i}-L.jpg`,
+        coverId: work.cover_i,
         rating: 4.6,
         ratingCount: Math.floor(Math.random() * 2000) + 500,
         readerCount: Math.floor(Math.random() * 25000) + 5000,
-        publishYear: w.first_publish_year || "Unknown",
+        publishYear: work.first_publish_year || "Unknown",
         isBorrowable: true,
         hasFulltext: true,
-        subjects: Array.isArray(w.subject) ? w.subject.slice(0, 4) : ["Trending"],
+        subjects: Array.isArray(work.subject)
+          ? work.subject.slice(0, 4)
+          : ["Trending"],
       }));
 
     return validBooks.length >= 6 ? validBooks : FEATURED_CAROUSEL_BOOKS;

@@ -546,18 +546,18 @@ body {
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-24px);
+    transform: translateY(-6px);
   }
 }
 
 .worm-track {
-  animation: worm-scroll 0.6s linear infinite;
+  animation: worm-scroll 80s linear infinite;
   will-change: transform;
 }
 
 .worm-item {
-  animation: worm-wave 0.4s ease-in-out infinite;
-  animation-delay: calc(var(--i, 0) * -0.05s);
+  animation: worm-wave 5s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * -1.25s);
   will-change: transform;
 }
 
@@ -569,10 +569,7 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .worm-track {
-    animation-duration: 40s;
-  }
-
+  .worm-track,
   .worm-item {
     animation: none;
   }

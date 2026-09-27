@@ -1,6 +1,8 @@
 "use client"
 
 import Image from "next/image"
+import Link from "next/link"
+import { ArrowLeft } from "lucide-react"
 import { usePathname } from "next/navigation"
 
 import readingRoom from "../../../public/Images/auth-reading-room.png"
@@ -15,6 +17,10 @@ export function AuthShell({ children }: { children: React.ReactNode }) {
       className={styles.stage}
       data-auth-mode={isRegister ? "register" : "login"}
     >
+      <Link href="/" className={styles.homeLink}>
+        <ArrowLeft aria-hidden="true" />
+        Back to Avenor
+      </Link>
       <div className={styles.composition}>
         <div className={styles.media} aria-hidden="true">
           <Image

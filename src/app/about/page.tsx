@@ -1,12 +1,113 @@
 import Image from "next/image";
 import Link from "next/link";
-import { teamMembers, mentors, TeamMember } from "@/data/team";
+import {
+  ArrowRight,
+  BookOpen,
+  Clock3,
+  Compass,
+  Eye,
+  Mail,
+  MapPin,
+  Phone,
+} from "lucide-react";
 import { LibraryRequestForm } from "@/Components/Contact/LibraryRequestForm";
-import { TestimonialSlider } from "@/Components/Contact/TestimonialSlider";
 import { SupportCardsCarousel } from "@/Components/Contact/SupportCardsCarousel";
+import { TestimonialSlider } from "@/Components/Contact/TestimonialSlider";
+import { HeroCarousel } from "@/Components/About/hero-carousel";
+import { Footer } from "@/Components/Shared/footer";
+import {
+  ScrollTimeline,
+  type TimelineEvent,
+} from "@/Components/lightswind/scroll-timeline";
+import { mentors, teamMembers, type TeamMember } from "@/data/team";
+import styles from "./about.module.css";
 
-const buttonClass =
-  "w-8 h-8 rounded-full border border-[#4A6B53]/30 flex items-center justify-center text-[#4A6B53] hover:bg-[#4A6B53]/10 transition-colors";
+const discoveryBooks = [
+  { src: "/Images/hero-covers/beloved.jpg", alt: "Beloved book cover" },
+  { src: "/Images/hero-covers/circe.jpg", alt: "Circe book cover" },
+  { src: "/Images/hero-covers/the-hobbit.jpg", alt: "The Hobbit book cover" },
+  {
+    src: "/Images/hero-covers/the-left-hand-of-darkness.jpg",
+    alt: "The Left Hand of Darkness book cover",
+  },
+] as const;
+
+const heroCovers = [
+  { src: "/Images/hero-covers/the-hobbit.jpg", title: "The Hobbit" },
+  { src: "/Images/hero-covers/circe.jpg", title: "Circe" },
+  { src: "/Images/hero-covers/beloved.jpg", title: "Beloved" },
+  {
+    src: "/Images/hero-covers/the-left-hand-of-darkness.jpg",
+    title: "The Left Hand of Darkness",
+  },
+  { src: "/Images/hero-covers/the-waves.jpg", title: "The Waves" },
+] as const;
+
+const missionPath = ["Curiosity", "Discovery", "Connection"] as const;
+
+const storyEvents: TimelineEvent[] = [
+  {
+    id: "story",
+    index: "01",
+    label: "Our Story",
+    title: "It started with a noisy shelf.",
+    description:
+      "A small team of readers kept asking the same question: why does finding the next good book feel so crowded? Avenor is our answer—new books, familiar voices, and unexpected favorites, arranged into a calmer path.",
+    icon: <BookOpen aria-hidden="true" />,
+    visual: (
+      <div className={styles.bookRow} aria-label="Books to discover">
+        {discoveryBooks.map((book) => (
+          <div className={styles.bookCover} key={book.src}>
+            <Image src={book.src} alt={book.alt} fill sizes="110px" />
+          </div>
+        ))}
+      </div>
+    ),
+  },
+  {
+    id: "mission",
+    index: "02",
+    label: "Our Mission",
+    title: "Help people find meaningful books—and the authors behind them.",
+    description:
+      "Wherever someone is on their reading journey, Avenor should make the next step obvious: a clear place to look, a reason to care, and a voice worth following.",
+    icon: <Compass aria-hidden="true" />,
+    visual: (
+      <ol className={styles.missionPath} aria-label="The reading path">
+        {missionPath.map((step, i) => (
+          <li key={step}>
+            <span>{String(i + 1).padStart(2, "0")}</span>
+            {step}
+          </li>
+        ))}
+      </ol>
+    ),
+  },
+  {
+    id: "vision",
+    index: "03",
+    label: "Our Vision",
+    title: "A more thoughtful, more human reading culture.",
+    description:
+      "One where great stories reach the people who need them, and every reader leaves with a little more curiosity than they arrived with.",
+    icon: <Eye aria-hidden="true" />,
+    visual: (
+      <div className={styles.quoteBlock}>
+        <Image
+          src="/Images/about/botanical-sprig.png"
+          alt=""
+          width={328}
+          height={440}
+          className={styles.botanical}
+        />
+        <blockquote>
+          Different stories.
+          <br />A more connected you.
+        </blockquote>
+      </div>
+    ),
+  },
+];
 
 const githubUrl = (value: string) => {
   const handle = value.trim().replace(/^@/, "");
@@ -15,322 +116,205 @@ const githubUrl = (value: string) => {
   return `https://github.com/${handle}`;
 };
 
-const mailtoUrl = (value: string) => {
-  const email = value.trim();
-  if (!email.includes("@")) return null;
-  return `mailto:${email}`;
+const roleTitles: Record<string, string> = {
+  FRONTEND: "Frontend Developer",
+  BACKEND: "Backend Developer",
+  FULLSTACK: "Full-stack Developer",
+  MENTOR: "Project Mentor",
 };
 
-function MemberCard({ member }: { member: TeamMember }) {
+function PersonLinks({ member }: { member: TeamMember }) {
+  const github = githubUrl(member.github);
+  const name = member.name.trim();
+
   return (
-    <div className="bg-white dark:bg-secondary/50 rounded-3xl border border-[#4A6B53]/20 dark:border-primary/20 p-6 flex flex-col items-center text-center shadow-sm hover:shadow-md transition-all duration-200">
-      {/* Avatar Circle */}
-      <div className="relative w-32 h-32 rounded-full overflow-hidden mb-4 border-2 border-[#4A6B53]/30 bg-gray-100 flex items-center justify-center">
-        {member.image ? (
+    <div className={styles.personLinks}>
+      {github ? (
+        <a
+          href={github}
+          target="_blank"
+          rel="noreferrer"
+          aria-label={`${name} on GitHub`}
+        >
           <Image
-            src={member.image}
-            alt={member.name}
-            fill
-            sizes="128px"
-            className="object-cover object-center"
+            src="/Brand/GitHub_light_dark/GitHub_light.svg"
+            alt=""
+            width={20}
+            height={20}
           />
-        ) : (
-          <svg
-            className="w-14 h-14 text-gray-400"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-          </svg>
-        )}
-      </div>
-
-      {/* Member Name */}
-      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-        {member.name}
-      </h3>
-
-      {/* Role Pill */}
-      <span className="px-5 py-1 rounded-full bg-[#4A6B53] text-white text-xs font-semibold uppercase tracking-wider mb-5">
-        {member.role}
-      </span>
-
-      {/* Social Action Buttons */}
-      <div className="flex items-center gap-3">
-        {/* GitHub */}
-        {githubUrl(member.github) && (
-          <a
-            href={githubUrl(member.github) as string}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`${member.name} on GitHub`}
-            title={`${member.name} on GitHub`}
-            className={buttonClass}
-          >
-            <svg
-              className="w-4 h-4"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
-            </svg>
-          </a>
-        )}
-
-        {/* Email */}
-        {mailtoUrl(member.email) && (
-          <a
-            href={mailtoUrl(member.email) as string}
-            aria-label={`Email ${member.name}`}
-            title={`Email ${member.name}`}
-            className={buttonClass}
-          >
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-              />
-            </svg>
-          </a>
-        )}
-      </div>
+        </a>
+      ) : null}
+      <a href={`mailto:${member.email}`} aria-label={`Email ${name}`}>
+        <Mail aria-hidden="true" />
+      </a>
     </div>
+  );
+}
+
+function PersonCard({ member, badge }: { member: TeamMember; badge: string }) {
+  const name = member.name.trim();
+
+  return (
+    <article className={styles.personCard}>
+      <div className={styles.avatar}>
+        <Image
+          src={member.image}
+          alt={name}
+          fill
+          sizes="(max-width: 520px) 96px, 128px"
+          className={styles.avatarImage}
+        />
+      </div>
+      <h4>{name}</h4>
+      <p className={styles.personRole}>{roleTitles[member.role] ?? member.role}</p>
+      <span className={styles.personRule} aria-hidden="true" />
+      <span className={styles.badge}>{badge}</span>
+      <PersonLinks member={member} />
+    </article>
   );
 }
 
 export default function AboutPage() {
   return (
-    <div className="bg-gradient-to-b from-[#4A6B53]/10 via-white to-[#4A6B53]/5 text-gray-800 min-h-screen">
-      <main className="max-w-7xl mx-auto px-5 py-12 space-y-20">
-        {/* 1. Hero Section */}
-        <section className="text-center max-w-3xl mx-auto pt-6">
-          <span className="text-xs font-bold uppercase tracking-widest text-[#4A6B53]">
-            REDEFINING THE LITERARY JOURNEY
-          </span>
-          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-gray-900 mt-3 mb-6">
-            Welcome to <span className="text-[#4A6B53]">Avenor</span>
-          </h1>
-          <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
-            Avenor is built for real book enthusiasts. We provide instant access to high-definition cataloging, detailed showcase aggregation, real-time bookshelf tracking, and an interactive reader community—all through a seamless digital experience.
-          </p>
-          <div className="mt-8 flex justify-center gap-4">
-            <Link
-              href="/#discover"
-              className="px-6 py-3 rounded-full bg-[#4A6B53] text-white font-semibold hover:bg-[#3A5541] transition-all text-sm shadow-md"
-            >
-              Explore Books
+    <div className={styles.page}>
+      <main>
+        <section className={styles.hero} aria-labelledby="about-title">
+          <div className={styles.heroStatement}>
+            <h1 id="about-title">Find Your Next Book</h1>
+            <p>
+              Avenor connects the stories worth following—a thoughtful path
+              from curiosity to the books and authors that stay with you.
+            </p>
+            <Link href="/discover" className={styles.heroButton}>
+              Explore Now <ArrowRight aria-hidden="true" />
             </Link>
           </div>
-        </section>
-
-        {/* 2. Our Story Section */}
-        <section className="bg-white/80 rounded-3xl p-8 sm:p-12 border border-[#4A6B53]/20 shadow-sm text-center max-w-4xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#4A6B53] uppercase tracking-wide">
-            Our Story
-          </h2>
-          <div className="w-12 h-1 bg-[#4A6B53] mx-auto mt-2 mb-6 rounded-full" />
-          <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
-            Avenor started as an initiative to declutter the digital discovery experience. We wanted to build a platform that strips away aggressive clutter and offers users a clean, curated environment to manage their personal lists and discover hidden gems seamlessly.
-          </p>
-        </section>
-
-        {/* 3. Our Mentors Section */}
-        <section id="mentors" className="max-w-5xl mx-auto">
-          <div className="text-center mb-10">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#4A6B53] uppercase tracking-wider">
-              Our Mentor
-            </h2>
-            <div className="w-12 h-1 bg-[#4A6B53] mx-auto mt-2 rounded-full" />
+          <div className={styles.heroVisual}>
+            <HeroCarousel covers={heroCovers} />
           </div>
-          <div className="flex justify-center">
-            <div className="w-full max-w-xs">
+        </section>
+
+        <ScrollTimeline
+          id="story"
+          className={styles.story}
+          eyebrow="Our story"
+          title="Three chapters, one reading path."
+          subtitle="Where Avenor came from, what it sets out to do, and the reading culture it hopes to leave behind."
+          events={storyEvents}
+        />
+
+        <section id="team" className={styles.teamSection} aria-labelledby="team-title">
+          <div className={styles.teamLead}>
+            <p className={styles.eyebrow}>The people</p>
+            <h2 id="team-title">The people behind Avenor.</h2>
+            <p>
+              A multidisciplinary team united by a love of books and a belief
+              in their power to bring people closer—to new ideas, new
+              perspectives, and to each other.
+            </p>
+          </div>
+
+          <div className={styles.teamGroup}>
+            <h3 className={styles.groupTitle}>
+              <span>Our Mentor</span>
+            </h3>
+            <ul className={styles.mentorGrid}>
               {mentors.map((mentor) => (
-                <MemberCard key={mentor.id} member={mentor} />
+                <li key={mentor.id}>
+                  <PersonCard member={mentor} badge="Mentor" />
+                </li>
               ))}
-            </div>
+            </ul>
+          </div>
+
+          <div className={styles.teamGroup}>
+            <h3 className={styles.groupTitle}>
+              <span>Our Team</span>
+            </h3>
+            <ul className={styles.memberGrid}>
+              {teamMembers.map((member) => (
+                <li key={member.id}>
+                  <PersonCard member={member} badge="Member" />
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
 
-        {/* 4. Meet Our Team Section */}
-        <section id="team" className="max-w-6xl mx-auto">
-          <div className="text-center mb-10">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#4A6B53] uppercase tracking-wider">
-              Meet Our Team
-            </h2>
-            <div className="w-12 h-1 bg-[#4A6B53] mx-auto mt-2 rounded-full" />
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {teamMembers.map((member) => (
-              <MemberCard key={member.id} member={member} />
-            ))}
-          </div>
-        </section>
-
-        {/* 5. Contact Us Section */}
-        <section id="contact" className="pt-10 max-w-6xl mx-auto space-y-12">
-          <div className="text-center">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#4A6B53] uppercase tracking-wider">
-              Contact Us Now
-            </h2>
-            <div className="w-12 h-1 bg-[#4A6B53] mx-auto mt-2 rounded-full" />
+        <section id="contact" className={styles.contactSection} aria-labelledby="contact-title">
+          <div className={styles.contactLead}>
+            <h2 id="contact-title">Let&apos;s find the next story together.</h2>
+            <p>
+              Ask about a title, get help with the library, or simply tell us
+              what you want to read next.
+            </p>
           </div>
 
-          {/* Quick Support Feature Cards Carousel */}
           <SupportCardsCarousel />
 
-          {/* Form & Info Section Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Left Box: Ask a Librarian Form */}
+          <div className={styles.contactGrid}>
             <LibraryRequestForm />
 
-
-            {/* Right Box: Contact Information & Google Maps Embed */}
-            <div className="bg-white p-8 rounded-3xl border border-[#4A6B53]/20 shadow-sm flex flex-col justify-between space-y-6">
+            <aside className={styles.contactDetails} aria-label="Contact information">
               <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Contact Information</h3>
-                <div className="space-y-3 text-sm text-gray-600">
-                  <p className="flex items-start gap-3">
-                    <span className="text-[#4A6B53] font-semibold shrink-0">📍 Address:</span>
-                    <span>
-                      No. 40, Street 273, Sangkat Boeung Kak I, Khan Toul Kork,
-                      Phnom Penh, Cambodia
-                    </span>
-                  </p>
-                  <p className="flex items-start gap-3">
-                    <span className="text-[#4A6B53] font-semibold shrink-0">📞 Phone:</span>
-                    <span>
-                      <a href="tel:+85595990910" className="hover:text-[#4A6B53]">
-                        (+855) 95-990-910
-                      </a>
-                      {" · "}
-                      <a href="tel:+85593990910" className="hover:text-[#4A6B53]">
-                        (+855) 93-990-910
-                      </a>
-                    </span>
-                  </p>
-                  <p className="flex items-start gap-3">
-                    <span className="text-[#4A6B53] font-semibold shrink-0">📧 Email:</span>
-                    <a
-                      href="mailto:info.istad@gmail.com"
-                      className="hover:text-[#4A6B53]"
-                    >
-                      info.istad@gmail.com
-                    </a>
-                  </p>
-                  <p className="flex items-start gap-3">
-                    <span className="text-[#4A6B53] font-semibold shrink-0">🕒 Reading Room:</span>
-                    <span>Mon–Fri, 8:00 AM – 5:00 PM · Sat, 8:00 AM – 12:00 PM</span>
-                  </p>
-                </div>
+                <h3>Visit the reading room</h3>
+                <p>
+                  Come by, call, or write. We will help point you toward the
+                  right shelf.
+                </p>
               </div>
-
-              {/* Map Preview Box */}
-              <div className="relative rounded-2xl overflow-hidden border border-gray-200 h-52 bg-gray-100">
+              <address>
+                <div>
+                  <MapPin aria-hidden="true" />
+                  <span>
+                    No. 40, Street 273, Sangkat Boeung Kak I, Khan Toul Kork,
+                    Phnom Penh, Cambodia
+                  </span>
+                </div>
+                <div>
+                  <Phone aria-hidden="true" />
+                  <span>
+                    <a href="tel:+85595990910">(+855) 95-990-910</a><br />
+                    <a href="tel:+85593990910">(+855) 93-990-910</a>
+                  </span>
+                </div>
+                <div>
+                  <Mail aria-hidden="true" />
+                  <a href="mailto:info.istad@gmail.com">info.istad@gmail.com</a>
+                </div>
+                <div>
+                  <Clock3 aria-hidden="true" />
+                  <span>
+                    Mon–Fri, 8:00 AM–5:00 PM<br />
+                    Sat, 8:00 AM–12:00 PM
+                  </span>
+                </div>
+              </address>
+              <div className={styles.mapFrame}>
                 <iframe
-                  title="ISTAD Location Map"
+                  title="ISTAD location map"
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3908.773822187042!2d104.9014024!3d11.585256!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x310951e96d257a6f%3A0x6b66703c5fc0c7cc!2sScience%20and%20Technology%20Advanced%20Development%20Co.%2C%20Ltd.!5e0!3m2!1sen!2skh!4v1700000000000"
-                  className="w-full h-full border-0"
-                  allowFullScreen
                   loading="lazy"
+                  allowFullScreen
                   referrerPolicy="no-referrer-when-downgrade"
                 />
                 <a
                   href="https://maps.app.goo.gl/ksmWeyUZa1H3eTSB9"
                   target="_blank"
                   rel="noreferrer"
-                  className="absolute bottom-2 right-2 px-3 py-1.5 rounded-full bg-[#4A6B53] text-white text-[11px] font-semibold shadow-md hover:bg-[#3A5541] transition-colors"
                 >
-                  Open in Maps
+                  Open in Maps <ArrowRight aria-hidden="true" />
                 </a>
               </div>
-
-              <p className="text-xs text-gray-400 text-center">
-                For faster help, visit the circulation desk at the reading room with your library card.
-              </p>
-            </div>
+            </aside>
           </div>
         </section>
 
-        {/* 6. Testimonial Slider */}
-        <TestimonialSlider />
+        <div className={styles.testimonials}>
+          <TestimonialSlider />
+        </div>
       </main>
-
-      {/* 7. Footer */}
-      <footer className="bg-white border-t border-[#4A6B53]/20 pt-12 pb-6 mt-20">
-        <div className="max-w-7xl mx-auto px-5 grid grid-cols-1 md:grid-cols-5 gap-8 mb-8 text-sm">
-          {/* Brand Info */}
-          <div className="md:col-span-1 space-y-3">
-            <h3 className="text-xl font-extrabold text-[#4A6B53]">Avenor</h3>
-            <p className="text-xs text-gray-500 leading-relaxed">
-              Experience seamless online discovery and top-tier literary entertainment with Avenor.
-            </p>
-          </div>
-
-          {/* Quick Links */}
-          <div>
-            <h4 className="font-bold text-gray-900 mb-3 border-b border-[#4A6B53] w-fit pb-1">Quick Link</h4>
-            <ul className="space-y-2 text-xs text-gray-600">
-              <li><Link href="/" className="hover:text-[#4A6B53]">Home</Link></li>
-              <li><Link href="/#deals" className="hover:text-[#4A6B53]">Deals</Link></li>
-              <li><Link href="/about" className="hover:text-[#4A6B53]">About</Link></li>
-            </ul>
-          </div>
-
-          {/* More Links */}
-          <div>
-            <h4 className="font-bold text-gray-900 mb-3 border-b border-[#4A6B53] w-fit pb-1">More</h4>
-            <ul className="space-y-2 text-xs text-gray-600">
-              <li><Link href="#" className="hover:text-[#4A6B53]">My Favorites</Link></li>
-              <li><Link href="#" className="hover:text-[#4A6B53]">How to Book</Link></li>
-            </ul>
-          </div>
-
-          {/* Legal & App */}
-          <div>
-            <h4 className="font-bold text-gray-900 mb-3 border-b border-[#4A6B53] w-fit pb-1">Legal & App</h4>
-            <ul className="space-y-2 text-xs text-gray-600">
-              <li><Link href="#" className="hover:text-[#4A6B53]">Privacy Policy</Link></li>
-              <li><Link href="#" className="hover:text-[#4A6B53]">Terms of Service</Link></li>
-              <li><Link href="#" className="hover:text-[#4A6B53]">Age Policy</Link></li>
-            </ul>
-          </div>
-
-          {/* Get In Touch */}
-          <div>
-            <h4 className="font-bold text-gray-900 mb-3 border-b border-[#4A6B53] w-fit pb-1">Get in Touch</h4>
-            <ul className="space-y-2 text-xs text-gray-600 mb-4">
-              <li>📧 avenor67@gmail.com</li>
-              <li>📞 +855 12 44 55 66</li>
-              <li>📍 Toul Kork, Phnom Penh</li>
-            </ul>
-
-            <div className="pt-2">
-              <span className="text-xs font-bold text-[#4A6B53] block mb-2">Sponsored and Organized</span>
-              <div className="relative w-36 h-12 mt-8">
-                <Image
-                  src="/Brand/ISTADLogo(LightMode).png"
-                  alt="ISTAD Logo"
-                  fill
-                  className="object-contain"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="border-t border-[#4A6B53]/10 pt-4 text-center text-xs text-gray-400">
-          © {new Date().getFullYear()} Avenor. All Rights Reserved.
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

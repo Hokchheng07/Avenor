@@ -36,13 +36,13 @@ export function HeroSection({ books }: { books: readonly Book[] }) {
 
           <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:gap-6">
             <Link
-              href="/#discover"
+              href="/discover"
               className="hero-primary-action inline-flex h-13 min-w-52 items-center justify-center rounded-full bg-primary px-8 text-sm font-bold text-secondary shadow-[0_12px_30px_rgba(34,48,35,0.2)] outline-none transition-[background-color,transform,box-shadow] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] hover:bg-primary/90 hover:shadow-[0_16px_34px_rgba(34,48,35,0.28)] active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 focus-visible:ring-offset-white dark:focus-visible:ring-offset-[#171b18]"
             >
               Explore the library
             </Link>
             <Link
-              href="/#discover"
+              href="/discover"
               className="group inline-flex h-13 items-center gap-3 rounded-full pr-3 text-sm font-semibold text-accent outline-none transition-colors duration-150 hover:text-[#966832] focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-4 focus-visible:ring-offset-white dark:focus-visible:ring-offset-[#171b18]"
             >
               <span className="grid size-13 place-items-center rounded-full border border-accent/45 bg-white/45 shadow-[0_6px_20px_rgba(67,56,40,0.06)] transition-[transform,background-color] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:-translate-y-0.5 group-hover:bg-white group-active:scale-[0.97] dark:bg-white/5">
