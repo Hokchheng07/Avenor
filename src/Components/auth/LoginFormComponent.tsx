@@ -1,21 +1,27 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Controller, useForm } from "react-hook-form"
-import { ArrowRight, Mail } from "lucide-react"
-import { toast, Toaster } from "sonner"
-import * as z from "zod"
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, useForm } from "react-hook-form";
+import { ArrowRight, Mail } from "lucide-react";
+import { toast, Toaster } from "sonner";
+import * as z from "zod";
 
-import { PasswordInput } from "@/Components/auth/password-input"
-import { Button } from "@/Components/ui/button"
-import { Field, FieldError, FieldGroup, FieldLabel } from "@/Components/ui/field"
+import { PasswordInput } from "@/Components/auth/password-input";
+import { publicEnv } from "@/lib/public-env";
+import { Button } from "@/Components/ui/button";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/Components/ui/field";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-} from "@/Components/ui/input-group"
+} from "@/Components/ui/input-group";
 
 const formSchema = z.object({
   email: z.string().email("Enter a valid email address"),
@@ -26,32 +32,36 @@ const formSchema = z.object({
     .regex(/[A-Z]/, { message: "Must contain at least one uppercase letter" })
     .regex(/[a-z]/, { message: "Must contain at least one lowercase letter" })
     .regex(/[0-9]/, { message: "Must contain at least one number" })
-    .regex(/[^A-Za-z0-9]/, { message: "Must contain at least one special character" }),
-})
+    .regex(/[^A-Za-z0-9]/, {
+      message: "Must contain at least one special character",
+    }),
+});
 
 export function LoginFormComponent() {
-  const router = useRouter()
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { email: "", password: "" },
-  })
+  });
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
     try {
-      const res = await fetch("https://sombobaeb.cheat.casa/auth/login", {
+      const res = await fetch(`${publicEnv.authApiUrl}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
-      })
+      });
 
       if (res.ok) {
-        toast.success("Welcome back to Avenor.")
-        setTimeout(() => router.push("/"), 1500)
+        toast.success("Welcome back to Avenor.");
+        setTimeout(() => router.push("/"), 1500);
       } else {
-        toast.error("That email and password do not match. Try again.")
+        toast.error("That email and password do not match. Try again.");
       }
     } catch {
-      toast.error("We could not reach Avenor. Check your connection and try again.")
+      toast.error(
+        "We could not reach Avenor. Check your connection and try again.",
+      );
     }
   }
 
@@ -75,7 +85,10 @@ export function LoginFormComponent() {
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid} className="gap-2">
-                <FieldLabel htmlFor="form-login-email" className="text-sm font-semibold text-primary">
+                <FieldLabel
+                  htmlFor="form-login-email"
+                  className="text-sm font-semibold text-primary"
+                >
                   Email
                 </FieldLabel>
                 <InputGroup className="h-12 rounded-2xl border-primary/25 bg-transparent transition-[border-color,box-shadow] duration-200 has-[[data-slot=input-group-control]:focus-visible]:border-accent has-[[data-slot=input-group-control]:focus-visible]:ring-2 has-[[data-slot=input-group-control]:focus-visible]:ring-accent/20">
@@ -92,7 +105,9 @@ export function LoginFormComponent() {
                     className="text-[0.95rem] text-primary placeholder:text-primary/45"
                   />
                 </InputGroup>
-                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
               </Field>
             )}
           />
@@ -102,7 +117,10 @@ export function LoginFormComponent() {
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid} className="gap-2">
-                <FieldLabel htmlFor="form-login-password" className="text-sm font-semibold text-primary">
+                <FieldLabel
+                  htmlFor="form-login-password"
+                  className="text-sm font-semibold text-primary"
+                >
                   Password
                 </FieldLabel>
                 <PasswordInput
@@ -113,7 +131,9 @@ export function LoginFormComponent() {
                   placeholder="Your password"
                   className="text-[0.95rem] text-primary placeholder:text-primary/45"
                 />
-                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
               </Field>
             )}
           />
@@ -124,7 +144,11 @@ export function LoginFormComponent() {
           disabled={form.formState.isSubmitting}
           className="mt-6 h-13 w-full rounded-full bg-primary px-6 font-serif text-base text-secondary shadow-[0_12px_28px_rgba(34,48,35,0.18)] transition-[transform,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:bg-primary/92 hover:shadow-[0_16px_34px_rgba(34,48,35,0.24)] focus-visible:ring-accent active:translate-y-0"
         >
-          <span>{form.formState.isSubmitting ? "Opening your shelf…" : "Enter Avenor"}</span>
+          <span>
+            {form.formState.isSubmitting
+              ? "Opening your shelf…"
+              : "Enter Avenor"}
+          </span>
           <ArrowRight className="ml-auto size-4" aria-hidden="true" />
         </Button>
       </form>
@@ -140,5 +164,5 @@ export function LoginFormComponent() {
         </Link>
       </p>
     </div>
-  )
+  );
 }
