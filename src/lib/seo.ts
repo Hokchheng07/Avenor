@@ -4,7 +4,7 @@ export const siteConfig = {
   name: "Avenor",
   url: publicEnv.siteUrl,
   description: "Discover books, authors, and stories worth keeping.",
-  ogImage: "/Thumbnail.png",
+  ogImage: "/og-image.jpg",
 } as const;
 
 export function absoluteUrl(path: string): string {
