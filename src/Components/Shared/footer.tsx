@@ -7,7 +7,7 @@ const footerGroups = [
     links: [
       { label: "Discover books", href: "/discover" },
       { label: "Browse subjects", href: "/#categories" },
-      { label: "Saved books", href: "/#saved" },
+      { label: "Saved books", href: "/saved" },
       { label: "Search library", href: "/#search" },
     ],
   },
@@ -203,3 +203,4 @@ export function Footer() {
     </footer>
   );
 }
+
