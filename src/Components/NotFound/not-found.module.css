@@ -1,0 +1,196 @@
+.page {
+  --ease: cubic-bezier(0.23, 1, 0.32, 1);
+  --nf-paper: #f7f4ef;
+  --nf-paper-deep: #eee8de;
+  --nf-surface: #fffdf9;
+  --nf-ink: #17251a;
+  --nf-hero-ink: #3f433d;
+  --nf-muted: #696d67;
+  --nf-gold: #b98a4b;
+  --nf-gold-text: #8b6839;
+  --nf-button: #a97c46;
+  --nf-button-hover: #936a39;
+  --nf-button-text: #fffaf1;
+  --nf-rule: rgba(85, 78, 65, 0.18);
+  container: nf / inline-size;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-height: var(--nf-min-h, 100svh);
+  padding: 1.25rem 16px 3rem;
+  overflow-x: hidden;
+  background: var(--nf-paper);
+  color: var(--nf-ink);
+  font-family: var(--font-sans);
+  line-height: 1.7;
+}
+
+:global(html[data-theme="dark"]) .page {
+  --nf-paper: #131713;
+  --nf-paper-deep: #1f251f;
+  --nf-surface: #1a1f1a;
+  --nf-ink: #ece6da;
+  --nf-hero-ink: #d6d0c4;
+  --nf-muted: #a19c90;
+  --nf-gold: #cf9f5f;
+  --nf-gold-text: #d3a663;
+  --nf-button: #b8894f;
+  --nf-button-hover: #a97c46;
+  --nf-button-text: #fffaf1;
+  --nf-rule: rgba(236, 230, 218, 0.12);
+}
+
+.back {
+  align-self: flex-start;
+  color: var(--nf-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 200ms var(--ease);
+}
+
+.back:hover {
+  color: var(--nf-ink);
+}
+
+.main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3.25rem;
+  padding-top: 1.5rem;
+}
+
+.copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  max-width: 34rem;
+  text-align: center;
+  animation: copyIn 650ms var(--ease) calc(0.95s + var(--scrub, 0s)) backwards;
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--nf-gold-text);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0;
+  color: var(--nf-ink);
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 1.4rem + 2.4cqw, 3.1rem);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  text-wrap: balance;
+}
+
+.body {
+  max-width: 30rem;
+  margin: 0;
+  color: var(--nf-hero-ink);
+  font-size: 1rem;
+  text-wrap: pretty;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem 1.75rem;
+  margin-top: 0.5rem;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 2.75rem;
+  padding: 0 1.25rem;
+  border-radius: 0.35rem;
+  background: var(--nf-button);
+  color: var(--nf-button-text);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 200ms var(--ease);
+}
+
+.button:hover {
+  background: var(--nf-button-hover);
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--nf-gold-text);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.arrow {
+  flex: none;
+  transition: transform 300ms var(--ease);
+}
+
+.button:hover .arrow,
+.link:hover .arrow {
+  transform: translateX(0.2rem);
+}
+
+.tertiary {
+  margin: 0.25rem 0 0;
+  color: var(--nf-muted);
+  font-size: 0.875rem;
+}
+
+.tertiary a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--nf-rule);
+  text-underline-offset: 0.25em;
+  transition: color 200ms var(--ease);
+}
+
+.tertiary a:hover {
+  color: var(--nf-ink);
+}
+
+.page a:focus-visible {
+  outline: 2px solid var(--nf-gold);
+  outline-offset: 3px;
+  border-radius: 0.2rem;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@keyframes copyIn {
+  from { opacity: 0; transform: translateY(8px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .copy { animation: none; }
+  .arrow, .button, .back, .tertiary a { transition: none; }
+}
