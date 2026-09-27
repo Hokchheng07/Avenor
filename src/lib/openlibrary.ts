@@ -1,12 +1,13 @@
 import { BookItem, GenreItem, SearchMode, WorkDetailData } from "./types";
+import { publicEnv } from "./public-env";
 
-const OPEN_LIBRARY_BASE = "https://openlibrary.org";
-const COVERS_BASE = "https://covers.openlibrary.org";
+const OPEN_LIBRARY_BASE = publicEnv.openLibraryApiUrl;
+const COVERS_BASE = publicEnv.openLibraryCoversUrl;
 
 export function getCoverUrl(
   coverId?: number | null,
   isbn?: string | null,
-  size: "S" | "M" | "L" = "L"
+  size: "S" | "M" | "L" = "L",
 ): string | null {
   if (coverId && coverId > 0) {
     return `${COVERS_BASE}/b/id/${coverId}-${size}.jpg`;
@@ -30,7 +31,7 @@ export const FEATURED_CAROUSEL_BOOKS: BookItem[] = [
     title: "Invisible Man",
     author: "Ralph Ellison",
     coverId: 998256,
-    coverUrl: "https://covers.openlibrary.org/b/id/998256-L.jpg",
+    coverUrl: `${COVERS_BASE}/b/id/998256-L.jpg`,
     rating: 4.8,
     ratingCount: 18450,
     readerCount: 84200,
@@ -47,7 +48,7 @@ export const FEATURED_CAROUSEL_BOOKS: BookItem[] = [
     title: "Frankenstein",
     author: "Mary Shelley",
     coverId: 12356249,
-    coverUrl: "https://covers.openlibrary.org/b/id/12356249-L.jpg",
+    coverUrl: `${COVERS_BASE}/b/id/12356249-L.jpg`,
     rating: 4.7,
     ratingCount: 22100,
     readerCount: 112000,
@@ -64,7 +65,7 @@ export const FEATURED_CAROUSEL_BOOKS: BookItem[] = [
     title: "Dune",
     author: "Frank Herbert",
     coverId: 11481354,
-    coverUrl: "https://covers.openlibrary.org/b/id/11481354-L.jpg",
+    coverUrl: `${COVERS_BASE}/b/id/11481354-L.jpg`,
     rating: 4.9,
     ratingCount: 31400,
     readerCount: 145000,
@@ -81,7 +82,7 @@ export const FEATURED_CAROUSEL_BOOKS: BookItem[] = [
     title: "1984",
     author: "George Orwell",
     coverId: 9267242,
-    coverUrl: "https://covers.openlibrary.org/b/id/9267242-L.jpg",
+    coverUrl: `${COVERS_BASE}/b/id/9267242-L.jpg`,
     rating: 4.8,
     ratingCount: 36200,
     readerCount: 168000,
@@ -98,7 +99,7 @@ export const FEATURED_CAROUSEL_BOOKS: BookItem[] = [
     title: "The Great Gatsby",
     author: "F. Scott Fitzgerald",
     coverId: 10590366,
-    coverUrl: "https://covers.openlibrary.org/b/id/10590366-L.jpg",
+    coverUrl: `${COVERS_BASE}/b/id/10590366-L.jpg`,
     rating: 4.6,
     ratingCount: 29800,
     readerCount: 139000,
@@ -115,7 +116,7 @@ export const FEATURED_CAROUSEL_BOOKS: BookItem[] = [
     title: "The Left Hand of Darkness",
     author: "Ursula K. Le Guin",
     coverId: 10618463,
-    coverUrl: "https://covers.openlibrary.org/b/id/10618463-L.jpg",
+    coverUrl: `${COVERS_BASE}/b/id/10618463-L.jpg`,
     rating: 4.7,
     ratingCount: 15400,
     readerCount: 68000,
@@ -132,7 +133,7 @@ export const FEATURED_CAROUSEL_BOOKS: BookItem[] = [
     title: "Beloved",
     author: "Toni Morrison",
     coverId: 8261367,
-    coverUrl: "https://covers.openlibrary.org/b/id/8261367-L.jpg",
+    coverUrl: `${COVERS_BASE}/b/id/8261367-L.jpg`,
     rating: 4.8,
     ratingCount: 18900,
     readerCount: 76000,
@@ -149,7 +150,7 @@ export const FEATURED_CAROUSEL_BOOKS: BookItem[] = [
     title: "The Hobbit",
     author: "J.R.R. Tolkien",
     coverId: 14627509,
-    coverUrl: "https://covers.openlibrary.org/b/id/14627509-L.jpg",
+    coverUrl: `${COVERS_BASE}/b/id/14627509-L.jpg`,
     rating: 4.9,
     ratingCount: 42100,
     readerCount: 195000,
@@ -166,7 +167,7 @@ export const FEATURED_CAROUSEL_BOOKS: BookItem[] = [
     title: "Fahrenheit 451",
     author: "Ray Bradbury",
     coverId: 12993656,
-    coverUrl: "https://covers.openlibrary.org/b/id/12993656-L.jpg",
+    coverUrl: `${COVERS_BASE}/b/id/12993656-L.jpg`,
     rating: 4.7,
     ratingCount: 26300,
     readerCount: 122000,
@@ -183,7 +184,7 @@ export const FEATURED_CAROUSEL_BOOKS: BookItem[] = [
     title: "To Kill a Mockingbird",
     author: "Harper Lee",
     coverId: 14351077,
-    coverUrl: "https://covers.openlibrary.org/b/id/14351077-L.jpg",
+    coverUrl: `${COVERS_BASE}/b/id/14351077-L.jpg`,
     rating: 4.9,
     ratingCount: 38700,
     readerCount: 180000,
@@ -200,7 +201,7 @@ export const FEATURED_CAROUSEL_BOOKS: BookItem[] = [
     title: "Pride and Prejudice",
     author: "Jane Austen",
     coverId: 14348537,
-    coverUrl: "https://covers.openlibrary.org/b/id/14348537-L.jpg",
+    coverUrl: `${COVERS_BASE}/b/id/14348537-L.jpg`,
     rating: 4.8,
     ratingCount: 34100,
     readerCount: 165000,
@@ -217,7 +218,7 @@ export const FEATURED_CAROUSEL_BOOKS: BookItem[] = [
     title: "The Alchemist",
     author: "Paulo Coelho",
     coverId: 7414780,
-    coverUrl: "https://covers.openlibrary.org/b/id/7414780-L.jpg",
+    coverUrl: `${COVERS_BASE}/b/id/7414780-L.jpg`,
     rating: 4.7,
     ratingCount: 29500,
     readerCount: 142000,
@@ -237,31 +238,33 @@ export const POPULAR_GENRES: GenreItem[] = [
     countLabel: "48.2k books",
     description: "Dragons, mythic quests, magic, and impossible worlds.",
     previewCovers: [
-      "https://covers.openlibrary.org/b/id/12818862-M.jpg",
-      "https://covers.openlibrary.org/b/id/8885623-M.jpg",
-      "https://covers.openlibrary.org/b/id/8292881-M.jpg",
+      `${COVERS_BASE}/b/id/12818862-M.jpg`,
+      `${COVERS_BASE}/b/id/8885623-M.jpg`,
+      `${COVERS_BASE}/b/id/8292881-M.jpg`,
     ],
   },
   {
     name: "Science Fiction",
     slug: "science_fiction",
     countLabel: "35.8k books",
-    description: "Future civilizations, interstellar travels, and artificial minds.",
+    description:
+      "Future civilizations, interstellar travels, and artificial minds.",
     previewCovers: [
-      "https://covers.openlibrary.org/b/id/12818863-M.jpg",
-      "https://covers.openlibrary.org/b/id/10521270-M.jpg",
-      "https://covers.openlibrary.org/b/id/8228691-M.jpg",
+      `${COVERS_BASE}/b/id/12818863-M.jpg`,
+      `${COVERS_BASE}/b/id/10521270-M.jpg`,
+      `${COVERS_BASE}/b/id/8228691-M.jpg`,
     ],
   },
   {
     name: "History",
     slug: "history",
     countLabel: "62.4k books",
-    description: "Ancient empires, revolutions, chronicles, and forgotten eras.",
+    description:
+      "Ancient empires, revolutions, chronicles, and forgotten eras.",
     previewCovers: [
-      "https://covers.openlibrary.org/b/id/8231996-M.jpg",
-      "https://covers.openlibrary.org/b/id/8235113-M.jpg",
-      "https://covers.openlibrary.org/b/id/10414981-M.jpg",
+      `${COVERS_BASE}/b/id/8231996-M.jpg`,
+      `${COVERS_BASE}/b/id/8235113-M.jpg`,
+      `${COVERS_BASE}/b/id/10414981-M.jpg`,
     ],
   },
   {
@@ -270,9 +273,9 @@ export const POPULAR_GENRES: GenreItem[] = [
     countLabel: "29.1k books",
     description: "Love stories, passionate journeys, and poignant heartbeats.",
     previewCovers: [
-      "https://covers.openlibrary.org/b/id/8225261-M.jpg",
-      "https://covers.openlibrary.org/b/id/8315124-M.jpg",
-      "https://covers.openlibrary.org/b/id/8573210-M.jpg",
+      `${COVERS_BASE}/b/id/8225261-M.jpg`,
+      `${COVERS_BASE}/b/id/8315124-M.jpg`,
+      `${COVERS_BASE}/b/id/8573210-M.jpg`,
     ],
   },
   {
@@ -281,9 +284,9 @@ export const POPULAR_GENRES: GenreItem[] = [
     countLabel: "41.6k books",
     description: "Enigmatic puzzles, detectives, suspense, and dark corridors.",
     previewCovers: [
-      "https://covers.openlibrary.org/b/id/10521270-M.jpg",
-      "https://covers.openlibrary.org/b/id/8231991-M.jpg",
-      "https://covers.openlibrary.org/b/id/8235088-M.jpg",
+      `${COVERS_BASE}/b/id/10521270-M.jpg`,
+      `${COVERS_BASE}/b/id/8231991-M.jpg`,
+      `${COVERS_BASE}/b/id/8235088-M.jpg`,
     ],
   },
   {
@@ -292,9 +295,9 @@ export const POPULAR_GENRES: GenreItem[] = [
     countLabel: "22.7k books",
     description: "Remarkable real lives, memoirs, struggles, and triumphs.",
     previewCovers: [
-      "https://covers.openlibrary.org/b/id/8231856-M.jpg",
-      "https://covers.openlibrary.org/b/id/8739112-M.jpg",
-      "https://covers.openlibrary.org/b/id/8231995-M.jpg",
+      `${COVERS_BASE}/b/id/8231856-M.jpg`,
+      `${COVERS_BASE}/b/id/8739112-M.jpg`,
+      `${COVERS_BASE}/b/id/8231995-M.jpg`,
     ],
   },
 ];
@@ -390,7 +393,7 @@ export async function searchOpenLibrary({
   else if (mode === "subject") paramKey = "subject";
 
   const url = `${OPEN_LIBRARY_BASE}/search.json?${paramKey}=${encodeURIComponent(
-    cleanQuery
+    cleanQuery,
   )}&page=${page}&limit=${limit}&fields=key,title,author_name,author_key,cover_i,isbn,first_publish_year,ratings_average,ratings_count,already_read_count,currently_reading_count,want_to_read_count,has_fulltext,ebook_access,subject`;
 
   try {
@@ -413,8 +416,8 @@ export async function searchOpenLibrary({
       const coverUrl = doc.cover_i
         ? `${COVERS_BASE}/b/id/${doc.cover_i}-L.jpg`
         : doc.isbn?.[0]
-        ? `${COVERS_BASE}/b/isbn/${doc.isbn[0]}-L.jpg`
-        : null;
+          ? `${COVERS_BASE}/b/isbn/${doc.isbn[0]}-L.jpg`
+          : null;
 
       const alreadyRead = doc.already_read_count || 0;
       const currentlyReading = doc.currently_reading_count || 0;
@@ -462,7 +465,9 @@ export async function searchOpenLibrary({
       (b) =>
         b.title.toLowerCase().includes(cleanQuery.toLowerCase()) ||
         b.author.toLowerCase().includes(cleanQuery.toLowerCase()) ||
-        b.subjects?.some((s) => s.toLowerCase().includes(cleanQuery.toLowerCase()))
+        b.subjects?.some((s) =>
+          s.toLowerCase().includes(cleanQuery.toLowerCase()),
+        ),
     );
     return {
       books: filtered.length > 0 ? filtered : FEATURED_CAROUSEL_BOOKS,
@@ -476,11 +481,11 @@ export async function searchOpenLibrary({
  */
 export async function getWorksBySubject(
   subject: string,
-  limit: number = 15
+  limit: number = 15,
 ): Promise<BookItem[]> {
   const cleanSubject = subject.toLowerCase().replace(/\s+/g, "_");
   const url = `${OPEN_LIBRARY_BASE}/subjects/${encodeURIComponent(
-    cleanSubject
+    cleanSubject,
   )}.json?details=true&limit=${limit}`;
 
   try {
@@ -499,7 +504,9 @@ export async function getWorksBySubject(
     const data = await res.json();
     const allWorks: OpenLibrarySubjectWork[] = data.works || [];
     // Prioritize works with actual verified cover IDs so cards don't show blank/missing covers
-    const withCovers = allWorks.filter((w: OpenLibrarySubjectWork) => Boolean(w.cover_id && w.cover_id > 0));
+    const withCovers = allWorks.filter((w: OpenLibrarySubjectWork) =>
+      Boolean(w.cover_id && w.cover_id > 0),
+    );
     const works = withCovers.length >= 4 ? withCovers : allWorks;
 
     return works.map((w: OpenLibrarySubjectWork) => {
@@ -538,15 +545,20 @@ export async function getWorksBySubject(
 /**
  * Fetch daily trending books directly from Open Library Trending API
  */
-export async function getTrendingBooks(limit: number = 15): Promise<BookItem[]> {
+export async function getTrendingBooks(
+  limit: number = 15,
+): Promise<BookItem[]> {
   try {
-    const res = await fetch(`${OPEN_LIBRARY_BASE}/trending/daily.json?limit=${limit}`, {
-      headers: {
-        "User-Agent": "AvenorBookApp/1.0 (contact@avenorbooks.org)",
-        Accept: "application/json",
+    const res = await fetch(
+      `${OPEN_LIBRARY_BASE}/trending/daily.json?limit=${limit}`,
+      {
+        headers: {
+          "User-Agent": "AvenorBookApp/1.0 (contact@avenorbooks.org)",
+          Accept: "application/json",
+        },
+        next: { revalidate: 3600 },
       },
-      next: { revalidate: 3600 },
-    });
+    );
 
     if (!res.ok) {
       throw new Error(`Trending request failed: ${res.status}`);
@@ -586,7 +598,9 @@ export async function getTrendingBooks(limit: number = 15): Promise<BookItem[]> 
 /**
  * Get full work details, ratings, and bookshelves
  */
-export async function getWorkDetails(workId: string): Promise<WorkDetailData | null> {
+export async function getWorkDetails(
+  workId: string,
+): Promise<WorkDetailData | null> {
   const cleanId = cleanOlid(workId);
   const workUrl = `${OPEN_LIBRARY_BASE}/works/${cleanId}.json`;
   const ratingsUrl = `${OPEN_LIBRARY_BASE}/works/${cleanId}/ratings.json`;

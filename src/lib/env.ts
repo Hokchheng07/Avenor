@@ -1,9 +1,6 @@
-/**
- * Server-side environment variables.
- *
- * These are read on the server only — none of them are prefixed with
- * `NEXT_PUBLIC_`, so they never reach the browser bundle.
- */
+import { publicEnv } from "./public-env";
+
+/** Server-only environment values combined with the shared public config. */
 
 function required(name: string, value: string | undefined, fallback: string) {
   const resolved = value?.trim() || fallback;
@@ -15,7 +12,11 @@ function required(name: string, value: string | undefined, fallback: string) {
   return resolved.replace(/\/+$/, "");
 }
 
-function positiveNumber(name: string, value: string | undefined, fallback: number) {
+function positiveNumber(
+  name: string,
+  value: string | undefined,
+  fallback: number,
+) {
   if (value === undefined || value.trim() === "") {
     return fallback;
   }
@@ -23,23 +24,16 @@ function positiveNumber(name: string, value: string | undefined, fallback: numbe
   const parsed = Number(value);
 
   if (!Number.isFinite(parsed) || parsed < 0) {
-    throw new Error(`Environment variable ${name} must be a positive number, received "${value}"`);
+    throw new Error(
+      `Environment variable ${name} must be a positive number, received "${value}"`,
+    );
   }
 
   return parsed;
 }
 
 export const env = {
-  openLibraryApiUrl: required(
-    "OPEN_LIBRARY_API_URL",
-    process.env.OPEN_LIBRARY_API_URL,
-    "https://openlibrary.org",
-  ),
-  openLibraryCoversUrl: required(
-    "OPEN_LIBRARY_COVERS_URL",
-    process.env.OPEN_LIBRARY_COVERS_URL,
-    "https://covers.openlibrary.org",
-  ),
+  ...publicEnv,
   openLibraryUserAgent: required(
     "OPEN_LIBRARY_USER_AGENT",
     process.env.OPEN_LIBRARY_USER_AGENT,

@@ -1,4 +1,8 @@
 import type { NextConfig } from "next";
+import { publicEnv } from "./src/lib/public-env";
+
+const coversUrl = new URL(publicEnv.openLibraryCoversUrl);
+const coversPath = coversUrl.pathname.replace(/\/+$/, "");
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -7,14 +11,16 @@ const nextConfig: NextConfig = {
     qualities: [75, 90],
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "covers.openlibrary.org",
-        pathname: "/b/**",
+        protocol: coversUrl.protocol === "http:" ? "http" : "https",
+        hostname: coversUrl.hostname,
+        port: coversUrl.port,
+        pathname: `${coversPath}/b/**`,
       },
       {
-        protocol: "https",
-        hostname: "covers.openlibrary.org",
-        pathname: "/a/**",
+        protocol: coversUrl.protocol === "http:" ? "http" : "https",
+        hostname: coversUrl.hostname,
+        port: coversUrl.port,
+        pathname: `${coversPath}/a/**`,
       },
       {
         protocol: "https",
