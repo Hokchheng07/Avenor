@@ -11,6 +11,11 @@ function publicUrl(name: string, value: string | undefined, fallback: string) {
 }
 
 export const publicEnv = {
+  siteUrl: publicUrl(
+    "NEXT_PUBLIC_SITE_URL",
+    process.env.NEXT_PUBLIC_SITE_URL,
+    "https://avenor.vercel.app",
+  ),
   authApiUrl: publicUrl(
     "NEXT_PUBLIC_AUTH_API_URL",
     process.env.NEXT_PUBLIC_AUTH_API_URL,

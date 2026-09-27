@@ -13,6 +13,14 @@ export const metadata: Metadata = {
   title: "Discover",
   description:
     "Search the Open Library catalog and browse books by genre.",
+  alternates: {
+    canonical: "/discover",
+  },
+  openGraph: {
+    title: "Discover · Avenor",
+    description: "Search the Open Library catalog and browse books by genre.",
+    url: "/discover",
+  },
 };
 
 interface DiscoverPageProps {

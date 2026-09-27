@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -21,6 +22,21 @@ import {
 } from "@/Components/lightswind/scroll-timeline";
 import { mentors, teamMembers, type TeamMember } from "@/data/team";
 import styles from "./about.module.css";
+
+export const metadata: Metadata = {
+  title: "About",
+  description:
+    "Meet the team behind Avenor and learn about our mission to connect readers with meaningful books and authors.",
+  alternates: {
+    canonical: "/about",
+  },
+  openGraph: {
+    title: "About · Avenor",
+    description:
+      "Meet the team behind Avenor and learn about our mission to connect readers with meaningful books and authors.",
+    url: "/about",
+  },
+};
 
 const discoveryBooks = [
   { src: "/Images/hero-covers/beloved.jpg", alt: "Beloved book cover" },

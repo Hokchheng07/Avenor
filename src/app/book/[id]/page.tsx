@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getWorkDetails } from "@/lib/openlibrary";
+import { siteConfig } from "@/lib/seo";
 import { BookDetailView } from "@/Components/Books/book-detail-view";
 import { Footer } from "@/Components/Shared/footer";
 import Link from "next/link";
@@ -18,15 +19,36 @@ export async function generateMetadata({
 
   if (!book) {
     return {
-      title: "Book Not Found · Avenor",
+      title: "Book Not Found",
+      robots: { index: false, follow: false },
     };
   }
 
+  const description =
+    book.description?.slice(0, 160) ||
+    `Read and discover ${book.title} by ${book.author} on Avenor.`;
+  const url = `/book/${id}`;
+  const images = book.coverUrl ? [{ url: book.coverUrl }] : [siteConfig.ogImage];
+
   return {
-    title: `${book.title} · Avenor`,
-    description:
-      book.description?.slice(0, 160) ||
-      `Read and discover ${book.title} by ${book.author} on Avenor.`,
+    title: book.title,
+    description,
+    alternates: {
+      canonical: url,
+    },
+    openGraph: {
+      type: "book",
+      title: book.title,
+      description,
+      url,
+      images,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: book.title,
+      description,
+      images,
+    },
   };
 }
 
