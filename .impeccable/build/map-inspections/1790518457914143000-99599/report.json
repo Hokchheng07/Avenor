@@ -1,0 +1,1822 @@
+{
+  "tool": "comp-spec inspect-map",
+  "version": 1,
+  "referenceOnly": true,
+  "stateChanged": false,
+  "comp": ".impeccable/mocks/decision/about-constellation.png",
+  "compSize": {
+    "width": 1487,
+    "height": 1058
+  },
+  "inputRegionCount": 32,
+  "regions": [
+    {
+      "id": "navbar",
+      "kind": "chrome",
+      "note": "Existing Avenor global navigation and account controls; retain rather than rebuild locally.",
+      "grid": null,
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 0.0794
+      },
+      "px": {
+        "x": 0,
+        "y": 0,
+        "w": 1487,
+        "h": 84
+      },
+      "aspect": 17.7024,
+      "palette": [
+        {
+          "hex": "#f8f8f8",
+          "coverage": 0.953
+        },
+        {
+          "hex": "#273727",
+          "coverage": 0.0226
+        },
+        {
+          "hex": "#797b75",
+          "coverage": 0.0133
+        },
+        {
+          "hex": "#bcbab7",
+          "coverage": 0.0064
+        },
+        {
+          "hex": "#262626",
+          "coverage": 0.0047
+        }
+      ],
+      "detail": {
+        "energy": 15.2099
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 1,
+      "cropPath": "region-1.png"
+    },
+    {
+      "id": "hero-title",
+      "kind": "text",
+      "note": "Large left-aligned editorial serif statement, three lines, near-black forest ink.",
+      "grid": null,
+      "box": {
+        "x": 0.0363,
+        "y": 0.2042,
+        "w": 0.3161,
+        "h": 0.2013
+      },
+      "px": {
+        "x": 54,
+        "y": 216,
+        "w": 470,
+        "h": 213
+      },
+      "aspect": 2.2066,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.8174
+        },
+        {
+          "hex": "#101111",
+          "coverage": 0.1278
+        },
+        {
+          "hex": "#b2b2b2",
+          "coverage": 0.0235
+        },
+        {
+          "hex": "#494949",
+          "coverage": 0.017
+        },
+        {
+          "hex": "#797979",
+          "coverage": 0.0143
+        }
+      ],
+      "detail": {
+        "energy": 66.4898
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 2,
+      "cropPath": "region-2.png"
+    },
+    {
+      "id": "hero-intro",
+      "kind": "text",
+      "note": "Muted sans-serif introduction with relaxed two-line measure.",
+      "grid": null,
+      "box": {
+        "x": 0.037,
+        "y": 0.449,
+        "w": 0.2912,
+        "h": 0.0577
+      },
+      "px": {
+        "x": 55,
+        "y": 475,
+        "w": 433,
+        "h": 61
+      },
+      "aspect": 7.0984,
+      "palette": [
+        {
+          "hex": "#f7f6f6",
+          "coverage": 0.8808
+        },
+        {
+          "hex": "#8e8d8f",
+          "coverage": 0.0846
+        },
+        {
+          "hex": "#c6c1c3",
+          "coverage": 0.0326
+        },
+        {
+          "hex": "#68686d",
+          "coverage": 0.002
+        }
+      ],
+      "detail": {
+        "energy": 36.8317
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 3,
+      "cropPath": "region-3.png"
+    },
+    {
+      "id": "discovery-icon",
+      "kind": "chrome",
+      "note": "Circular gold-outline book icon.",
+      "grid": null,
+      "box": {
+        "x": 0.3786,
+        "y": 0.1474,
+        "w": 0.0403,
+        "h": 0.0577
+      },
+      "px": {
+        "x": 563,
+        "y": 156,
+        "w": 60,
+        "h": 61
+      },
+      "aspect": 0.9836,
+      "palette": [
+        {
+          "hex": "#f7f7f5",
+          "coverage": 0.8612
+        },
+        {
+          "hex": "#dcc5a8",
+          "coverage": 0.0598
+        },
+        {
+          "hex": "#334330",
+          "coverage": 0.0287
+        },
+        {
+          "hex": "#c9a475",
+          "coverage": 0.0263
+        },
+        {
+          "hex": "#929e90",
+          "coverage": 0.0239
+        }
+      ],
+      "detail": {
+        "energy": 10.623
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 4,
+      "cropPath": "region-4.png"
+    },
+    {
+      "id": "discovery-copy",
+      "kind": "text",
+      "note": "Discovery branch heading and two-line description.",
+      "grid": null,
+      "box": {
+        "x": 0.4284,
+        "y": 0.1578,
+        "w": 0.1836,
+        "h": 0.069
+      },
+      "px": {
+        "x": 637,
+        "y": 167,
+        "w": 273,
+        "h": 73
+      },
+      "aspect": 3.7397,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.8881
+        },
+        {
+          "hex": "#9f9f9e",
+          "coverage": 0.0737
+        },
+        {
+          "hex": "#c6cbc4",
+          "coverage": 0.0186
+        },
+        {
+          "hex": "#747a73",
+          "coverage": 0.0138
+        },
+        {
+          "hex": "#324232",
+          "coverage": 0.0058
+        }
+      ],
+      "detail": {
+        "energy": 35.1147
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 5,
+      "cropPath": "region-5.png"
+    },
+    {
+      "id": "discovery-book-1",
+      "kind": "image",
+      "note": "First real book cover from Avenor assets.",
+      "grid": null,
+      "bleed": true,
+      "box": {
+        "x": 0.3786,
+        "y": 0.2476,
+        "w": 0.0477,
+        "h": 0.1078
+      },
+      "px": {
+        "x": 563,
+        "y": 262,
+        "w": 71,
+        "h": 114
+      },
+      "aspect": 0.6228,
+      "palette": [
+        {
+          "hex": "#c8cdce",
+          "coverage": 0.602
+        },
+        {
+          "hex": "#353632",
+          "coverage": 0.1497
+        },
+        {
+          "hex": "#6d7b7c",
+          "coverage": 0.1109
+        },
+        {
+          "hex": "#535346",
+          "coverage": 0.0998
+        },
+        {
+          "hex": "#9ca4aa",
+          "coverage": 0.0377
+        }
+      ],
+      "detail": {
+        "energy": 10.7923
+      },
+      "medium": "raster",
+      "plate": "assets/plates/discovery-book-1.png",
+      "text": null,
+      "number": 6,
+      "reference": {
+        "policy": "plate-reference-v2",
+        "excludedPixels": 0,
+        "totalPixels": 8094,
+        "remainingPixels": 8094,
+        "excludedFraction": 0.0,
+        "fullyExcluded": false,
+        "regions": [],
+        "ignoredContainers": []
+      },
+      "cropPath": "region-6.png",
+      "referencePath": "reference-6.png"
+    },
+    {
+      "id": "discovery-book-2",
+      "kind": "image",
+      "note": "Second real book cover from Avenor assets.",
+      "grid": null,
+      "bleed": true,
+      "box": {
+        "x": 0.4324,
+        "y": 0.2476,
+        "w": 0.0484,
+        "h": 0.1078
+      },
+      "px": {
+        "x": 643,
+        "y": 262,
+        "w": 72,
+        "h": 114
+      },
+      "aspect": 0.6316,
+      "palette": [
+        {
+          "hex": "#f5daac",
+          "coverage": 0.6595
+        },
+        {
+          "hex": "#58481e",
+          "coverage": 0.1686
+        },
+        {
+          "hex": "#b8924b",
+          "coverage": 0.0626
+        },
+        {
+          "hex": "#8e6e2e",
+          "coverage": 0.0592
+        },
+        {
+          "hex": "#d7b473",
+          "coverage": 0.0501
+        }
+      ],
+      "detail": {
+        "energy": 9.0369
+      },
+      "medium": "raster",
+      "plate": "assets/plates/discovery-book-2.png",
+      "text": null,
+      "number": 7,
+      "reference": {
+        "policy": "plate-reference-v2",
+        "excludedPixels": 0,
+        "totalPixels": 8208,
+        "remainingPixels": 8208,
+        "excludedFraction": 0.0,
+        "fullyExcluded": false,
+        "regions": [],
+        "ignoredContainers": []
+      },
+      "cropPath": "region-7.png",
+      "referencePath": "reference-7.png"
+    },
+    {
+      "id": "discovery-book-3",
+      "kind": "image",
+      "note": "Third real book cover from Avenor assets.",
+      "grid": null,
+      "bleed": true,
+      "box": {
+        "x": 0.4862,
+        "y": 0.2476,
+        "w": 0.0477,
+        "h": 0.1078
+      },
+      "px": {
+        "x": 723,
+        "y": 262,
+        "w": 71,
+        "h": 114
+      },
+      "aspect": 0.6228,
+      "palette": [
+        {
+          "hex": "#232a1e",
+          "coverage": 0.7996
+        },
+        {
+          "hex": "#71756f",
+          "coverage": 0.0864
+        },
+        {
+          "hex": "#454d3a",
+          "coverage": 0.0819
+        },
+        {
+          "hex": "#c5c6c1",
+          "coverage": 0.0199
+        },
+        {
+          "hex": "#9fa199",
+          "coverage": 0.0122
+        }
+      ],
+      "detail": {
+        "energy": 13.1655
+      },
+      "medium": "raster",
+      "plate": "assets/plates/discovery-book-3.png",
+      "text": null,
+      "number": 8,
+      "reference": {
+        "policy": "plate-reference-v2",
+        "excludedPixels": 0,
+        "totalPixels": 8094,
+        "remainingPixels": 8094,
+        "excludedFraction": 0.0,
+        "fullyExcluded": false,
+        "regions": [],
+        "ignoredContainers": []
+      },
+      "cropPath": "region-8.png",
+      "referencePath": "reference-8.png"
+    },
+    {
+      "id": "discovery-book-4",
+      "kind": "image",
+      "note": "Fourth real book cover from Avenor assets.",
+      "grid": null,
+      "bleed": true,
+      "box": {
+        "x": 0.54,
+        "y": 0.2476,
+        "w": 0.0484,
+        "h": 0.1078
+      },
+      "px": {
+        "x": 803,
+        "y": 262,
+        "w": 72,
+        "h": 114
+      },
+      "aspect": 0.6316,
+      "palette": [
+        {
+          "hex": "#c9c4b7",
+          "coverage": 0.7381
+        },
+        {
+          "hex": "#6a573f",
+          "coverage": 0.1487
+        },
+        {
+          "hex": "#888c82",
+          "coverage": 0.0777
+        },
+        {
+          "hex": "#423c2a",
+          "coverage": 0.0244
+        },
+        {
+          "hex": "#726b6b",
+          "coverage": 0.0111
+        }
+      ],
+      "detail": {
+        "energy": 7.0149
+      },
+      "medium": "raster",
+      "plate": "assets/plates/discovery-book-4.png",
+      "text": null,
+      "number": 9,
+      "reference": {
+        "policy": "plate-reference-v2",
+        "excludedPixels": 0,
+        "totalPixels": 8208,
+        "remainingPixels": 8208,
+        "excludedFraction": 0.0,
+        "fullyExcluded": false,
+        "regions": [],
+        "ignoredContainers": []
+      },
+      "cropPath": "region-9.png",
+      "referencePath": "reference-9.png"
+    },
+    {
+      "id": "mission-icon",
+      "kind": "chrome",
+      "note": "Circular gold-outline compass icon.",
+      "grid": null,
+      "box": {
+        "x": 0.7512,
+        "y": 0.1474,
+        "w": 0.0403,
+        "h": 0.0577
+      },
+      "px": {
+        "x": 1117,
+        "y": 156,
+        "w": 60,
+        "h": 61
+      },
+      "aspect": 0.9836,
+      "palette": [
+        {
+          "hex": "#f8f7f7",
+          "coverage": 0.8814
+        },
+        {
+          "hex": "#d1ae8b",
+          "coverage": 0.0436
+        },
+        {
+          "hex": "#ebdac7",
+          "coverage": 0.0412
+        },
+        {
+          "hex": "#384638",
+          "coverage": 0.0194
+        },
+        {
+          "hex": "#b5bbbb",
+          "coverage": 0.0145
+        }
+      ],
+      "detail": {
+        "energy": 10.0423
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 10,
+      "cropPath": "region-10.png"
+    },
+    {
+      "id": "mission-copy",
+      "kind": "text",
+      "note": "Mission branch heading and supporting paragraph.",
+      "grid": null,
+      "box": {
+        "x": 0.8009,
+        "y": 0.1616,
+        "w": 0.1641,
+        "h": 0.1418
+      },
+      "px": {
+        "x": 1191,
+        "y": 171,
+        "w": 244,
+        "h": 150
+      },
+      "aspect": 1.6267,
+      "palette": [
+        {
+          "hex": "#f7f6f6",
+          "coverage": 0.9062
+        },
+        {
+          "hex": "#bbb9ba",
+          "coverage": 0.0534
+        },
+        {
+          "hex": "#8e8d8e",
+          "coverage": 0.035
+        },
+        {
+          "hex": "#526252",
+          "coverage": 0.0027
+        },
+        {
+          "hex": "#1c311c",
+          "coverage": 0.0027
+        }
+      ],
+      "detail": {
+        "energy": 23.4743
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 11,
+      "cropPath": "region-11.png"
+    },
+    {
+      "id": "discovery-connection",
+      "kind": "chrome",
+      "note": "Responsive semantic connector route from Discovery to Avenor.",
+      "grid": null,
+      "codeDrawn": true,
+      "box": {
+        "x": 0.5024,
+        "y": 0.3629,
+        "w": 0.0854,
+        "h": 0.0718
+      },
+      "px": {
+        "x": 747,
+        "y": 384,
+        "w": 127,
+        "h": 76
+      },
+      "aspect": 1.6711,
+      "palette": [
+        {
+          "hex": "#f8f8f8",
+          "coverage": 0.9696
+        },
+        {
+          "hex": "#cba77d",
+          "coverage": 0.0179
+        },
+        {
+          "hex": "#e8d5b8",
+          "coverage": 0.0054
+        },
+        {
+          "hex": "#b88b52",
+          "coverage": 0.0045
+        },
+        {
+          "hex": "#d8bdad",
+          "coverage": 0.0027
+        }
+      ],
+      "detail": {
+        "energy": 3.622
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 12,
+      "cropPath": "region-12.png"
+    },
+    {
+      "id": "mission-connection",
+      "kind": "chrome",
+      "note": "Responsive semantic connector route from Mission to Avenor.",
+      "grid": null,
+      "codeDrawn": true,
+      "box": {
+        "x": 0.6907,
+        "y": 0.2127,
+        "w": 0.0787,
+        "h": 0.1815
+      },
+      "px": {
+        "x": 1027,
+        "y": 225,
+        "w": 117,
+        "h": 192
+      },
+      "aspect": 0.6094,
+      "palette": [
+        {
+          "hex": "#f8f8f8",
+          "coverage": 0.9767
+        },
+        {
+          "hex": "#bd9666",
+          "coverage": 0.0076
+        },
+        {
+          "hex": "#d3b493",
+          "coverage": 0.0072
+        },
+        {
+          "hex": "#edddcf",
+          "coverage": 0.0064
+        },
+        {
+          "hex": "#b87e48",
+          "coverage": 0.002
+        }
+      ],
+      "detail": {
+        "energy": 2.3838
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 13,
+      "cropPath": "region-13.png"
+    },
+    {
+      "id": "vision-connection",
+      "kind": "chrome",
+      "note": "Responsive semantic connector route from Vision to Avenor.",
+      "grid": null,
+      "codeDrawn": true,
+      "box": {
+        "x": 0.5151,
+        "y": 0.5198,
+        "w": 0.072,
+        "h": 0.0671
+      },
+      "px": {
+        "x": 766,
+        "y": 550,
+        "w": 107,
+        "h": 71
+      },
+      "aspect": 1.507,
+      "palette": [
+        {
+          "hex": "#f8f8f8",
+          "coverage": 0.9595
+        },
+        {
+          "hex": "#d7be9b",
+          "coverage": 0.0197
+        },
+        {
+          "hex": "#b9905a",
+          "coverage": 0.0185
+        },
+        {
+          "hex": "#e8e0d0",
+          "coverage": 0.0023
+        }
+      ],
+      "detail": {
+        "energy": 3.6084
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 14,
+      "cropPath": "region-14.png"
+    },
+    {
+      "id": "people-connection",
+      "kind": "chrome",
+      "note": "Responsive semantic connector route from Avenor to People.",
+      "grid": null,
+      "codeDrawn": true,
+      "box": {
+        "x": 0.7169,
+        "y": 0.5208,
+        "w": 0.0383,
+        "h": 0.034
+      },
+      "px": {
+        "x": 1066,
+        "y": 551,
+        "w": 57,
+        "h": 36
+      },
+      "aspect": 1.5833,
+      "palette": [
+        {
+          "hex": "#f8f8f8",
+          "coverage": 0.8904
+        },
+        {
+          "hex": "#b88a59",
+          "coverage": 0.0614
+        },
+        {
+          "hex": "#d3b38d",
+          "coverage": 0.0307
+        },
+        {
+          "hex": "#e4d8c4",
+          "coverage": 0.0175
+        }
+      ],
+      "detail": {
+        "energy": 4.1319
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 15,
+      "cropPath": "region-15.png"
+    },
+    {
+      "id": "avenor-medallion",
+      "kind": "chrome",
+      "note": "Central ivory circular medallion with fine gold rim.",
+      "grid": null,
+      "container": true,
+      "box": {
+        "x": 0.5797,
+        "y": 0.3781,
+        "w": 0.1453,
+        "h": 0.2042
+      },
+      "px": {
+        "x": 862,
+        "y": 400,
+        "w": 216,
+        "h": 216
+      },
+      "aspect": 1,
+      "palette": [
+        {
+          "hex": "#f8f8f7",
+          "coverage": 0.9478
+        },
+        {
+          "hex": "#c8a278",
+          "coverage": 0.0214
+        },
+        {
+          "hex": "#e0d5c4",
+          "coverage": 0.0149
+        },
+        {
+          "hex": "#384536",
+          "coverage": 0.01
+        },
+        {
+          "hex": "#757c73",
+          "coverage": 0.0059
+        }
+      ],
+      "detail": {
+        "energy": 12.9822
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 16,
+      "cropPath": "region-16.png"
+    },
+    {
+      "id": "avenor-mark",
+      "kind": "image",
+      "note": "Existing Avenor brand mark asset, centered in medallion.",
+      "grid": null,
+      "parentId": "avenor-medallion",
+      "box": {
+        "x": 0.6321,
+        "y": 0.4357,
+        "w": 0.0417,
+        "h": 0.051
+      },
+      "px": {
+        "x": 940,
+        "y": 461,
+        "w": 62,
+        "h": 54
+      },
+      "aspect": 1.1481,
+      "palette": [
+        {
+          "hex": "#f7f6f5",
+          "coverage": 0.7989
+        },
+        {
+          "hex": "#b7b8b1",
+          "coverage": 0.0642
+        },
+        {
+          "hex": "#1b2717",
+          "coverage": 0.0642
+        },
+        {
+          "hex": "#40453c",
+          "coverage": 0.0475
+        },
+        {
+          "hex": "#83847f",
+          "coverage": 0.0251
+        }
+      ],
+      "detail": {
+        "energy": 17.1002
+      },
+      "medium": "raster",
+      "plate": "assets/plates/avenor-mark.png",
+      "text": null,
+      "number": 17,
+      "reference": {
+        "policy": "plate-reference-v2",
+        "excludedPixels": 0,
+        "totalPixels": 3348,
+        "remainingPixels": 3348,
+        "excludedFraction": 0.0,
+        "fullyExcluded": false,
+        "regions": [],
+        "ignoredContainers": [
+          "avenor-medallion"
+        ]
+      },
+      "cropPath": "region-17.png",
+      "referencePath": "reference-17.png"
+    },
+    {
+      "id": "avenor-wordmark",
+      "kind": "text",
+      "note": "Spaced serif AVENOR wordmark under the brand mark.",
+      "grid": null,
+      "parentId": "avenor-medallion",
+      "box": {
+        "x": 0.6046,
+        "y": 0.4924,
+        "w": 0.0968,
+        "h": 0.0293
+      },
+      "px": {
+        "x": 899,
+        "y": 521,
+        "w": 144,
+        "h": 31
+      },
+      "aspect": 4.6452,
+      "palette": [
+        {
+          "hex": "#f7f6f4",
+          "coverage": 0.8421
+        },
+        {
+          "hex": "#596557",
+          "coverage": 0.0429
+        },
+        {
+          "hex": "#0f180f",
+          "coverage": 0.0429
+        },
+        {
+          "hex": "#898f89",
+          "coverage": 0.0429
+        },
+        {
+          "hex": "#353d2d",
+          "coverage": 0.0292
+        }
+      ],
+      "detail": {
+        "energy": 35.4141
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 18,
+      "cropPath": "region-18.png"
+    },
+    {
+      "id": "vision-icon",
+      "kind": "chrome",
+      "note": "Circular gold-outline eye icon.",
+      "grid": null,
+      "box": {
+        "x": 0.3786,
+        "y": 0.5633,
+        "w": 0.0403,
+        "h": 0.0577
+      },
+      "px": {
+        "x": 563,
+        "y": 596,
+        "w": 60,
+        "h": 61
+      },
+      "aspect": 0.9836,
+      "palette": [
+        {
+          "hex": "#f8f7f6",
+          "coverage": 0.8793
+        },
+        {
+          "hex": "#c9a780",
+          "coverage": 0.0468
+        },
+        {
+          "hex": "#e5ceb8",
+          "coverage": 0.0271
+        },
+        {
+          "hex": "#ced7c9",
+          "coverage": 0.0271
+        },
+        {
+          "hex": "#2c3a2e",
+          "coverage": 0.0197
+        }
+      ],
+      "detail": {
+        "energy": 10.9308
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 19,
+      "cropPath": "region-19.png"
+    },
+    {
+      "id": "vision-copy",
+      "kind": "text",
+      "note": "Vision branch heading and supporting paragraph.",
+      "grid": null,
+      "box": {
+        "x": 0.4284,
+        "y": 0.5766,
+        "w": 0.1748,
+        "h": 0.1342
+      },
+      "px": {
+        "x": 637,
+        "y": 610,
+        "w": 260,
+        "h": 142
+      },
+      "aspect": 1.831,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.9009
+        },
+        {
+          "hex": "#9f9d9f",
+          "coverage": 0.0736
+        },
+        {
+          "hex": "#ccc6c9",
+          "coverage": 0.0141
+        },
+        {
+          "hex": "#7d7a81",
+          "coverage": 0.0085
+        },
+        {
+          "hex": "#213121",
+          "coverage": 0.0029
+        }
+      ],
+      "detail": {
+        "energy": 24.6607
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 20,
+      "cropPath": "region-20.png"
+    },
+    {
+      "id": "botanical-sprig",
+      "kind": "plate",
+      "note": "Delicate botanical bookplate illustration on warm paper.",
+      "grid": null,
+      "box": {
+        "x": 0.0417,
+        "y": 0.6172,
+        "w": 0.0551,
+        "h": 0.104
+      },
+      "px": {
+        "x": 62,
+        "y": 653,
+        "w": 82,
+        "h": 110
+      },
+      "aspect": 0.7455,
+      "palette": [
+        {
+          "hex": "#f8f8f7",
+          "coverage": 0.7946
+        },
+        {
+          "hex": "#98998b",
+          "coverage": 0.0969
+        },
+        {
+          "hex": "#626555",
+          "coverage": 0.0552
+        },
+        {
+          "hex": "#c3c4b5",
+          "coverage": 0.0494
+        },
+        {
+          "hex": "#849474",
+          "coverage": 0.0039
+        }
+      ],
+      "detail": {
+        "energy": 9.4872
+      },
+      "medium": "raster",
+      "plate": "assets/plates/botanical-sprig.png",
+      "text": null,
+      "number": 21,
+      "reference": {
+        "policy": "plate-reference-v2",
+        "excludedPixels": 0,
+        "totalPixels": 9020,
+        "remainingPixels": 9020,
+        "excludedFraction": 0.0,
+        "fullyExcluded": false,
+        "regions": [],
+        "ignoredContainers": []
+      },
+      "cropPath": "region-21.png",
+      "referencePath": "reference-21.png"
+    },
+    {
+      "id": "pull-quote",
+      "kind": "text",
+      "note": "Short italic editorial quote beside a hairline gold rule.",
+      "grid": null,
+      "box": {
+        "x": 0.1103,
+        "y": 0.5898,
+        "w": 0.1601,
+        "h": 0.1285
+      },
+      "px": {
+        "x": 164,
+        "y": 624,
+        "w": 238,
+        "h": 136
+      },
+      "aspect": 1.75,
+      "palette": [
+        {
+          "hex": "#f8f7f7",
+          "coverage": 0.9291
+        },
+        {
+          "hex": "#b9b9b6",
+          "coverage": 0.0273
+        },
+        {
+          "hex": "#7f807c",
+          "coverage": 0.0213
+        },
+        {
+          "hex": "#4b4e4a",
+          "coverage": 0.0117
+        },
+        {
+          "hex": "#c8a88b",
+          "coverage": 0.0106
+        }
+      ],
+      "detail": {
+        "energy": 15.6948
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 22,
+      "cropPath": "region-22.png"
+    },
+    {
+      "id": "people-icon",
+      "kind": "chrome",
+      "note": "Circular gold-outline people icon.",
+      "grid": null,
+      "box": {
+        "x": 0.7512,
+        "y": 0.5473,
+        "w": 0.0403,
+        "h": 0.0577
+      },
+      "px": {
+        "x": 1117,
+        "y": 579,
+        "w": 60,
+        "h": 61
+      },
+      "aspect": 0.9836,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.8403
+        },
+        {
+          "hex": "#c69f74",
+          "coverage": 0.0639
+        },
+        {
+          "hex": "#ead9c5",
+          "coverage": 0.059
+        },
+        {
+          "hex": "#868884",
+          "coverage": 0.0197
+        },
+        {
+          "hex": "#2d2f28",
+          "coverage": 0.0172
+        }
+      ],
+      "detail": {
+        "energy": 11.9167
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 23,
+      "cropPath": "region-23.png"
+    },
+    {
+      "id": "people-copy",
+      "kind": "text",
+      "note": "People branch heading and short description.",
+      "grid": null,
+      "box": {
+        "x": 0.8009,
+        "y": 0.5605,
+        "w": 0.1621,
+        "h": 0.1078
+      },
+      "px": {
+        "x": 1191,
+        "y": 593,
+        "w": 241,
+        "h": 114
+      },
+      "aspect": 2.114,
+      "palette": [
+        {
+          "hex": "#f8f7f7",
+          "coverage": 0.8566
+        },
+        {
+          "hex": "#9f9f9f",
+          "coverage": 0.0962
+        },
+        {
+          "hex": "#d2ced0",
+          "coverage": 0.0255
+        },
+        {
+          "hex": "#807b82",
+          "coverage": 0.0164
+        },
+        {
+          "hex": "#1b311f",
+          "coverage": 0.0052
+        }
+      ],
+      "detail": {
+        "energy": 22.1294
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 24,
+      "cropPath": "region-24.png"
+    },
+    {
+      "id": "person-1",
+      "kind": "image",
+      "note": "Real Avenor mentor/member portrait, cropped consistently.",
+      "grid": null,
+      "bleed": true,
+      "box": {
+        "x": 0.7424,
+        "y": 0.6834,
+        "w": 0.0531,
+        "h": 0.0766
+      },
+      "px": {
+        "x": 1104,
+        "y": 723,
+        "w": 79,
+        "h": 81
+      },
+      "aspect": 0.9753,
+      "palette": [
+        {
+          "hex": "#d6cbc8",
+          "coverage": 0.6829
+        },
+        {
+          "hex": "#1c1a15",
+          "coverage": 0.1529
+        },
+        {
+          "hex": "#807d6e",
+          "coverage": 0.0686
+        },
+        {
+          "hex": "#474539",
+          "coverage": 0.0614
+        },
+        {
+          "hex": "#6b5c5b",
+          "coverage": 0.0343
+        }
+      ],
+      "detail": {
+        "energy": 7.3696
+      },
+      "medium": "raster",
+      "plate": "assets/plates/person-1.png",
+      "text": null,
+      "number": 25,
+      "reference": {
+        "policy": "plate-reference-v2",
+        "excludedPixels": 0,
+        "totalPixels": 6399,
+        "remainingPixels": 6399,
+        "excludedFraction": 0.0,
+        "fullyExcluded": false,
+        "regions": [],
+        "ignoredContainers": []
+      },
+      "cropPath": "region-25.png",
+      "referencePath": "reference-25.png"
+    },
+    {
+      "id": "person-2",
+      "kind": "image",
+      "note": "Real Avenor mentor/member portrait, cropped consistently.",
+      "grid": null,
+      "bleed": true,
+      "box": {
+        "x": 0.8003,
+        "y": 0.6834,
+        "w": 0.0531,
+        "h": 0.0766
+      },
+      "px": {
+        "x": 1190,
+        "y": 723,
+        "w": 79,
+        "h": 81
+      },
+      "aspect": 0.9753,
+      "palette": [
+        {
+          "hex": "#d8d1c9",
+          "coverage": 0.51
+        },
+        {
+          "hex": "#514c42",
+          "coverage": 0.298
+        },
+        {
+          "hex": "#27231e",
+          "coverage": 0.1003
+        },
+        {
+          "hex": "#f8f7f6",
+          "coverage": 0.0473
+        },
+        {
+          "hex": "#7f766d",
+          "coverage": 0.0444
+        }
+      ],
+      "detail": {
+        "energy": 10.2688
+      },
+      "medium": "raster",
+      "plate": "assets/plates/person-2.png",
+      "text": null,
+      "number": 26,
+      "reference": {
+        "policy": "plate-reference-v2",
+        "excludedPixels": 0,
+        "totalPixels": 6399,
+        "remainingPixels": 6399,
+        "excludedFraction": 0.0,
+        "fullyExcluded": false,
+        "regions": [],
+        "ignoredContainers": []
+      },
+      "cropPath": "region-26.png",
+      "referencePath": "reference-26.png"
+    },
+    {
+      "id": "person-3",
+      "kind": "image",
+      "note": "Real Avenor mentor/member portrait, cropped consistently.",
+      "grid": null,
+      "bleed": true,
+      "box": {
+        "x": 0.8581,
+        "y": 0.6834,
+        "w": 0.0531,
+        "h": 0.0766
+      },
+      "px": {
+        "x": 1276,
+        "y": 723,
+        "w": 79,
+        "h": 81
+      },
+      "aspect": 0.9753,
+      "palette": [
+        {
+          "hex": "#cbc4b9",
+          "coverage": 0.5933
+        },
+        {
+          "hex": "#1b1913",
+          "coverage": 0.1529
+        },
+        {
+          "hex": "#a1958c",
+          "coverage": 0.1332
+        },
+        {
+          "hex": "#696355",
+          "coverage": 0.0771
+        },
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.0435
+        }
+      ],
+      "detail": {
+        "energy": 8.9835
+      },
+      "medium": "raster",
+      "plate": "assets/plates/person-3.png",
+      "text": null,
+      "number": 27,
+      "reference": {
+        "policy": "plate-reference-v2",
+        "excludedPixels": 0,
+        "totalPixels": 6399,
+        "remainingPixels": 6399,
+        "excludedFraction": 0.0,
+        "fullyExcluded": false,
+        "regions": [],
+        "ignoredContainers": []
+      },
+      "cropPath": "region-27.png",
+      "referencePath": "reference-27.png"
+    },
+    {
+      "id": "person-4",
+      "kind": "image",
+      "note": "Real Avenor mentor/member portrait, cropped consistently.",
+      "grid": null,
+      "bleed": true,
+      "box": {
+        "x": 0.9159,
+        "y": 0.6834,
+        "w": 0.0531,
+        "h": 0.0766
+      },
+      "px": {
+        "x": 1362,
+        "y": 723,
+        "w": 79,
+        "h": 81
+      },
+      "aspect": 0.9753,
+      "palette": [
+        {
+          "hex": "#e3dace",
+          "coverage": 0.6339
+        },
+        {
+          "hex": "#978d81",
+          "coverage": 0.1879
+        },
+        {
+          "hex": "#13100c",
+          "coverage": 0.0996
+        },
+        {
+          "hex": "#343024",
+          "coverage": 0.0435
+        },
+        {
+          "hex": "#6c5e53",
+          "coverage": 0.0351
+        }
+      ],
+      "detail": {
+        "energy": 7.1236
+      },
+      "medium": "raster",
+      "plate": "assets/plates/person-4.png",
+      "text": null,
+      "number": 28,
+      "reference": {
+        "policy": "plate-reference-v2",
+        "excludedPixels": 0,
+        "totalPixels": 6399,
+        "remainingPixels": 6399,
+        "excludedFraction": 0.0,
+        "fullyExcluded": false,
+        "regions": [],
+        "ignoredContainers": []
+      },
+      "cropPath": "region-28.png",
+      "referencePath": "reference-28.png"
+    },
+    {
+      "id": "team-link",
+      "kind": "control",
+      "note": "Warm-gold Meet the team anchor with right arrow and focus/hover state.",
+      "grid": null,
+      "box": {
+        "x": 0.8756,
+        "y": 0.7807,
+        "w": 0.0928,
+        "h": 0.0217
+      },
+      "px": {
+        "x": 1302,
+        "y": 826,
+        "w": 138,
+        "h": 23
+      },
+      "aspect": 6,
+      "palette": [
+        {
+          "hex": "#f8f7f7",
+          "coverage": 0.8207
+        },
+        {
+          "hex": "#e8d9c7",
+          "coverage": 0.0951
+        },
+        {
+          "hex": "#b08352",
+          "coverage": 0.0462
+        },
+        {
+          "hex": "#cba885",
+          "coverage": 0.038
+        }
+      ],
+      "detail": {
+        "energy": 20.9019
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 29,
+      "cropPath": "region-29.png"
+    },
+    {
+      "id": "team-divider",
+      "kind": "chrome",
+      "note": "Long fine warm-gray section divider.",
+      "grid": null,
+      "box": {
+        "x": 0.037,
+        "y": 0.8459,
+        "w": 0.9274,
+        "h": 0.0038
+      },
+      "px": {
+        "x": 55,
+        "y": 895,
+        "w": 1379,
+        "h": 4
+      },
+      "aspect": 344.75,
+      "palette": [
+        {
+          "hex": "#f8f0f0",
+          "coverage": 1
+        }
+      ],
+      "detail": {
+        "energy": 8.2317
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 30,
+      "cropPath": "region-30.png"
+    },
+    {
+      "id": "team-heading",
+      "kind": "text",
+      "note": "Editorial serif heading introducing the full team section.",
+      "grid": null,
+      "box": {
+        "x": 0.037,
+        "y": 0.9083,
+        "w": 0.3631,
+        "h": 0.069
+      },
+      "px": {
+        "x": 55,
+        "y": 961,
+        "w": 540,
+        "h": 73
+      },
+      "aspect": 7.3973,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.887
+        },
+        {
+          "hex": "#0f1010",
+          "coverage": 0.0747
+        },
+        {
+          "hex": "#9e9e9e",
+          "coverage": 0.0153
+        },
+        {
+          "hex": "#7b7b7b",
+          "coverage": 0.0126
+        },
+        {
+          "hex": "#474747",
+          "coverage": 0.0105
+        }
+      ],
+      "detail": {
+        "energy": 58.5408
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 31,
+      "cropPath": "region-31.png"
+    },
+    {
+      "id": "team-intro",
+      "kind": "text",
+      "note": "Right-aligned supporting team introduction.",
+      "grid": null,
+      "box": {
+        "x": 0.6799,
+        "y": 0.9187,
+        "w": 0.2851,
+        "h": 0.0671
+      },
+      "px": {
+        "x": 1011,
+        "y": 972,
+        "w": 424,
+        "h": 71
+      },
+      "aspect": 5.9718,
+      "palette": [
+        {
+          "hex": "#f7f6f6",
+          "coverage": 0.8614
+        },
+        {
+          "hex": "#b1afb0",
+          "coverage": 0.1087
+        },
+        {
+          "hex": "#888588",
+          "coverage": 0.0288
+        },
+        {
+          "hex": "#d8c8d8",
+          "coverage": 0.0012
+        }
+      ],
+      "detail": {
+        "energy": 32.0581
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "number": 32,
+      "cropPath": "region-32.png"
+    }
+  ],
+  "issues": [
+    {
+      "severity": "warning",
+      "code": "measurement-warning",
+      "regionId": null,
+      "message": "region discovery-book-1: \"bleed\": true set in the regions file (the clipped-artwork refusal is overridden: the page crops it there)"
+    },
+    {
+      "severity": "warning",
+      "code": "measurement-warning",
+      "regionId": null,
+      "message": "region discovery-book-2: \"bleed\": true set in the regions file (the clipped-artwork refusal is overridden: the page crops it there)"
+    },
+    {
+      "severity": "warning",
+      "code": "measurement-warning",
+      "regionId": null,
+      "message": "region discovery-book-3: \"bleed\": true set in the regions file (the clipped-artwork refusal is overridden: the page crops it there)"
+    },
+    {
+      "severity": "warning",
+      "code": "measurement-warning",
+      "regionId": null,
+      "message": "region discovery-book-4: \"bleed\": true set in the regions file (the clipped-artwork refusal is overridden: the page crops it there)"
+    },
+    {
+      "severity": "warning",
+      "code": "measurement-warning",
+      "regionId": null,
+      "message": "region discovery-connection: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)"
+    },
+    {
+      "severity": "warning",
+      "code": "measurement-warning",
+      "regionId": null,
+      "message": "region mission-connection: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)"
+    },
+    {
+      "severity": "warning",
+      "code": "measurement-warning",
+      "regionId": null,
+      "message": "region vision-connection: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)"
+    },
+    {
+      "severity": "warning",
+      "code": "measurement-warning",
+      "regionId": null,
+      "message": "region people-connection: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)"
+    },
+    {
+      "severity": "warning",
+      "code": "measurement-warning",
+      "regionId": null,
+      "message": "region avenor-medallion: \"container\": true set in the regions file (the region-size refusal is overridden: one undivided element)"
+    },
+    {
+      "severity": "warning",
+      "code": "measurement-warning",
+      "regionId": null,
+      "message": "region person-1: \"bleed\": true set in the regions file (the clipped-artwork refusal is overridden: the page crops it there)"
+    },
+    {
+      "severity": "warning",
+      "code": "measurement-warning",
+      "regionId": null,
+      "message": "region person-2: \"bleed\": true set in the regions file (the clipped-artwork refusal is overridden: the page crops it there)"
+    },
+    {
+      "severity": "warning",
+      "code": "measurement-warning",
+      "regionId": null,
+      "message": "region person-3: \"bleed\": true set in the regions file (the clipped-artwork refusal is overridden: the page crops it there)"
+    },
+    {
+      "severity": "warning",
+      "code": "measurement-warning",
+      "regionId": null,
+      "message": "region person-4: \"bleed\": true set in the regions file (the clipped-artwork refusal is overridden: the page crops it there)"
+    },
+    {
+      "severity": "warning",
+      "code": "uncovered-ink",
+      "regionId": null,
+      "message": "3 grid cells have detail outside named regions. This is a coverage heuristic, not proof of missing components."
+    }
+  ],
+  "overlaps": [
+    {
+      "a": "discovery-connection",
+      "b": "avenor-medallion",
+      "pixels": 720.0,
+      "relationship": "container extent"
+    },
+    {
+      "a": "mission-connection",
+      "b": "avenor-medallion",
+      "pixels": 867.0,
+      "relationship": "container extent"
+    },
+    {
+      "a": "vision-connection",
+      "b": "avenor-medallion",
+      "pixels": 726.0,
+      "relationship": "container extent"
+    },
+    {
+      "a": "vision-connection",
+      "b": "vision-copy",
+      "pixels": 1177.0,
+      "relationship": "overlapping elements"
+    },
+    {
+      "a": "people-connection",
+      "b": "avenor-medallion",
+      "pixels": 432.0,
+      "relationship": "container extent"
+    },
+    {
+      "a": "people-connection",
+      "b": "people-icon",
+      "pixels": 48.0,
+      "relationship": "overlapping elements"
+    },
+    {
+      "a": "avenor-medallion",
+      "b": "avenor-mark",
+      "pixels": 3348.0,
+      "relationship": "container extent"
+    },
+    {
+      "a": "avenor-medallion",
+      "b": "avenor-wordmark",
+      "pixels": 4464.0,
+      "relationship": "container extent"
+    },
+    {
+      "a": "avenor-medallion",
+      "b": "vision-copy",
+      "pixels": 210.0,
+      "relationship": "container extent"
+    }
+  ],
+  "reviewGroups": {},
+  "uncoveredInkCells": [
+    "E1",
+    "I1",
+    "E5"
+  ],
+  "comparisonSheets": []
+}

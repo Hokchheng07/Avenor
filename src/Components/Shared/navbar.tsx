@@ -4,9 +4,8 @@ import { ThemeToggle } from "./theme-toggle";
 
 const navigation = [
   { label: "Home", href: "/" },
-  { label: "Discover", href: "/#discover" },
-  { label: "Categories", href: "/#categories" },
-  { label: "About", href: "/#about" },
+  { label: "Discover", href: "/discover" },
+  { label: "About", href: "/about" },
 ] as const;
 
 function SearchIcon() {
@@ -81,7 +80,7 @@ export function Navbar() {
         <div className="ml-auto hidden items-center gap-2 md:flex">
           <ThemeToggle />
           <Link
-            href="/#search"
+            href="/discover"
             className="grid size-10 place-items-center rounded-full text-primary/70 outline-none transition-colors hover:bg-primary/6 hover:text-primary focus-visible:ring-2 focus-visible:ring-accent"
             aria-label="Search books"
           >
@@ -93,6 +92,12 @@ export function Navbar() {
           >
             <HeartIcon />
             Saved
+          </Link>
+          <Link
+            href="/login"
+            className="inline-flex h-10 items-center rounded-full bg-primary px-4 text-sm font-semibold text-white outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-accent dark:text-secondary"
+          >
+            Log in
           </Link>
         </div>
 
@@ -121,7 +126,7 @@ export function Navbar() {
             </ul>
             <div className="mt-2 grid grid-cols-[1fr_auto_1fr] items-center gap-2 border-t border-primary/10 pt-2">
               <Link
-                href="/#search"
+                href="/discover"
                 className="flex items-center justify-center gap-2 rounded-xl px-3 py-3 text-sm font-medium text-primary/75 hover:bg-primary/6 hover:text-primary"
               >
                 <SearchIcon /> Search
@@ -134,6 +139,12 @@ export function Navbar() {
                 <HeartIcon /> Saved
               </Link>
             </div>
+            <Link
+              href="/login"
+              className="mt-2 block rounded-xl border border-primary/15 px-4 py-3 text-center text-sm font-semibold text-primary transition-colors hover:bg-primary/6"
+            >
+              Log in
+            </Link>
           </div>
         </details>
       </nav>
