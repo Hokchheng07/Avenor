@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useCallback, useSyncExternalStore } from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { BookItem, WorkDetailData } from "@/lib/types";
+import { useSavedBooks } from "@/lib/useSavedBooks";
 import {
   StarIcon,
   BookOpenIcon,
@@ -19,69 +20,17 @@ interface BookDetailViewProps {
   isModal?: boolean;
 }
 
-const SAVED_BOOK_EVENT = "avenor:book-saved-changed";
-
-function readSavedBook(bookId: string) {
-  if (typeof window === "undefined") return false;
-
-  try {
-    return localStorage.getItem(`avenor_saved_${bookId}`) === "true";
-  } catch {
-    return false;
-  }
-}
-
-function subscribeToSavedBook(bookId: string, onStoreChange: () => void) {
-  function handleSavedBookChange(event: Event) {
-    const detail = (event as CustomEvent<{ bookId?: string }>).detail;
-    if (detail?.bookId === bookId) onStoreChange();
-  }
-
-  function handleStorage(event: StorageEvent) {
-    if (event.key === `avenor_saved_${bookId}`) onStoreChange();
-  }
-
-  window.addEventListener(SAVED_BOOK_EVENT, handleSavedBookChange);
-  window.addEventListener("storage", handleStorage);
-
-  return () => {
-    window.removeEventListener(SAVED_BOOK_EVENT, handleSavedBookChange);
-    window.removeEventListener("storage", handleStorage);
-  };
-}
-
 export function BookDetailView({
   book,
   onClose,
   isModal = false,
 }: BookDetailViewProps) {
-  const bookId = book.id || book.key;
-  const subscribe = useCallback(
-    (onStoreChange: () => void) =>
-      subscribeToSavedBook(bookId, onStoreChange),
-    [bookId]
-  );
-  const getSnapshot = useCallback(() => readSavedBook(bookId), [bookId]);
-  const isSaved = useSyncExternalStore(subscribe, getSnapshot, () => false);
+  const { isSaved: checkIsSaved, toggleSave } = useSavedBooks();
+  const isSaved = checkIsSaved(book.id || book.key);
   const reduceMotion = useReducedMotion();
 
   const handleToggleSave = () => {
-    const nextSaved = !isSaved;
-
-    try {
-      if (nextSaved) {
-        localStorage.setItem(`avenor_saved_${bookId}`, "true");
-      } else {
-        localStorage.removeItem(`avenor_saved_${bookId}`);
-      }
-      window.dispatchEvent(
-        new CustomEvent(SAVED_BOOK_EVENT, {
-          detail: { bookId, isSaved: nextSaved },
-        })
-      );
-    } catch {
-      // ignore
-    }
+    toggleSave(book);
   };
 
   const primaryGenre = book.subjects?.[0] || "Fiction";

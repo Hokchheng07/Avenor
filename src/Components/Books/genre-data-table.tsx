@@ -217,8 +217,7 @@ export function GenreDataTable({
                 </div>
               </th>
               <th className="py-3.5 px-3">Availability</th>
-              <th className="py-3.5 px-3">Subjects</th>
-              <th className="py-3.5 pr-5 pl-3" aria-label="Open Library link" />
+              <th className="py-3.5 pr-5 pl-3 text-right">Actions</th>
             </tr>
           </thead>
 
@@ -249,9 +248,6 @@ export function GenreDataTable({
                   </td>
                   <td className="py-4 px-3">
                     <div className="h-5 w-20 rounded-full bg-primary/10" />
-                  </td>
-                  <td className="py-4 px-3">
-                    <div className="h-4 w-28 rounded bg-primary/10" />
                   </td>
                   <td className="py-4 pr-5 pl-3 text-right">
                     <div className="size-7 rounded bg-primary/10 ml-auto" />
@@ -347,21 +343,7 @@ export function GenreDataTable({
                       )}
                     </td>
 
-                    <td className="py-3.5 px-3">
-                      <div className="flex flex-wrap gap-1 max-w-[180px]">
-                        {(book.subjects || [genreName])
-                          .slice(0, 2)
-                          .map((tag, i) => (
-                            <span
-                              key={i}
-                              className="rounded-md border border-primary/10 bg-secondary/80 px-1.5 py-0.5 text-[10px] text-primary/60 dark:bg-white/[0.03]"
-                            >
-                              {tag}
-                            </span>
-                          ))}
-                      </div>
-                    </td>
-
+                    {/* Actions */}
                     <td className="py-3.5 pr-5 pl-3 text-right">
                       <a
                         href={`https://openlibrary.org${book.key || `/works/${book.id}`}`}
@@ -380,7 +362,7 @@ export function GenreDataTable({
               })
             ) : (
               <tr>
-                <td colSpan={9} className="py-12 text-center text-primary/50">
+                <td colSpan={8} className="py-12 text-center text-primary/50">
                   <p className="font-serif text-base font-bold text-primary">
                     {filterText
                       ? <>No books match &ldquo;{filterText}&rdquo;</>

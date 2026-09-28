@@ -87,7 +87,7 @@ export function Navbar() {
             <SearchIcon />
           </Link>
           <Link
-            href="/#saved"
+            href="/saved"
             className="inline-flex h-10 items-center gap-2 rounded-full border border-primary/15 px-4 text-sm font-semibold text-primary outline-none transition-colors hover:border-primary/30 hover:bg-primary/6 focus-visible:ring-2 focus-visible:ring-accent"
           >
             <HeartIcon />
@@ -133,7 +133,7 @@ export function Navbar() {
               </Link>
               <ThemeToggle />
               <Link
-                href="/#saved"
+                href="/saved"
                 className="flex items-center justify-center gap-2 rounded-xl bg-primary px-3 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 dark:text-secondary"
               >
                 <HeartIcon /> Saved
@@ -151,3 +151,4 @@ export function Navbar() {
     </header>
   );
 }
+
