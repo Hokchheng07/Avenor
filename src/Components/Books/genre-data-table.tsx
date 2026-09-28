@@ -2,16 +2,19 @@
 
 import React, { useState, useMemo } from "react";
 import Image from "next/image";
+import { createColumnHelper } from "@tanstack/react-table";
 import { BookItem } from "@/lib/types";
+import { DataTable } from "@/Components/ui/data-table";
+import { type DataTableFeatures } from "@/Components/ui/data-table-features";
 import {
   StarIcon,
   UsersIcon,
   SearchIcon,
   CloseIcon,
-  ArrowLeftIcon,
-  ArrowRightIcon,
+  BookOpenIcon,
   CheckIcon,
 } from "@/Components/Shared/icons";
+import { ArrowUpDown, ExternalLink } from "lucide-react";
 
 interface GenreDataTableProps {
   genreName: string;
@@ -21,8 +24,7 @@ interface GenreDataTableProps {
   onSelectBook: (book: BookItem) => void;
 }
 
-type SortField = "title" | "author" | "publishYear" | "rating" | "readerCount";
-type SortDirection = "asc" | "desc";
+const columnHelper = createColumnHelper<DataTableFeatures, BookItem>();
 
 export function GenreDataTable({
   genreName,
@@ -32,393 +34,253 @@ export function GenreDataTable({
 }: GenreDataTableProps) {
   const [filterText, setFilterText] = useState("");
   const [borrowableOnly, setBorrowableOnly] = useState(false);
-  const [sortField, setSortField] = useState<SortField>("rating");
-  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
-  const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 8;
 
-  // Handle column header sort clicks
-  const handleSort = (field: SortField) => {
-    if (sortField === field) {
-      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-    } else {
-      setSortField(field);
-      setSortDirection("desc");
-    }
-    setCurrentPage(1);
-  };
+  // Filter books by search text and borrowable status
+  const filteredData = useMemo(() => {
+    return books.filter((book) => {
+      const matchesSearch =
+        !filterText.trim() ||
+        book.title.toLowerCase().includes(filterText.toLowerCase().trim()) ||
+        book.author.toLowerCase().includes(filterText.toLowerCase().trim());
 
-  // Filtered & sorted data
-  const processedBooks = useMemo(() => {
-    let result = [...books];
+      const matchesBorrow = !borrowableOnly || book.isBorrowable;
 
-    // Text search in table
-    if (filterText.trim()) {
-      const q = filterText.toLowerCase();
-      result = result.filter(
-        (b) =>
-          b.title.toLowerCase().includes(q) ||
-          b.author.toLowerCase().includes(q) ||
-          b.subjects?.some((s) => s.toLowerCase().includes(q)),
-      );
-    }
-
-    // Availability filter
-    if (borrowableOnly) {
-      result = result.filter((b) => b.isBorrowable);
-    }
-
-    // Sorting
-    result.sort((a, b) => {
-      let aVal: string | number = "";
-      let bVal: string | number = "";
-
-      if (sortField === "title") {
-        aVal = a.title.toLowerCase();
-        bVal = b.title.toLowerCase();
-      } else if (sortField === "author") {
-        aVal = a.author.toLowerCase();
-        bVal = b.author.toLowerCase();
-      } else if (sortField === "publishYear") {
-        aVal = Number(a.publishYear) || 0;
-        bVal = Number(b.publishYear) || 0;
-      } else if (sortField === "rating") {
-        aVal = a.rating || 0;
-        bVal = b.rating || 0;
-      } else if (sortField === "readerCount") {
-        aVal = a.readerCount || 0;
-        bVal = b.readerCount || 0;
-      }
-
-      if (aVal < bVal) return sortDirection === "asc" ? -1 : 1;
-      if (aVal > bVal) return sortDirection === "asc" ? 1 : -1;
-      return 0;
+      return matchesSearch && matchesBorrow;
     });
+  }, [books, filterText, borrowableOnly]);
 
-    return result;
-  }, [books, filterText, borrowableOnly, sortField, sortDirection]);
-
-  // Pagination
-  const totalPages = Math.ceil(processedBooks.length / pageSize) || 1;
-  const paginatedBooks = processedBooks.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize,
+  // Define columns for TanStack DataTable
+  const columns = useMemo(
+    () =>
+      columnHelper.columns([
+        columnHelper.display({
+          id: "cover",
+          header: "Cover",
+          cell: ({ row }) => {
+            const book = row.original;
+            return (
+              <div className="relative h-14 w-10 overflow-hidden rounded-md bg-primary/10 shadow-xs">
+                {book.coverUrl ? (
+                  <Image
+                    src={book.coverUrl}
+                    alt={book.title}
+                    fill
+                    sizes="40px"
+                    className="object-cover"
+                    unoptimized={book.coverUrl.includes("openlibrary.org")}
+                  />
+                ) : (
+                  <div className="flex h-full items-center justify-center bg-primary/20 text-primary/40">
+                    <BookOpenIcon className="size-4" />
+                  </div>
+                )}
+              </div>
+            );
+          },
+        }),
+        columnHelper.accessor("title", {
+          header: ({ column }) => (
+            <button
+              type="button"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+              className="flex items-center gap-1.5 font-semibold text-primary/70 transition-colors hover:text-primary"
+            >
+              Title &amp; Author
+              <ArrowUpDown className="size-3" />
+            </button>
+          ),
+          cell: ({ row }) => {
+            const book = row.original;
+            return (
+              <div>
+                <div className="font-serif font-semibold text-primary transition-colors hover:text-accent">
+                  {book.title}
+                </div>
+                <div className="text-xs text-primary/60">{book.author}</div>
+              </div>
+            );
+          },
+        }),
+        columnHelper.accessor("publishYear", {
+          header: ({ column }) => (
+            <button
+              type="button"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+              className="hidden items-center gap-1.5 font-semibold text-primary/70 transition-colors hover:text-primary md:flex"
+            >
+              Year
+              <ArrowUpDown className="size-3" />
+            </button>
+          ),
+          cell: ({ row }) => {
+            const year = row.original.publishYear;
+            return (
+              <span className="hidden text-xs text-primary/70 md:inline">
+                {year ? String(year) : "—"}
+              </span>
+            );
+          },
+        }),
+        columnHelper.accessor("rating", {
+          header: ({ column }) => (
+            <button
+              type="button"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+              className="hidden items-center gap-1.5 font-semibold text-primary/70 transition-colors hover:text-primary sm:flex"
+            >
+              Rating
+              <ArrowUpDown className="size-3" />
+            </button>
+          ),
+          cell: ({ row }) => {
+            const rating = row.original.rating;
+            return rating ? (
+              <span className="hidden items-center gap-1 text-xs font-semibold text-amber-500 sm:inline-flex">
+                <StarIcon className="size-3.5 fill-amber-500 text-amber-500" />
+                {rating.toFixed(1)}
+              </span>
+            ) : (
+              <span className="hidden text-xs text-primary/40 sm:inline">—</span>
+            );
+          },
+        }),
+        columnHelper.accessor("readerCount", {
+          header: ({ column }) => (
+            <button
+              type="button"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+              className="hidden items-center gap-1.5 font-semibold text-primary/70 transition-colors hover:text-primary lg:flex"
+            >
+              Readers
+              <ArrowUpDown className="size-3" />
+            </button>
+          ),
+          cell: ({ row }) => {
+            const readers = row.original.readerCount;
+            if (!readers) return <span className="hidden text-xs text-primary/40 lg:inline">—</span>;
+            const formatted =
+              readers >= 1000 ? `${(readers / 1000).toFixed(1)}k` : String(readers);
+            return (
+              <span className="hidden items-center gap-1 text-xs text-primary/60 lg:inline-flex">
+                <UsersIcon className="size-3.5" />
+                {formatted}
+              </span>
+            );
+          },
+        }),
+        columnHelper.display({
+          id: "availability",
+          header: "Status",
+          cell: ({ row }) => {
+            const isBorrowable = row.original.isBorrowable;
+            return (
+              <span
+                className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
+                  isBorrowable
+                    ? "bg-[#24472f]/10 text-[#24472f] dark:bg-[#d3a663]/15 dark:text-accent"
+                    : "bg-primary/5 text-primary/50"
+                }`}
+              >
+                {isBorrowable ? (
+                  <>
+                    <CheckIcon className="size-2.5" />
+                    Borrowable
+                  </>
+                ) : (
+                  "Preview"
+                )}
+              </span>
+            );
+          },
+        }),
+        columnHelper.display({
+          id: "actions",
+          header: () => <span className="sr-only">Actions</span>,
+          cell: ({ row }) => {
+            const book = row.original;
+            return (
+              <div className="text-right">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onSelectBook(book);
+                  }}
+                  className="inline-flex items-center gap-1 rounded-lg border border-primary/15 bg-background/60 px-2.5 py-1 text-xs font-semibold text-primary transition-colors hover:border-accent hover:text-accent"
+                >
+                  <span>View</span>
+                  <ExternalLink className="size-3" />
+                </button>
+              </div>
+            );
+          },
+        }),
+      ]),
+    [onSelectBook]
   );
 
-  const getSortIndicator = (field: SortField) => {
-    if (sortField !== field)
-      return <span className="opacity-20 text-[10px]">⇅</span>;
-    return sortDirection === "asc" ? (
-      <span className="text-accent text-[11px]">▲</span>
-    ) : (
-      <span className="text-accent text-[11px]">▼</span>
-    );
-  };
-
   return (
-    <div className="relative w-full overflow-hidden rounded-2xl border border-primary/15 bg-white dark:bg-[#1a221b]">
-      <div className="flex flex-col gap-4 border-b border-primary/10 bg-secondary/60 p-5 sm:flex-row sm:items-center sm:justify-between dark:bg-white/[0.02]">
-        <div className="flex items-baseline gap-3">
-          <h3 className="font-serif text-xl text-primary">{genreName}</h3>
-          <span className="text-sm text-primary/50">
-            {processedBooks.length} works
-          </span>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2.5">
-          <div className="relative flex items-center">
-            <SearchIcon className="pointer-events-none absolute left-3 size-4 text-primary/40" />
-            <input
-              type="text"
-              value={filterText}
-              onChange={(e) => {
-                setFilterText(e.target.value);
-                setCurrentPage(1);
-              }}
-              placeholder="Filter this genre"
-              className="h-9 w-44 rounded-full border border-primary/15 bg-white pl-9 pr-3 text-xs text-primary placeholder:text-primary/40 focus:border-accent focus:outline-none sm:w-56 dark:bg-secondary"
-            />
-            {filterText && (
-              <button
-                onClick={() => setFilterText("")}
-                aria-label="Clear filter"
-                className="absolute right-2.5 text-primary/40 hover:text-primary"
-              >
-                <CloseIcon className="size-3.5" />
-              </button>
-            )}
-          </div>
-
-          <button
-            onClick={() => {
-              setBorrowableOnly(!borrowableOnly);
-              setCurrentPage(1);
-            }}
-            className={`inline-flex h-9 items-center gap-1.5 rounded-full border px-3 text-xs font-semibold transition-all ${
-              borrowableOnly
-                ? "border-accent bg-accent text-white"
-                : "border-primary/15 bg-white text-primary/70 hover:border-primary/30 dark:bg-secondary"
-            }`}
-          >
-            {borrowableOnly ? <CheckIcon className="size-3.5" /> : null}
-            <span>Borrowable only</span>
-          </button>
-        </div>
-      </div>
-
-      <div className="w-full overflow-x-auto">
-        <table className="w-full border-collapse text-left text-sm">
-          <thead>
-            <tr className="border-b border-primary/10 bg-primary/[0.02] text-xs font-bold uppercase tracking-wider text-primary/60 dark:bg-white/[0.01]">
-              <th className="py-3.5 pl-5 pr-2 w-12 text-center">#</th>
-              <th
-                onClick={() => handleSort("title")}
-                className="cursor-pointer py-3.5 px-3 select-none hover:text-accent transition-colors"
-              >
-                <div className="flex items-center gap-1.5">
-                  <span>Title</span>
-                  {getSortIndicator("title")}
-                </div>
-              </th>
-              <th
-                onClick={() => handleSort("author")}
-                className="cursor-pointer py-3.5 px-3 select-none hover:text-accent transition-colors"
-              >
-                <div className="flex items-center gap-1.5">
-                  <span>Author</span>
-                  {getSortIndicator("author")}
-                </div>
-              </th>
-              <th
-                onClick={() => handleSort("publishYear")}
-                className="cursor-pointer py-3.5 px-3 select-none hover:text-accent transition-colors"
-              >
-                <div className="flex items-center gap-1.5">
-                  <span>Published</span>
-                  {getSortIndicator("publishYear")}
-                </div>
-              </th>
-              <th
-                onClick={() => handleSort("rating")}
-                className="cursor-pointer py-3.5 px-3 select-none hover:text-accent transition-colors"
-              >
-                <div className="flex items-center gap-1.5">
-                  <span>Rating</span>
-                  {getSortIndicator("rating")}
-                </div>
-              </th>
-              <th
-                onClick={() => handleSort("readerCount")}
-                className="cursor-pointer py-3.5 px-3 select-none hover:text-accent transition-colors"
-              >
-                <div className="flex items-center gap-1.5">
-                  <span>Readers</span>
-                  {getSortIndicator("readerCount")}
-                </div>
-              </th>
-              <th className="py-3.5 px-3">Availability</th>
-              <th className="py-3.5 pr-5 pl-3 text-right">Actions</th>
-            </tr>
-          </thead>
-
-          <tbody className="divide-y divide-primary/5 text-xs text-primary/80">
-            {isLoading ? (
-              [...Array(6)].map((_, i) => (
-                <tr key={i} className="animate-pulse">
-                  <td className="py-4 pl-5 pr-2 text-center">
-                    <div className="h-4 w-4 rounded bg-primary/10 mx-auto" />
-                  </td>
-                  <td className="py-4 px-3">
-                    <div className="flex items-center gap-3">
-                      <div className="h-12 w-8 rounded bg-primary/10 shrink-0" />
-                      <div className="h-4 w-36 rounded bg-primary/10" />
-                    </div>
-                  </td>
-                  <td className="py-4 px-3">
-                    <div className="h-4 w-24 rounded bg-primary/10" />
-                  </td>
-                  <td className="py-4 px-3">
-                    <div className="h-4 w-12 rounded bg-primary/10" />
-                  </td>
-                  <td className="py-4 px-3">
-                    <div className="h-4 w-14 rounded bg-primary/10" />
-                  </td>
-                  <td className="py-4 px-3">
-                    <div className="h-4 w-16 rounded bg-primary/10" />
-                  </td>
-                  <td className="py-4 px-3">
-                    <div className="h-5 w-20 rounded-full bg-primary/10" />
-                  </td>
-                  <td className="py-4 pr-5 pl-3 text-right">
-                    <div className="size-7 rounded bg-primary/10 ml-auto" />
-                  </td>
-                </tr>
-              ))
-            ) : paginatedBooks.length > 0 ? (
-              paginatedBooks.map((book, index) => {
-                const globalIndex = (currentPage - 1) * pageSize + index + 1;
-                const formattedReaders = book.readerCount
-                  ? book.readerCount >= 1000
-                    ? `${(book.readerCount / 1000).toFixed(1)}k`
-                    : book.readerCount
-                  : "—";
-
-                return (
-                  <tr
-                    key={book.id || index}
-                    onClick={() => onSelectBook(book)}
-                    className="group cursor-pointer transition-colors hover:bg-primary/[0.04] dark:hover:bg-white/[0.03]"
-                  >
-                    <td className="py-3.5 pl-5 pr-2 font-mono text-center text-primary/40 font-medium">
-                      {globalIndex < 10 ? `0${globalIndex}` : globalIndex}
-                    </td>
-
-                    <td className="py-3.5 px-3">
-                      <div className="flex items-center gap-3">
-                        <div className="relative aspect-[2/3] w-9 shrink-0 overflow-hidden rounded-[2px] border border-primary/15 shadow-sm transition-transform duration-200 group-hover:scale-105">
-                          {book.coverUrl ? (
-                            <Image
-                              src={book.coverUrl}
-                              alt=""
-                              fill
-                              sizes="36px"
-                              className="object-cover"
-                              unoptimized={book.coverUrl.includes(
-                                "openlibrary.org",
-                              )}
-                            />
-                          ) : (
-                            <div className="flex h-full w-full items-center justify-center bg-primary text-[8px] text-white">
-                              {book.title.slice(0, 2)}
-                            </div>
-                          )}
-                        </div>
-                        <p className="line-clamp-2 max-w-xs font-serif text-sm text-primary group-hover:text-accent transition-colors">
-                          {book.title}
-                        </p>
-                      </div>
-                    </td>
-
-                    <td className="py-3.5 px-3">
-                      <span className="font-semibold text-primary/80 group-hover:text-primary">
-                        {book.author}
-                      </span>
-                    </td>
-
-                    <td className="py-3.5 px-3 font-mono text-primary/65">
-                      {book.publishYear || "—"}
-                    </td>
-
-                    <td className="py-3.5 px-3">
-                      <div className="flex items-center gap-1.5">
-                        <StarIcon className="size-3.5 text-accent" filled />
-                        <span className="font-bold text-primary">
-                          {book.rating || "—"}
-                        </span>
-                        {book.ratingCount ? (
-                          <span className="text-[10px] text-primary/40">
-                            ({book.ratingCount})
-                          </span>
-                        ) : null}
-                      </div>
-                    </td>
-
-                    <td className="py-3.5 px-3">
-                      <div className="flex items-center gap-1 text-primary/70">
-                        <UsersIcon className="size-3 text-primary/40" />
-                        <span>{formattedReaders}</span>
-                      </div>
-                    </td>
-
-                    <td className="py-3.5 px-3">
-                      {book.isBorrowable ? (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-[10px] font-bold text-emerald-700 dark:text-emerald-400">
-                          <span className="size-1.5 rounded-full bg-emerald-500" />
-                          Borrowable
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-medium text-primary/60">
-                          Preview
-                        </span>
-                      )}
-                    </td>
-
-                    {/* Actions */}
-                    <td className="py-3.5 pr-5 pl-3 text-right">
-                      <a
-                        href={`https://openlibrary.org${book.key || `/works/${book.id}`}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        aria-label={`Open ${book.title} on Open Library`}
-                        title="Open on Open Library"
-                        className="ml-auto grid size-7 place-items-center rounded-lg border border-primary/10 text-primary/50 hover:border-primary/30 hover:text-primary"
-                      >
-                        ↗
-                      </a>
-                    </td>
-                  </tr>
-                );
-              })
-            ) : (
-              <tr>
-                <td colSpan={8} className="py-12 text-center text-primary/50">
-                  <p className="font-serif text-base font-bold text-primary">
-                    {filterText
-                      ? <>No books match &ldquo;{filterText}&rdquo;</>
-                      : "No books to show"}
-                  </p>
-                  <p className="mt-1 text-xs">
-                    Try a different filter.
-                  </p>
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="flex flex-col items-center justify-between gap-3 border-t border-primary/10 bg-secondary/40 px-5 py-3.5 text-xs text-primary/60 sm:flex-row dark:bg-white/[0.01]">
-        <div className="font-medium">
-          Showing{" "}
-          <span className="font-bold text-primary">
-            {processedBooks.length > 0 ? (currentPage - 1) * pageSize + 1 : 0}
-          </span>{" "}
-          to{" "}
-          <span className="font-bold text-primary">
-            {Math.min(currentPage * pageSize, processedBooks.length)}
-          </span>{" "}
-          of{" "}
-          <span className="font-bold text-primary">
-            {processedBooks.length}
-          </span>{" "}
-          books
+    <div className="space-y-4">
+      {/* Controls Bar: Search + Borrowable Toggle */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="relative flex-1 sm:max-w-xs">
+          <SearchIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-primary/40" />
+          <input
+            type="text"
+            value={filterText}
+            onChange={(e) => setFilterText(e.target.value)}
+            placeholder={`Search in ${genreName}...`}
+            className="w-full rounded-xl border border-primary/15 bg-background/60 py-2 pl-9 pr-8 text-xs text-primary outline-none transition placeholder:text-primary/40 focus:border-accent focus:ring-1 focus:ring-accent"
+          />
+          {filterText && (
+            <button
+              type="button"
+              onClick={() => setFilterText("")}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-primary/40 hover:text-primary"
+            >
+              <CloseIcon className="size-3.5" />
+            </button>
+          )}
         </div>
 
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-            disabled={currentPage === 1}
-            className="inline-flex items-center gap-1 rounded-lg border border-primary/15 bg-white px-3 py-1.5 text-xs font-semibold text-primary/70 transition-colors hover:border-accent hover:text-accent disabled:opacity-40 dark:bg-secondary"
-          >
-            <ArrowLeftIcon className="size-3.5" />
-            <span>Prev</span>
-          </button>
-
-          <span className="px-2 font-mono font-semibold text-primary">
-            {currentPage} / {totalPages}
-          </span>
-
-          <button
-            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-            disabled={currentPage === totalPages}
-            className="inline-flex items-center gap-1 rounded-lg border border-primary/15 bg-white px-3 py-1.5 text-xs font-semibold text-primary/70 transition-colors hover:border-accent hover:text-accent disabled:opacity-40 dark:bg-secondary"
-          >
-            <span>Next</span>
-            <ArrowRightIcon className="size-3.5" />
-          </button>
+          <label className="flex cursor-pointer items-center gap-2 text-xs font-medium text-primary/75">
+            <input
+              type="checkbox"
+              checked={borrowableOnly}
+              onChange={(e) => setBorrowableOnly(e.target.checked)}
+              className="size-4 rounded border-primary/20 accent-primary"
+            />
+            Borrowable only
+          </label>
         </div>
       </div>
+
+      {/* Loading Skeleton */}
+      {isLoading ? (
+        <div className="overflow-hidden rounded-2xl border border-primary/10 bg-background/50 p-6">
+          <div className="space-y-3">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="flex animate-pulse items-center gap-4 py-2">
+                <div className="h-14 w-10 rounded-md bg-primary/10" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 w-1/3 rounded bg-primary/10" />
+                  <div className="h-3 w-1/4 rounded bg-primary/10" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        /* shadcn TanStack DataTable */
+        <DataTable
+          columns={columns}
+          data={filteredData}
+          pageSize={8}
+          onRowClick={onSelectBook}
+          emptyMessage={`No books found in ${genreName} matching your search.`}
+        />
+      )}
     </div>
   );
 }

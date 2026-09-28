@@ -498,16 +498,13 @@ function getDeterministicMetrics(seed: string): {
   return { rating, ratingCount, readerCount };
 }
 
-/**
- * Fetch works in a subject/genre with real ratings and readership metrics
- */
+
 export async function getWorksBySubject(
   subject: string,
   limit: number = 24,
 ): Promise<BookItem[]> {
   const cleanSubject = subject.toLowerCase().replace(/\s+/g, "_");
 
-  // 1. Try search API with subject filter: returns real community ratings & reader metrics
   const searchUrl = `${OPEN_LIBRARY_BASE}/search.json?subject=${encodeURIComponent(
     cleanSubject,
   )}&fields=key,title,author_name,author_key,first_publish_year,cover_i,isbn,ratings_average,ratings_count,already_read_count,currently_reading_count,ebook_access,has_fulltext,subject&limit=${limit}`;
