@@ -42,6 +42,7 @@ export function LoginFormComponent() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { email: "", password: "" },
+    mode: "onChange",
   });
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
