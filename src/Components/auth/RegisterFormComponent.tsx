@@ -46,6 +46,7 @@ export function RegisterFormComponent() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { name: "", email: "", password: "" },
+    mode: "onChange",
   });
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
