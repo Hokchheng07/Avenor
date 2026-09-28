@@ -3,10 +3,13 @@
 import React, { useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { createColumnHelper } from "@tanstack/react-table";
 import { AnimatePresence } from "framer-motion";
 import { BookItem } from "@/lib/types";
 import { useSavedBooks } from "@/lib/useSavedBooks";
 import { BookDetailView } from "@/Components/Books/book-detail-view";
+import { DataTable } from "@/Components/ui/data-table";
+import { type DataTableFeatures } from "@/Components/ui/data-table-features";
 import {
   StarIcon,
   SearchIcon,
@@ -21,10 +24,13 @@ import {
   ExternalLink,
   ArrowRight,
   Sparkles,
+  ArrowUpDown,
 } from "lucide-react";
 
 type SortOption = "recent" | "title-asc" | "title-desc" | "rating-desc" | "year-desc";
 type ViewMode = "grid" | "table";
+
+const columnHelper = createColumnHelper<DataTableFeatures, BookItem>();
 
 export function SavedPageContent() {
   const { books, removeBook, clearAll } = useSavedBooks();
@@ -66,12 +72,140 @@ export function SavedPageContent() {
         break;
       case "recent":
       default:
-        // Already in reverse addition order
         break;
     }
 
     return result;
   }, [books, searchQuery, sortBy]);
+
+  // Define columns for TanStack DataTable on Saved page
+  const columns = useMemo(
+    () =>
+      columnHelper.columns([
+        columnHelper.display({
+          id: "cover",
+          header: "Cover",
+          cell: ({ row }) => {
+            const book = row.original;
+            return (
+              <div className="relative h-14 w-10 overflow-hidden rounded-md bg-primary/10 shadow-xs">
+                {book.coverUrl ? (
+                  <Image
+                    src={book.coverUrl}
+                    alt={book.title}
+                    fill
+                    sizes="40px"
+                    className="object-cover"
+                    unoptimized={book.coverUrl.includes("openlibrary.org")}
+                  />
+                ) : (
+                  <div className="flex h-full items-center justify-center bg-primary/20 text-primary/40">
+                    <BookOpenIcon className="size-4" />
+                  </div>
+                )}
+              </div>
+            );
+          },
+        }),
+        columnHelper.accessor("title", {
+          header: ({ column }) => (
+            <button
+              type="button"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+              className="flex items-center gap-1.5 font-semibold text-primary/70 transition-colors hover:text-primary"
+            >
+              Title &amp; Author
+              <ArrowUpDown className="size-3" />
+            </button>
+          ),
+          cell: ({ row }) => {
+            const book = row.original;
+            return (
+              <div>
+                <div className="font-serif font-semibold text-primary transition-colors hover:text-accent">
+                  {book.title}
+                </div>
+                <div className="text-xs text-primary/60">{book.author}</div>
+              </div>
+            );
+          },
+        }),
+        columnHelper.accessor("publishYear", {
+          header: ({ column }) => (
+            <button
+              type="button"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+              className="hidden items-center gap-1.5 font-semibold text-primary/70 transition-colors hover:text-primary md:flex"
+            >
+              Year
+              <ArrowUpDown className="size-3" />
+            </button>
+          ),
+          cell: ({ row }) => {
+            const year = row.original.publishYear;
+            return (
+              <span className="hidden text-xs text-primary/70 md:inline">
+                {year ? String(year) : "—"}
+              </span>
+            );
+          },
+        }),
+        columnHelper.accessor("rating", {
+          header: ({ column }) => (
+            <button
+              type="button"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+              className="hidden items-center gap-1.5 font-semibold text-primary/70 transition-colors hover:text-primary sm:flex"
+            >
+              Rating
+              <ArrowUpDown className="size-3" />
+            </button>
+          ),
+          cell: ({ row }) => {
+            const rating = row.original.rating;
+            return rating ? (
+              <span className="hidden items-center gap-1 text-xs font-semibold text-amber-500 sm:inline-flex">
+                <StarIcon className="size-3.5 fill-amber-500 text-amber-500" />
+                {rating.toFixed(1)}
+              </span>
+            ) : (
+              <span className="hidden text-xs text-primary/40 sm:inline">—</span>
+            );
+          },
+        }),
+        columnHelper.display({
+          id: "actions",
+          header: () => <span className="sr-only">Actions</span>,
+          cell: ({ row }) => {
+            const book = row.original;
+            const bookId = book.id || book.key.replace("/works/", "").replace("/books/", "");
+            return (
+              <div
+                className="flex items-center justify-end gap-2"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <Link
+                  href={`/book/${bookId}`}
+                  className="inline-flex size-8 items-center justify-center rounded-lg border border-primary/15 text-primary/70 transition-colors hover:border-accent hover:text-accent"
+                  title="Open full book page"
+                >
+                  <ExternalLink className="size-3.5" />
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => removeBook(book.id || book.key)}
+                  className="inline-flex size-8 items-center justify-center rounded-lg border border-red-500/20 text-red-500 transition-colors hover:bg-red-500/10"
+                  title="Remove from saved books"
+                >
+                  <Trash2 className="size-3.5" />
+                </button>
+              </div>
+            );
+          },
+        }),
+      ]),
+    [removeBook]
+  );
 
   const handleClearAll = () => {
     if (window.confirm("Are you sure you want to remove all saved books from your library?")) {
@@ -332,90 +466,15 @@ export function SavedPageContent() {
               })}
             </div>
           ) : (
-            /* Table View */
-            <div className="mt-8 overflow-hidden rounded-2xl border border-primary/10 bg-background/50 shadow-xs">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm text-primary">
-                  <thead className="border-b border-primary/10 bg-primary/[0.03] text-xs font-semibold uppercase tracking-wider text-primary/70">
-                    <tr>
-                      <th scope="col" className="px-6 py-4">Cover</th>
-                      <th scope="col" className="px-6 py-4">Title & Author</th>
-                      <th scope="col" className="hidden px-6 py-4 md:table-cell">Year</th>
-                      <th scope="col" className="hidden px-6 py-4 sm:table-cell">Rating</th>
-                      <th scope="col" className="px-6 py-4 text-right">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-primary/5">
-                    {filteredBooks.map((book) => {
-                      const bookId = book.id || book.key.replace("/works/", "").replace("/books/", "");
-                      return (
-                        <tr
-                          key={bookId}
-                          onClick={() => setSelectedBook(book)}
-                          className="cursor-pointer transition-colors hover:bg-primary/[0.02]"
-                        >
-                          <td className="px-6 py-3">
-                            <div className="relative h-14 w-10 overflow-hidden rounded-md bg-primary/10 shadow-xs">
-                              {book.coverUrl ? (
-                                <Image
-                                  src={book.coverUrl}
-                                  alt={book.title}
-                                  fill
-                                  sizes="40px"
-                                  className="object-cover"
-                                  unoptimized={book.coverUrl.includes("openlibrary.org")}
-                                />
-                              ) : (
-                                <div className="flex h-full items-center justify-center bg-primary/20 text-primary/40">
-                                  <BookOpenIcon className="size-4" />
-                                </div>
-                              )}
-                            </div>
-                          </td>
-                          <td className="px-6 py-3">
-                            <div className="font-serif font-semibold text-primary hover:text-accent">
-                              {book.title}
-                            </div>
-                            <div className="text-xs text-primary/70">{book.author}</div>
-                          </td>
-                          <td className="hidden px-6 py-3 text-xs text-primary/70 md:table-cell">
-                            {book.publishYear ? String(book.publishYear) : "—"}
-                          </td>
-                          <td className="hidden px-6 py-3 sm:table-cell">
-                            {book.rating ? (
-                              <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-500">
-                                <StarIcon className="size-3.5 fill-amber-500 text-amber-500" />
-                                {book.rating.toFixed(1)}
-                              </span>
-                            ) : (
-                              <span className="text-xs text-primary/40">—</span>
-                            )}
-                          </td>
-                          <td className="px-6 py-3 text-right">
-                            <div className="inline-flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-                              <Link
-                                href={`/book/${bookId}`}
-                                className="inline-flex size-8 items-center justify-center rounded-lg border border-primary/15 text-primary/70 transition-colors hover:border-accent hover:text-accent"
-                                title="Open full book page"
-                              >
-                                <ExternalLink className="size-3.5" />
-                              </Link>
-                              <button
-                                type="button"
-                                onClick={() => removeBook(book.id || book.key)}
-                                className="inline-flex size-8 items-center justify-center rounded-lg border border-red-500/20 text-red-500 transition-colors hover:bg-red-500/10"
-                                title="Remove from saved books"
-                              >
-                                <Trash2 className="size-3.5" />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
+            /* Table View with shadcn TanStack DataTable */
+            <div className="mt-8">
+              <DataTable
+                columns={columns}
+                data={filteredBooks}
+                pageSize={10}
+                onRowClick={setSelectedBook}
+                emptyMessage="No saved books found."
+              />
             </div>
           )}
         </>
