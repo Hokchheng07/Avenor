@@ -36,11 +36,7 @@ export const subjects = [
   "Art",
 ] as const;
 
-/**
- * Stable hero picks with Avenor-owned artwork. Keeping this separate from the
- * API-driven shelf prevents small remote thumbnails from being stretched in
- * the large hero treatment and makes every cover link deterministic.
- */
+
 export const heroBooks: readonly Book[] = [
   { key: "/works/OL27482W", title: "The Hobbit", author: "J.R.R. Tolkien", coverUrl: "/Images/hero-covers/the-hobbit.jpg", year: 1937, rating: 4.29, availability: "borrowable" },
   { key: "/works/OL59800W", title: "The Left Hand of Darkness", author: "Ursula K. Le Guin", coverUrl: "/Images/hero-covers/the-left-hand-of-darkness.jpg", year: 1969, rating: 4.27, availability: "accessible" },
