@@ -1,14 +1,5 @@
 import { env } from "@/lib/env";
 
-/**
- * Open Library REST client.
- *
- * Mirrors the endpoints in the "Open Library API" Postman collection:
- * search, works, subjects, ratings and covers. The API is free and keyless —
- * it only asks that every client identifies itself with a User-Agent that
- * carries a contact address (`OPEN_LIBRARY_USER_AGENT`).
- */
-
 export type CoverSize = "S" | "M" | "L";
 export type CoverKey = "id" | "isbn" | "olid";
 

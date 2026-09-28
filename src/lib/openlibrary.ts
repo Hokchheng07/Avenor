@@ -231,6 +231,89 @@ export const FEATURED_CAROUSEL_BOOKS: BookItem[] = [
   },
 ];
 
+export const HOME_ADDITIONAL_FALLBACKS: BookItem[] = [
+  {
+    id: "OL39316W",
+    key: "/works/OL39316W",
+    title: "The Waves",
+    author: "Virginia Woolf",
+    coverUrl: "/Images/hero-covers/the-waves.jpg",
+    rating: 4.4,
+    ratingCount: 14200,
+    readerCount: 65000,
+    publishYear: 1931,
+    isBorrowable: true,
+    hasFulltext: true,
+    subjects: ["Modernism", "Literary Fiction", "Classics"],
+    description:
+      "Virginia Woolf's most experimental novel, tracing the lives of six friends from childhood to middle age through interwoven soliloquies set against the rhythm of the waves.",
+  },
+  {
+    id: "OL18012166W",
+    key: "/works/OL18012166W",
+    title: "Circe",
+    author: "Madeline Miller",
+    coverUrl: "/Images/hero-covers/circe.jpg",
+    rating: 4.3,
+    ratingCount: 28400,
+    readerCount: 140000,
+    publishYear: 2018,
+    isBorrowable: true,
+    hasFulltext: true,
+    subjects: ["Mythology", "Fantasy", "Historical Fiction"],
+    description:
+      "In the house of Helios, god of the sun and mightiest of the Titans, a daughter is born. Circe is a strange child—not powerful like her father, nor viciously alluring like her mother.",
+  },
+  {
+    id: "OL16819897W",
+    key: "/works/OL16819897W",
+    title: "Braiding Sweetgrass",
+    author: "Robin Wall Kimmerer",
+    coverUrl: "/Images/books/7281575.jpg",
+    rating: 4.6,
+    ratingCount: 19500,
+    readerCount: 92000,
+    publishYear: 2013,
+    isBorrowable: true,
+    hasFulltext: true,
+    subjects: ["Nature", "Indigenous Knowledge", "Ecology"],
+    description:
+      "Drawing on her life as an indigenous scientist, and as a woman, Kimmerer shows how other living beings offer us gifts and lessons, even if we've forgotten how to hear their voices.",
+  },
+  {
+    id: "OL59798W",
+    key: "/works/OL59798W",
+    title: "A Wizard of Earthsea",
+    author: "Ursula K. Le Guin",
+    coverUrl: "/Images/books/13617691.jpg",
+    rating: 4.1,
+    ratingCount: 22000,
+    readerCount: 110000,
+    publishYear: 1968,
+    isBorrowable: true,
+    hasFulltext: true,
+    subjects: ["Fantasy", "Magic", "Classics"],
+    description:
+      "Ged, the greatest sorcerer in all Earthsea, was called Sparrowhawk in his reckless youth. Hungry for power and knowledge, he tampered with long-held secrets and loosed a terrible shadow upon the world.",
+  },
+  {
+    id: "OL4321141W",
+    key: "/works/OL4321141W",
+    title: "The Secret History",
+    author: "Donna Tartt",
+    coverUrl: "/Images/books/744854.jpg",
+    rating: 4.2,
+    ratingCount: 35000,
+    readerCount: 175000,
+    publishYear: 1992,
+    isBorrowable: true,
+    hasFulltext: true,
+    subjects: ["Dark Academia", "Mystery", "Classics"],
+    description:
+      "Under the influence of their charismatic classics professor, a group of clever, eccentric misfits at an elite New England college discover a way of thinking and living that is a world away from the humdrum existence of their contemporaries.",
+  },
+];
+
 export const POPULAR_GENRES: GenreItem[] = [
   {
     name: "Fantasy",
@@ -387,6 +470,23 @@ export async function searchOpenLibrary({
     return { books: [], total: 0 };
   }
 
+  // Open Library API rejects queries shorter than 3 characters with HTTP 422.
+  // For short queries, filter our local curated books for instantaneous sub-millisecond feedback!
+  if (cleanQuery.length < 3) {
+    const qLower = cleanQuery.toLowerCase();
+    const allBooks = [...FEATURED_CAROUSEL_BOOKS, ...HOME_ADDITIONAL_FALLBACKS];
+    const filtered = allBooks.filter(
+      (b) =>
+        b.title.toLowerCase().includes(qLower) ||
+        b.author.toLowerCase().includes(qLower) ||
+        b.subjects?.some((s: string) => s.toLowerCase().includes(qLower))
+    );
+    return {
+      books: filtered,
+      total: filtered.length,
+    };
+  }
+
   let paramKey = "q";
   if (mode === "title") paramKey = "title";
   else if (mode === "author") paramKey = "author";
@@ -406,6 +506,20 @@ export async function searchOpenLibrary({
     });
 
     if (!res.ok) {
+      if (res.status === 422) {
+        // Query not processable by upstream solr grammar; fallback gracefully without throwing
+        const qLower = cleanQuery.toLowerCase();
+        const allBooks = [...FEATURED_CAROUSEL_BOOKS, ...HOME_ADDITIONAL_FALLBACKS];
+        const filtered = allBooks.filter(
+          (b) =>
+            b.title.toLowerCase().includes(qLower) ||
+            b.author.toLowerCase().includes(qLower)
+        );
+        return {
+          books: filtered,
+          total: filtered.length,
+        };
+      }
       throw new Error(`Search failed with status ${res.status}`);
     }
 
@@ -459,19 +573,18 @@ export async function searchOpenLibrary({
       total: data.numFound || books.length,
     };
   } catch (error) {
-    console.error("Open Library Search error:", error);
-    // Return curated matches if error occurs
-    const filtered = FEATURED_CAROUSEL_BOOKS.filter(
+    console.warn("Open Library Search notice:", error);
+    const qLower = cleanQuery.toLowerCase();
+    const allBooks = [...FEATURED_CAROUSEL_BOOKS, ...HOME_ADDITIONAL_FALLBACKS];
+    const filtered = allBooks.filter(
       (b) =>
-        b.title.toLowerCase().includes(cleanQuery.toLowerCase()) ||
-        b.author.toLowerCase().includes(cleanQuery.toLowerCase()) ||
-        b.subjects?.some((s) =>
-          s.toLowerCase().includes(cleanQuery.toLowerCase()),
-        ),
+        b.title.toLowerCase().includes(qLower) ||
+        b.author.toLowerCase().includes(qLower) ||
+        b.subjects?.some((s: string) => s.toLowerCase().includes(qLower))
     );
     return {
-      books: filtered.length > 0 ? filtered : FEATURED_CAROUSEL_BOOKS,
-      total: FEATURED_CAROUSEL_BOOKS.length,
+      books: filtered.length > 0 ? filtered : allBooks,
+      total: allBooks.length,
     };
   }
 }
