@@ -64,7 +64,7 @@ export default async function BookDetailPage({ params }: BookPageProps) {
     <main className="flex-1 bg-secondary py-8 sm:py-12">
       <div className="mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10">
         {/* Back breadcrumb navigation */}
-        <div className="mb-6">
+        <div className="mb-4 sm:mb-6">
           <Link
             href="/discover"
             className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary/60 hover:text-accent transition-colors"

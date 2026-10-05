@@ -51,7 +51,13 @@ export const metadata: Metadata = {
     images: [siteConfig.ogImage],
   },
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/Brand/AvenorIconWhite.png" },
+      { url: "/Brand/AvenorIconWhite.png", sizes: "32x32", type: "image/png" },
+      { url: "/Brand/AvenorIconWhite.png", sizes: "16x16", type: "image/png" },
+    ],
+    shortcut: "/Brand/AvenorIconWhite.png",
+    apple: "/Brand/AvenorIconWhite.png",
   },
 };
 

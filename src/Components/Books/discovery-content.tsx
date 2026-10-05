@@ -58,7 +58,6 @@ export function DiscoveryContent({
     fetchedGenreBooks ||
     (selectedGenre === initialSubject ? initialResults : []);
 
-  // Fetch search results using SWR with caching
   const { data: searchData, isLoading } = useSWR<{
     books: BookItem[];
     total: number;

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { SearchMode } from "@/lib/types";
 import { SearchIcon, CloseIcon } from "@/Components/Shared/icons";
 
@@ -35,9 +35,39 @@ export function SearchBarFilter({
   const [localQuery, setLocalQuery] = useState(initialQuery);
   const [localMode, setLocalMode] = useState<SearchMode>(initialMode);
 
+  // Synchronize when initialQuery changes externally (e.g., cleared by parent)
+  useEffect(() => {
+    setLocalQuery(initialQuery);
+  }, [initialQuery]);
+
+  useEffect(() => {
+    setLocalMode(initialMode);
+  }, [initialMode]);
+
+  // Debounced auto-search as the user types (no need to press Enter)
+  useEffect(() => {
+    // If query matches parent state, do nothing
+    if (localQuery.trim() === initialQuery.trim()) {
+      return;
+    }
+
+    // If input is cleared, trigger immediate reset
+    if (!localQuery.trim()) {
+      onSearch("", localMode);
+      return;
+    }
+
+    // Debounce search while typing (350ms pause)
+    const timer = setTimeout(() => {
+      onSearch(localQuery.trim(), localMode);
+    }, 350);
+
+    return () => clearTimeout(timer);
+  }, [localQuery, localMode, initialQuery, onSearch]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSearch(localQuery, localMode);
+    onSearch(localQuery.trim(), localMode);
   };
 
   const handleClear = () => {
@@ -48,7 +78,7 @@ export function SearchBarFilter({
   const handleModeChange = (newMode: SearchMode) => {
     setLocalMode(newMode);
     if (localQuery.trim()) {
-      onSearch(localQuery, newMode);
+      onSearch(localQuery.trim(), newMode);
     }
   };
 
